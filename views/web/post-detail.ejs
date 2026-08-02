@@ -1,0 +1,172 @@
+<%
+var pageStyles = `
+.sr-container{ max-width: 820px; margin: 20px auto; font-size: 13px; font-family: "Times New Roman", serif; }
+.sr-title{ text-align:center; font-weight:700; text-transform:uppercase; font-size:18px; }
+.sr-subtitle{ text-align:center; margin-bottom:5px; }
+.sr-brand{ text-align:center; font-weight:700; color:#cc0000; margin-bottom:10px; }
+.sr-breadcrumb{ font-size:13px; margin-bottom:10px; color:#555; }
+.sr-breadcrumb a{ color:#0033cc; text-decoration:none; }
+.sr-main-table{ width: 100%; max-width: 830px; margin: 0 auto; border-collapse: collapse; font-size: 15px; background: #fff; margin-bottom: 15px; padding: 0; }
+.sr-main-table td{ border:1px solid #000; padding: 6px 10px; }
+.sr-red-head{ background:#cc0000; color:#fff; text-align:center; }
+.sr-green-head{ background:#008000; color:#fff; text-align:center; }
+.sr-blue-head{ background:#0033cc; color:#fff; text-align:center; }
+.sr-purple-head{ background:#800080; color:#fff; text-align:center; }
+.sr-yellow-head{ background:#f2b300; color:#000; font-weight:700; text-align:center; }
+.sr-list{ margin:0; padding-left:14px; }
+.sr-list li{ margin:2px 0; }
+.sr-important-links{ width:100%; border-collapse:collapse; background:#fffbe6; }
+.sr-important-links td, .sr-important-links th{ border:1px solid #000; padding:5px; }
+.sr-link{ color:#0000ee; text-decoration:underline; }
+.sr-link:hover{ color:#cc0000; }
+.sr-disclaimer{ font-size:12px; padding:6px; line-height:1.5; }
+`;
+var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="sr-container">
+  <div class="sr-breadcrumb">
+    <a href="/">Home</a> &rsaquo;
+    <% if (post.Category) { %>
+      <a href="/category/<%= post.Category.slug %>"><%= post.Category.name %></a> &rsaquo;
+    <% } %>
+    <span><%= post.title %></span>
+  </div>
+
+  <h1 class="sr-title"><%= post.title %></h1>
+
+  <div class="sr-subtitle">
+    <b>Published:</b> <%= post.post_date ? formatDate(post.post_date, 'DD MMM YYYY') : '' %>
+    <% if (post.updated_date) { %>
+      <b style="color:blue;"> | Updated:</b> <%= formatDate(post.updated_date, 'DD MMM YYYY') %>
+    <% } %>
+  </div>
+  <div class="sr-brand"><%= (site_setting && site_setting.site_title) || 'SARKARI RESULT' %></div>
+
+  <table class="sr-main-table">
+    <tr>
+      <td colspan="2" class="sr-red-head" align="center">
+        <b><%= post.title %> &ndash; Short Details</b><br>
+        <%= (site_setting && site_setting.site_title) || 'Sarkari Result' %>
+      </td>
+    </tr>
+  </table>
+
+  <% if (post.short_description) { %>
+    <table class="sr-main-table"><tr><td><%= post.short_description %></td></tr></table>
+  <% } %>
+
+  <%# Dynamic fields (EAV), grouped - replaces the old hardcoded organization/dates/fee/age columns %>
+  <%
+    var richGroups = [];
+    var listGroups = [];
+    (fieldGroups || []).forEach(function (g) {
+      if (g.fields.length === 1 && g.fields[0].field_type === 'richtext') richGroups.push(g);
+      else listGroups.push(g);
+    });
+  %>
+  <% for (var i = 0; i < listGroups.length; i += 2) { %>
+    <table class="sr-main-table">
+      <tr>
+        <td width="50%" valign="top">
+          <b><%= listGroups[i].group_name.toUpperCase() %></b>
+          <ul class="sr-list">
+            <% listGroups[i].fields.forEach(function(f) { %>
+              <li><%= f.field_label %>: <b><%= f.field_type === 'date' ? formatDate(f.field_value, 'DD MMM YYYY') : f.field_value %></b></li>
+            <% }) %>
+          </ul>
+        </td>
+        <% if (listGroups[i + 1]) { %>
+          <td width="50%" valign="top">
+            <b><%= listGroups[i + 1].group_name.toUpperCase() %></b>
+            <ul class="sr-list">
+              <% listGroups[i + 1].fields.forEach(function(f) { %>
+                <li><%= f.field_label %>: <b><%= f.field_type === 'date' ? formatDate(f.field_value, 'DD MMM YYYY') : f.field_value %></b></li>
+              <% }) %>
+            </ul>
+          </td>
+        <% } else { %>
+          <td width="50%">&nbsp;</td>
+        <% } %>
+      </tr>
+    </table>
+  <% } %>
+
+  <% richGroups.forEach(function(g, idx) { %>
+    <table class="sr-main-table">
+      <tr><td class="<%= headCycle[idx % headCycle.length] %>"><b><%= g.group_name %></b></td></tr>
+      <tr><td><%- g.fields[0].field_value %></td></tr>
+    </table>
+  <% }) %>
+
+  <% if (post.full_description) { %>
+    <table class="sr-main-table">
+      <tr><td class="sr-yellow-head"><b>Full Notification</b></td></tr>
+      <tr><td><%- post.full_description %></td></tr>
+    </table>
+  <% } %>
+
+  <table class="sr-important-links">
+    <tr><th colspan="2" class="sr-yellow-head">Important Links</th></tr>
+    <% if (post.links && post.links.length) { %>
+      <% post.links.forEach(function(link) { %>
+        <tr>
+          <td><%= link.label %></td>
+          <td><a href="/go/<%= link.id %>" class="sr-link" target="_blank">Click Here</a></td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr><td colspan="2">No links added yet.</td></tr>
+    <% } %>
+  </table>
+
+  <table class="sr-main-table">
+    <tr><td class="sr-blue-head"><b>Meta Information</b></td></tr>
+    <tr>
+      <td>
+        <b>Meta Title:</b> <%= post.meta_title || '-' %> <br><br>
+        <b>Meta Keywords:</b> <%= post.meta_keywords || '-' %> <br><br>
+        <b>Meta Description:</b><br>
+        <%= post.meta_description || '-' %>
+      </td>
+    </tr>
+  </table>
+
+  <table class="sr-main-table">
+    <tr><td class="sr-purple-head"><b>Record Info</b></td></tr>
+    <tr>
+      <td>
+        <b>Created At:</b> <%= formatDate(post.createdAt, 'DD MMM YYYY, hh:mm A') %> <br>
+        <b>Updated At:</b> <%= formatDate(post.updatedAt, 'DD MMM YYYY, hh:mm A') %>
+      </td>
+    </tr>
+  </table>
+
+  <table class="sr-main-table">
+    <tr><td class="sr-red-head"><b>Disclaimer</b></td></tr>
+    <tr>
+      <td class="sr-disclaimer">
+        <%= (site_setting && site_setting.site_title) || 'This website' %> is not responsible for any error in this information.
+        Please verify details from the official website before applying.
+      </td>
+    </tr>
+  </table>
+
+  <% if (relatedPosts && relatedPosts.length) { %>
+    <table class="sr-main-table">
+      <tr><td class="sr-green-head"><b>Related Posts</b></td></tr>
+      <tr>
+        <td>
+          <ul class="sr-list">
+            <% relatedPosts.forEach(function(rp) { %>
+              <li><a href="/post/<%= rp.slug %>" class="sr-link"><%= rp.title %></a></li>
+            <% }) %>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  <% } %>
+</div>
+
+<%- include('../weblayout/layout-bottom') %>

@@ -1,0 +1,123 @@
+<%
+var pageStyles = `
+.category-header { text-align: center; margin: 25px auto 10px; padding: 10px; }
+.category-header h1 { font-size: 30px; color: #c00; font-weight: 700; }
+.category-header p.subtitle { font-size: 15px; color: #444; }
+.category-wrapper { max-width: 1100px; margin: 20px auto; display: grid; gap: 25px; grid-template-columns: 3fr 1fr; }
+.list-box { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #ddd; }
+.list-item { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #eee; text-decoration: none; color: #0077cc; font-size: 16px; font-weight: 500; }
+.list-item:hover { color: #c00; }
+.dot { color: #c00; font-size: 18px; margin-right: 10px; }
+.sidebar-box { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ddd; }
+.sidebar-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #c00; }
+.sidebar-links a { display: block; padding: 7px 0; font-size: 14px; color: #0077cc; }
+.sidebar-links a:hover { color: #c00; }
+.search-bar input { width: 90%; padding: 12px; border-radius: 8px; border: 1px solid #aaa; margin-bottom: 10px; }
+.info-box { background: #fff7f7; border: 1px solid #f2bcbc; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+.about-section { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-top: 20px; }
+.about-section h2 { color: #c00; font-size: 22px; margin-bottom: 10px; }
+.about-section p { font-size: 15px; color: #444; }
+.faq-section { margin-top: 25px; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #ddd; }
+.faq-question { width: 100%; text-align: left; background: #f8f8f8; border: none; padding: 14px; font-size: 17px; font-weight: 600; cursor: pointer; border-bottom: 1px solid #eee; transition: 0.2s; }
+.faq-question:hover { background: #f1f1f1; }
+.faq-answer { display: none; padding: 15px; }
+.faq-item.active .faq-answer { display: block; }
+.faq-step { display: flex; gap: 15px; margin-bottom: 15px; }
+.step-number { width: 38px; height: 38px; background: #c00; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.step-details { flex: 1; }
+.faq-step-img { margin-top: 10px; max-width: 100%; border-radius: 8px; border: 1px solid #ddd; }
+@media(max-width: 768px){ .category-wrapper { grid-template-columns: 1fr; } }
+`;
+var pageScripts = `
+document.querySelectorAll(".faq-question").forEach(function(btn){
+  btn.addEventListener("click", function(){ btn.parentElement.classList.toggle("active"); });
+});
+`;
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="category-header">
+  <h1><%= category.name %></h1>
+  <p class="subtitle">Latest updates, notifications, results & more</p>
+</div>
+
+<div class="category-wrapper">
+  <div>
+    <div class="info-box">
+      <strong>&#128226; Latest Updates:</strong>
+      This page shows the latest official notifications related to <b><%= category.name %></b>.
+    </div>
+
+    <div class="list-box">
+      <% if (posts && posts.length) { %>
+        <% posts.forEach(function(post) { %>
+          <a href="/post/<%= post.slug %>" class="list-item">
+            <span class="dot">&#9679;</span>
+            <span class="title"><%= post.title %></span>
+            <span class="date"><%= formatDate(post.createdAt, 'DD MMM, YYYY') %></span>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p>No data available.</p>
+      <% } %>
+    </div>
+
+    <%- include('../partials/pagination', { pagination: pagination }) %>
+
+    <div class="about-section">
+      <h2>About <%= category.name %></h2>
+      <p><%= category.name %> section helps candidates to find the latest openings, eligibility, important dates, notifications and application details for government exams.</p>
+      <p>We update this page daily so you get the most accurate & fast updates.</p>
+    </div>
+
+    <div class="faq-section">
+      <h3>Frequently Asked Questions</h3>
+      <% if (faqs && faqs.length) { %>
+        <% faqs.forEach(function(faq) { %>
+          <div class="faq-item">
+            <button class="faq-question">&#10003; <%= faq.question %></button>
+            <div class="faq-answer">
+              <% (faq.answers || []).forEach(function(ans, index) { %>
+                <div class="faq-step">
+                  <div class="step-number"><%= index + 1 %></div>
+                  <div class="step-details">
+                    <p><%- (ans.answer || '').replace(/\n/g, '<br>') %></p>
+                    <% if (ans.image) { %>
+                      <img src="/uploads/faq/<%= ans.image %>" class="faq-step-img">
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>No FAQs found for this category.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <div>
+    <div class="sidebar-box search-bar">
+      <h3>&#128269; Search</h3>
+      <input type="text" placeholder="Search job, result, admit card...">
+    </div>
+    <div class="sidebar-box">
+      <h3>Quick Links</h3>
+      <div class="sidebar-links">
+        <a href="/category/latest-jobs">Latest Jobs</a>
+        <a href="/category/admit-card">Admit Card</a>
+        <a href="/category/result">Results</a>
+        <a href="/category/syllabus">Syllabus</a>
+        <a href="/category/answer-key">Answer Key</a>
+        <a href="/contact">Contact Us</a>
+      </div>
+    </div>
+    <div class="sidebar-box">
+      <h3>Important Notices</h3>
+      <p>Stay updated with official announcements & notifications.</p>
+    </div>
+  </div>
+</div>
+
+<%- include('../weblayout/layout-bottom', { pageScripts: pageScripts }) %>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Login - <%= (typeof site_setting !== 'undefined' && site_setting && site_setting.site_title) || 'Sarkari Result' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="/admin-assets/favicon.png">
+
+    <script src="/admin-assets/theme-script.js"></script>
+    <script type="module" crossorigin src="/admin-assets/main.js"></script>
+    <link rel="stylesheet" crossorigin href="/admin-assets/main.css">
+</head>
+
+<body class="bg-gradient-to-br from-[#70BF4C] to-[#084E7F]">
+
+    <div class="login-container p-4 w-full max-w-[420px] mx-auto">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-block">
+                <img src="/admin-assets/logo.svg" alt="Logo" class="h-12">
+            </a>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl max-sm:text-xl font-bold text-gray-900 mb-2">Admin Login</h1>
+                <p class="text-sm text-gray-600">Sign in to manage <%= (typeof site_setting !== 'undefined' && site_setting && site_setting.site_title) || 'Sarkari Result' %></p>
+            </div>
+
+            <% if (typeof messages !== 'undefined' && messages.error && messages.error.length) { %>
+                <div class="mb-5 bg-danger/10 border border-danger/30 text-danger text-sm font-medium rounded-lg px-4 py-3">
+                    <%= messages.error[0] %>
+                </div>
+            <% } %>
+
+            <form action="/admin/login" method="POST">
+                <!-- Email -->
+                <div class="mb-5">
+                    <label for="email" class="block text-sm font-medium text-gray-900 mb-2">Email Address</label>
+                    <input type="email" name="email" id="email" placeholder="admin@example.com" required
+                        class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+
+                <!-- Password -->
+                <div class="mb-2">
+                    <label for="password" class="block text-sm font-medium text-gray-900 mb-2">Password</label>
+                    <div class="relative">
+                        <input id="password" name="password" type="password" required
+                            class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 pe-10! focus:ring-0 focus:border-primary"
+                            placeholder="••••••••••••">
+                        <button type="button" data-hs-toggle-password='{"target":"#password"}'
+                            class="absolute inset-y-0 end-0 flex items-center px-3 text-gray-900 hover:text-gray-600 focus:outline-none">
+                            <i class="icon-eye hidden hs-password-active:block text-base"></i>
+                            <i class="icon-eye-off hs-password-active:hidden text-base"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-right mb-6">
+                    <span class="text-sm text-gray-400">Forgot password? Contact super admin.</span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-3 px-4 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">
+                    Sign In
+                </button>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-sm text-white">
+            <p class="opacity-90"><%= new Date().getFullYear() %> &copy; <%= (typeof site_setting !== 'undefined' && site_setting && site_setting.site_title) || 'Sarkari Result' %>. All Rights Reserved</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

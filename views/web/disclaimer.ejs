@@ -1,0 +1,87 @@
+<%
+var pageStyles = `
+.page-header { text-align: center; margin: 40px 0 20px; }
+.page-header h1 { font-size: 32px; color: #c00; font-weight: 800; }
+.page-header .subtitle { font-size: 15px; color: #666; }
+.page-container { max-width: 960px; margin: 0 auto 60px; padding: 0 15px; }
+.page-box { background: #fff; border-radius: 10px; padding: 26px; border: 1px solid #ececec; box-shadow: 0 6px 20px rgba(0,0,0,0.03); }
+.page-box h2 { color: #1b1b1b; font-size: 18px; margin: 18px 0 10px; font-weight: 700; }
+.page-box p { color: #444; font-size: 15px; line-height: 1.7; margin-bottom: 8px; }
+.page-box ul { margin-left: 18px; margin-bottom: 12px; }
+.page-box li { margin-bottom: 6px; color: #444; }
+.meta { color: #666; font-size: 14px; margin-bottom: 18px; }
+.terms-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; }
+.btn-back { background: #f2f2f2; color: #222; padding: 8px 14px; border-radius: 6px; text-decoration: none; border: 1px solid #e0e0e0; }
+.btn-back:hover { background: #e4e4e4; }
+.muted { color: #888; font-size: 13px; }
+@media (max-width: 640px) { .page-box { padding: 18px; } .terms-footer { flex-direction: column; gap: 12px; align-items: flex-start; } }
+`;
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="page-header">
+  <h1>Disclaimer</h1>
+  <p class="subtitle">Transparency & clarity for all users</p>
+</div>
+
+<div class="page-container">
+  <div class="page-box">
+    <p class="meta">Last updated: <strong>November 30, 2025</strong></p>
+
+    <h2>1. General Information</h2>
+    <p>The information provided on <strong><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></strong> is for general informational purposes only. While we strive to provide accurate, updated, and verified content, we do not make any warranties regarding the completeness, reliability, or accuracy of the information.</p>
+
+    <h2>2. Not an Official Government Website</h2>
+    <p>We are <strong>not affiliated with any government body</strong>, departments, ministries, or any government organization. All exam notifications, results, answer keys and updates are sourced from:</p>
+    <ul>
+      <li>Official government websites</li>
+      <li>Public recruitment portals</li>
+      <li>Authorized organizations</li>
+      <li>Press releases and public announcements</li>
+    </ul>
+    <p>We strongly recommend users verify information from the official website or notification PDF before taking action.</p>
+
+    <h2>3. External Links</h2>
+    <p>Our website may contain links to external websites. While we provide only safe and relevant links, we have no control over their content and nature. Clicking such links is strictly at your own risk.</p>
+
+    <h2>4. No Professional Advice</h2>
+    <p>The content available on this Website is for informational purposes only. It should not be considered legal, financial, educational, employment, or professional advice.</p>
+
+    <h2>5. No Responsibility for Errors</h2>
+    <p>Although we update the information regularly, we do not guarantee that every detail is correct. The Website shall not be responsible for:</p>
+    <ul>
+      <li>Errors, omissions, or outdated information</li>
+      <li>Delays in updates</li>
+      <li>Technical issues</li>
+      <li>Loss or damages experienced from using the Website</li>
+    </ul>
+
+    <h2>6. Exam Results & Job Updates</h2>
+    <p>All exam results, job notifications, admit cards, and recruitment updates are collected from reliable sources. Users must reconfirm the information from official sources such as:</p>
+    <ul>
+      <li>Government Websites (SSC, UPSC, IBPS, State PSC)</li>
+      <li>Official Recruitment PDFs</li>
+      <li>Official Examination Portals</li>
+    </ul>
+
+    <h2>7. Consent</h2>
+    <p>By using our Website, you consent to this Disclaimer and agree to its terms.</p>
+
+    <h2>8. Changes to This Disclaimer</h2>
+    <p>We may update this Disclaimer from time to time. Changes will be posted on this page along with a new "Last Updated" date.</p>
+
+    <h2>9. Contact Us</h2>
+    <p>If you have any questions or require more information about this Disclaimer, please contact us:</p>
+    <p class="contact-block">
+      Email: <a href="mailto:<%= (site_setting && site_setting.contact_email) || 'support@example.com' %>"><%= (site_setting && site_setting.contact_email) || 'support@example.com' %></a><br>
+      Phone: <%= (site_setting && site_setting.contact_phone) || '+91-XXXXXXXXXX' %>
+    </p>
+
+    <div class="terms-footer">
+      <a href="/" class="btn-back">&larr; Back to Home</a>
+      <small class="muted">Always check official notifications before proceeding.</small>
+    </div>
+  </div>
+</div>
+
+<%- include('../weblayout/layout-bottom') %>

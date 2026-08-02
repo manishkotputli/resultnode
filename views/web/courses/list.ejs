@@ -1,0 +1,34 @@
+<%- include('../../weblayout/layout-top', { title: title }) %>
+
+<div class="app-shell">
+  <div class="shop-hero">
+    <h1>Explore Courses</h1>
+    <p>Structured video courses built around the real exam syllabus</p>
+  </div>
+
+  <div class="shop-container">
+    <% var gradients = ['g1','g2','g3','g4']; %>
+    <% if (courses && courses.length) { %>
+      <div class="course-grid">
+        <% courses.forEach(function(course, idx) { %>
+          <a href="/courses/<%= course.slug %>" class="course-card">
+            <div class="course-thumb <%= gradients[idx % gradients.length] %>"><i class="ti ti-book-2"></i></div>
+            <div class="course-body">
+              <span class="course-tag">Course</span>
+              <div class="course-title"><%= course.title %></div>
+              <p class="course-desc"><%= course.description %></p>
+              <div class="course-price-wrapper">
+                <div class="price">&#8377;<%= course.discount_price || course.price %><% if (course.discount_price) { %><span>&#8377;<%= course.price %></span><% } %></div>
+                <span class="course-btn">View Details</span>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">No courses available right now - check back soon.</div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

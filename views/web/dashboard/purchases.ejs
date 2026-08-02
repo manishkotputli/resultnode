@@ -1,0 +1,41 @@
+<%- include('../../weblayout/layout-top', { title: title }) %>
+
+<div class="app-shell">
+<div class="app-container" id="appContainer">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <%- include('../../partials/dashboard-nav', { active: 'purchases' }) %>
+
+  <main class="dash-content">
+    <header class="top-header">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="ti ti-menu-2"></i></button>
+        <div class="page-title">
+          <h1>My Purchases</h1>
+          <p>Courses &amp; test series you've bought</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash-subcard">
+      <% if (purchases && purchases.length) { %>
+        <table class="data-table">
+          <tr><th>Item</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+          <% purchases.forEach(function(p) { %>
+            <tr>
+              <td><a href="<%= p.linkUrl %>" style="color:var(--text-primary);font-weight:600;text-decoration:none;"><%= p.title %></a></td>
+              <td><%= p.purchasable_type === 'course' ? 'Course' : 'Test Series' %></td>
+              <td>&#8377;<%= p.amount %></td>
+              <td><span class="badge <%= p.payment_status %>"><%= p.payment_status %></span></td>
+              <td><%= formatDate(p.createdAt, 'DD MMM YYYY') %></td>
+            </tr>
+          <% }) %>
+        </table>
+      <% } else { %>
+        <div class="empty-state">You haven't purchased anything yet. Browse <a href="/courses">Courses</a> or <a href="/test-series">Test Series</a>.</div>
+      <% } %>
+    </div>
+  </main>
+</div>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

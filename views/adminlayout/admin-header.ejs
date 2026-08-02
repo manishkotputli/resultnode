@@ -1,0 +1,143 @@
+<!-- Topbar Start -->
+<header class="navbar-header flex items-center max-lg:w-full ">
+    <div class="topbar-menu flex items-center justify-between w-full gap-2">
+        <div class="flex items-center gap-3 lg:hidden">
+
+            <!-- Sidebar Mobile Button -->
+            <a id="mobile_btn" class="mobile-btn" href="#sidebar" aria-label="menu">
+                <i class="icon icon-menu"></i>
+            </a>
+
+            <!-- Logo -->
+            <a href="/admin/dashboard" class="logo">
+                <span class="logo-light">
+                    <span class="logo-lg"><img src="/admin-assets/logo.svg" alt="logo"></span>
+                    <span class="logo-sm"><img src="/admin-assets/logo-small.svg" alt="small logo"></span>
+                </span>
+                <span class="logo-dark">
+                    <span class="logo-lg"><img src="/admin-assets/logo-white.svg" alt="dark logo"></span>
+                </span>
+            </a>
+
+            <button class="sidenav-toggle-btn topbar-link shrink-0 size-9 text-[20px] items-center justify-center rounded-full" id="toggle_btn2">
+                <i class="ph-duotone ph-arrow-left"></i>
+            </button>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 lg:w-full">
+
+            <!-- Search -->
+            <div class="header-search hidden md:flex">
+                <div class="relative w-full">
+                    <input type="text" class="ps-3 pe-13 py-2 bg-(--topbar-input-bg) shadow border border-(--topbar-input-border) text-(--topbar-input-color) focus:border-(--topbar-input-border) placeholder:(--topbar-input-placeholder) focus:ring-0 w-full max-w-full rounded-full placeholder:text-gray-400" placeholder="Search Jobs, Results, Admit Cards" autocomplete="off" id="searchInput">
+                    <button type="button" class="cursor-pointer w-10 py-1 px-2 text-xs gap-1 bg-primary border border-(--topbar-input-border) text-(--topbar-input-icon) flex items-center justify-center absolute end-2 top-1/2 -translate-y-1/2 rounded-full dark:text-dark-white!">
+                        <i class="icon-command"></i>K
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="m-auto hidden lg:flex items-center gap-2">
+                <a href="/admin/posts/create?category=job" class="header-nav-link bg-white border border-border-color text-dark text-sm font-medium rounded-full py-2 px-4 flex items-center gap-1 hover:bg-light transition"><i class="iconoir-media-video-folder"></i>New Job Post</a>
+                <a href="/admin/posts/create?category=result" class="header-nav-link bg-white border border-border-color text-dark text-sm font-medium rounded-full py-2 px-4 flex items-center gap-1 hover:bg-light transition"><i class="iconoir-user"></i>New Result</a>
+                <a href="/admin/reports" class="header-nav-link bg-white border border-border-color text-dark text-sm font-medium rounded-full py-2 px-4 items-center gap-1 hover:bg-light transition xxl:flex hidden"><i class="iconoir-style-border"></i>View Reports</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Light/Dark Mode -->
+                <div class="header-item">
+                    <button class="topbar-link items-center justify-center light-dark-mode" type="button">
+                        <i class="icon-moon"></i>
+                    </button>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="header-item hs-dropdown [--placement:bottom-right] [--auto-close:inside] hidden relative sm:flex" id="notification-dropdown">
+                    <button class="topbar-link flex items-center justify-center relative cursor-pointer">
+                        <i class="icon-bell"></i>
+                        <% if (typeof unreadNotifications !== 'undefined' && unreadNotifications > 0) { %>
+                        <span class="absolute top-2 end-2 size-2 bg-danger-transparent rounded-full flex items-center justify-center">
+                            <span class="size-1 bg-danger border-1 border-danger/20 rounded-full"></span>
+                        </span>
+                        <% } %>
+                    </button>
+                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-102 p-5 mt-[-8px]! bg-white border border-border-color shadow rounded-lg z-1 notification-dropdown" role="menu" aria-orientation="vertical">
+                        <div class="flex items-center justify-between border-b border-border-color pb-5">
+                            <p class="text-[18px] max-lg:text-base font-bold text-title">Notifications</p>
+                            <div class="flex items-center gap-3">
+                                <a href="#" class="text-xs text-primary hover:text-primary-hover font-semibold flex items-center gap-1">
+                                    <i class="iconoir-double-check"></i>Mark all as read
+                                </a>
+                                <button type="button" class="size-8 inline-flex justify-center items-center rounded-full border border-border-color bg-white text-gray-900 text-base hover:bg-danger hover:border-danger hover:text-white cursor-pointer shadow" aria-label="Close" id="close-notification">
+                                    <i class="icon-x"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div data-simplebar>
+                            <div id="all-notifications">
+                                <div class="pt-5 space-y-3 pb-3">
+                                    <% if (typeof notifications !== 'undefined' && notifications.length) { %>
+                                        <% notifications.forEach(function(n) { %>
+                                        <div class="notification-item relative flex items-center justify-between gap-2 p-2 rounded-lg cursor-pointer hover:bg-light">
+                                            <div class="flex items-center">
+                                                <div class="relative size-10 font-semibold shrink-0 bg-primary-transparent text-primary rounded-full flex items-center justify-center me-2">
+                                                    <i class="icon-bell"></i>
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <p class="font-semibold text-title inline-flex items-center mb-1"><%= n.title %></p>
+                                                    <p class="text-[13px] font-medium mb-0"><%= n.message %></p>
+                                                </div>
+                                            </div>
+                                            <p class="shrink-0"><%= n.time_ago %></p>
+                                        </div>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <p class="text-sm text-gray-500 py-4 text-center">No new notifications</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-3">
+                            <a href="/admin/notifications" class="bg-white border border-border-color text-gray-900 font-semibold rounded-lg py-1.5 px-2.5 flex items-center justify-center gap-1 hover:text-white hover:bg-primary hover:border-primary">
+                                View all Notifications<i class="iconoir-nav-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User -->
+                <div class="profile-dropdown hs-dropdown [--placement:bottom-right] [--auto-close:inside] relative">
+                    <a href="#" class="hs-dropdown-toggle relative flex items-center gap-2" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                        <div class="size-8 rounded-full overflow-hidden border border-white">
+                            <img src="<%= (typeof currentUser !== 'undefined' && currentUser.avatar) || '/admin-assets/avatar-default.jpg' %>" class="size-full object-cover" alt="<%= (typeof currentUser !== 'undefined' && currentUser.name) || 'Admin' %>">
+                        </div>
+                    </a>
+                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-50 p-5 bg-white border border-border-color shadow rounded-lg mt-2 z-1 divide-y divide-border-color" role="menu" aria-orientation="vertical">
+                        <div class="pb-3 space-y-1">
+                            <a href="/admin/posts?category=job" class="flex items-center p-2 rounded-md text-gray-900 hover:bg-light focus:outline-hidden focus:bg-white">
+                                <i class="icon-hotel text-base me-2"></i>Jobs
+                            </a>
+                            <a href="/admin/posts?category=result" class="flex items-center p-2 rounded-md text-gray-900 hover:bg-light focus:outline-hidden focus:bg-white">
+                                <i class="icon-circle-user-round text-base me-2"></i>Results
+                            </a>
+                            <a href="/admin/users" class="flex items-center p-2 rounded-md text-gray-900 hover:bg-light focus:outline-hidden focus:bg-white">
+                                <i class="icon-users text-base me-2"></i>Users
+                            </a>
+                            <a href="/admin/settings" class="flex items-center p-2 rounded-md text-gray-900 hover:bg-light focus:outline-hidden focus:bg-white">
+                                <i class="icon-sparkles text-base me-2"></i>Settings
+                            </a>
+                        </div>
+                        <div class="pt-3">
+                            <form method="POST" action="/logout">
+                                <button type="submit" class="flex items-center p-2 rounded-md text-gray-900 hover:bg-light focus:outline-hidden focus:bg-white w-full text-left">
+                                    <i class="icon-log-out text-base me-2"></i>Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Topbar End -->

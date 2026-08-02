@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title><%= typeof title !== 'undefined' && title ? title + ' | Admin' : 'Admin Panel' %> - <%= (typeof site_setting !== 'undefined' && site_setting && site_setting.site_title) || 'Sarkari Result' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" type="image/x-icon" href="/admin-assets/favicon.png">
+
+    <!-- Theme Script (prevents flash of wrong theme) -->
+    <script src="/admin-assets/theme-script.js"></script>
+
+    <!-- Admin Theme CSS + JS bundle -->
+    <script type="module" crossorigin src="/admin-assets/main.js"></script>
+    <link rel="stylesheet" crossorigin href="/admin-assets/main.css">
+    <link rel="stylesheet" crossorigin href="/admin-assets/flatpickr.css">
+
+    <% if (typeof pageStyles !== 'undefined' && pageStyles) { %>
+        <style><%- pageStyles %></style>
+    <% } %>
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+
+        <%- include('./admin-header') %>
+        <%- include('./admin-sidebar') %>
+
+        <div class="page-wrapper">
+            <main>
+                <div class="p-3 lg:py-6 lg:px-0">
+
+                    <% if (typeof messages !== 'undefined' && (messages.success.length || messages.error.length)) { %>
+                        <div class="mb-4 space-y-2">
+                            <% messages.success.forEach(function(m) { %>
+                                <div class="bg-success/10 border border-success/30 text-success text-sm font-medium rounded-lg px-4 py-3"><%= m %></div>
+                            <% }) %>
+                            <% messages.error.forEach(function(m) { %>
+                                <div class="bg-danger/10 border border-danger/30 text-danger text-sm font-medium rounded-lg px-4 py-3"><%= m %></div>
+                            <% }) %>
+                        </div>
+                    <% } %>

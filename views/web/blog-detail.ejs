@@ -1,0 +1,135 @@
+<%
+var pageStyles = `
+.blog-detail-container{ max-width:1200px; margin:30px auto 60px; padding:0 15px; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.breadcrumb-box{ font-size:14px; color:#666; margin-bottom:15px; }
+.breadcrumb-box a{ color:#0a58ca; text-decoration:none; }
+.blog-title-area{ text-align:center; margin-bottom:30px; }
+.blog-category{ background:#0a58ca; color:#fff; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600; }
+.blog-title-area h1{ font-size:34px; font-weight:800; margin:12px 0; }
+.blog-meta{ font-size:14px; color:#777; }
+.blog-meta span{ margin: 0 6px; }
+.blog-detail-grid{ display:grid; grid-template-columns:3fr 1fr; gap:30px; }
+.blog-image img{ width:100%; border-radius:14px; margin-bottom:20px; background:#ddd; }
+.blog-short-desc{ background:#f8f9fa; padding:15px 18px; border-left:4px solid #0a58ca; font-size:16px; margin-bottom:20px; }
+.blog-content{ font-size:16px; line-height:1.8; color:#333; }
+.blog-content h2, .blog-content h3{ margin-top:25px; font-weight:700; }
+.blog-content img{ max-width:100%; border-radius:10px; margin:15px 0; }
+.blog-share{ margin-top:30px; font-size:14px; }
+.blog-share a{ margin-right:10px; color:#0a58ca; text-decoration:none; font-weight:600; }
+.like-btn{ margin-top:20px; border:1px solid #0a58ca; background:#fff; color:#0a58ca; padding:8px 18px; border-radius:20px; font-weight:600; cursor:pointer; }
+.like-btn.liked{ background:#0a58ca; color:#fff; }
+.comments-section{ margin-top:40px; }
+.comments-section h3{ font-size:20px; color:#0a58ca; margin-bottom:15px; }
+.comment-form textarea{ width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-family:inherit; }
+.comment-form button{ margin-top:8px; background:#0a58ca; color:#fff; border:none; padding:8px 18px; border-radius:20px; font-weight:600; cursor:pointer; }
+.comment-item{ padding:12px 0; border-bottom:1px solid #eee; }
+.comment-item b{ color:#111; }
+.comment-item .comment-date{ font-size:12px; color:#888; }
+.blog-sidebar{ background:#fafafa; padding:20px; border-radius:14px; }
+.blog-sidebar h3{ font-size:20px; margin-bottom:15px; color:#0a58ca; }
+.related-blog-item{ display:flex; gap:10px; margin-bottom:15px; text-decoration:none; color:#111; }
+.related-blog-item img{ width:70px; height:60px; object-fit:cover; border-radius:8px; background:#ddd; }
+.related-blog-item h4{ font-size:14px; font-weight:600; }
+.related-blog-item span{ font-size:12px; color:#777; }
+@media(max-width:991px){ .blog-detail-grid{ grid-template-columns:1fr; } }
+`;
+var pageScripts = `
+var likeBtn = document.getElementById('likeBtn');
+if (likeBtn) {
+  likeBtn.addEventListener('click', function () {
+    fetch(likeBtn.dataset.url, { method: 'POST', headers: { 'Accept': 'application/json' } })
+      .then(function (r) { if (r.status === 401) { window.location.href = '/login'; return null; } return r.json(); })
+      .then(function (data) {
+        if (!data) return;
+        likeBtn.classList.toggle('liked', data.liked);
+        likeBtn.textContent = (data.liked ? '\u2665 Liked' : '\u2661 Like');
+      });
+  });
+}
+`;
+function thumb(b) { return b.thumbnail ? '/uploads/blog/' + b.thumbnail : '/images/placeholder.svg'; }
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="blog-detail-container">
+  <div class="breadcrumb-box">
+    <a href="/">Home</a> <span>&rsaquo;</span> <a href="/blog">Blog</a> <span>&rsaquo;</span> <span><%= blog.title %></span>
+  </div>
+
+  <div class="blog-title-area">
+    <span class="blog-category"><%= blog.BlogCategory ? blog.BlogCategory.name : 'General' %></span>
+    <h1><%= blog.title %></h1>
+    <div class="blog-meta">
+      <span>&#128197; <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span>
+      <span>&middot;</span>
+      <span><%= blog.read_time || 1 %> min read</span>
+      <span>&middot;</span>
+      <span><%= blog.views || 0 %> views</span>
+    </div>
+  </div>
+
+  <div class="blog-detail-grid">
+    <div class="blog-main">
+      <% if (blog.thumbnail) { %>
+        <div class="blog-image"><img src="<%= thumb(blog) %>" alt="<%= blog.title %>"></div>
+      <% } %>
+
+      <% if (blog.short_description) { %>
+        <div class="blog-short-desc"><%= blog.short_description %></div>
+      <% } %>
+
+      <div class="blog-content"><%- blog.content %></div>
+
+      <button id="likeBtn" class="like-btn <%= liked ? 'liked' : '' %>" data-url="/blog/<%= blog.slug %>/like">
+        <%= liked ? '\u2665 Liked' : '\u2661 Like' %> (<%= blog.likes_count || 0 %>)
+      </button>
+
+      <div class="blog-share">
+        <span>Share:</span>
+        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=/blog/<%= blog.slug %>">Facebook</a>
+        <a target="_blank" href="https://twitter.com/intent/tweet?url=/blog/<%= blog.slug %>">Twitter</a>
+        <a target="_blank" href="https://api.whatsapp.com/send?text=/blog/<%= blog.slug %>">WhatsApp</a>
+      </div>
+
+      <div class="comments-section" id="comments">
+        <h3>Comments (<%= comments ? comments.length : 0 %>)</h3>
+
+        <% if (currentUser) { %>
+          <form class="comment-form" method="POST" action="/blog/<%= blog.slug %>/comment">
+            <textarea name="content" rows="3" placeholder="Write a comment..." required></textarea>
+            <button type="submit">Post Comment</button>
+          </form>
+        <% } else { %>
+          <p><a href="/login">Login</a> to leave a comment.</p>
+        <% } %>
+
+        <% (comments || []).forEach(function(c) { %>
+          <div class="comment-item">
+            <b><%= c.User ? c.User.name : 'User' %></b>
+            <span class="comment-date"> &middot; <%= timeAgo(c.createdAt) %></span>
+            <p><%= c.content %></p>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <aside class="blog-sidebar">
+      <h3>Related Blogs</h3>
+      <% if (relatedBlogs && relatedBlogs.length) { %>
+        <% relatedBlogs.forEach(function(rb) { %>
+          <a href="/blog/<%= rb.slug %>" class="related-blog-item">
+            <img src="<%= thumb(rb) %>" alt="<%= rb.title %>">
+            <div>
+              <h4><%= rb.title %></h4>
+              <span><%= rb.published_at ? formatDate(rb.published_at, 'DD MMM YYYY') : '' %></span>
+            </div>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p class="no-related">No related blogs</p>
+      <% } %>
+    </aside>
+  </div>
+</div>
+
+<%- include('../weblayout/layout-bottom', { pageScripts: pageScripts }) %>

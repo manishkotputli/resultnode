@@ -1,0 +1,52 @@
+<%- include('../weblayout/layout-top', { title: title }) %>
+
+<!-- MARQUEE NEWS TICKER (sourced from posts.is_marquee, grouped by category) -->
+<div class="news-marquee-wrapper">
+  <% (marqueeRows || []).forEach(function(entry) { %>
+    <% var categoryName = entry[0]; var items = entry[1]; %>
+    <marquee behavior="alternate" onmouseover="this.stop()" onmouseout="this.start()" class="news-marquee">
+      <% items.forEach(function(post, idx) { %>
+        <a href="/post/<%= post.slug %>" target="_blank" style="color:<%= post.highlight_color || '#0033cc' %>; font-weight:600;">
+          <%= post.title %>
+        </a>
+        <% if (idx !== items.length - 1) { %>
+          <span style="color:red; font-weight:bold;"> || </span>
+        <% } %>
+      <% }) %>
+    </marquee>
+  <% }) %>
+</div>
+
+<!-- TOP BUTTON GRID (sourced from posts.is_top) -->
+<div class="top-boxes">
+  <% (topPosts || []).forEach(function(post) { %>
+    <a href="/post/<%= post.slug %>" class="top-box-item" style="background: <%= post.highlight_color || '#0033cc' %>">
+      <%= post.title %>
+    </a>
+  <% }) %>
+</div>
+
+<!-- DYNAMIC HOME SECTIONS -->
+<div class="columns">
+  <% (dynamicSections || []).forEach(function(sec) { %>
+    <div class="col-box">
+      <div class="col-title <%= sec.colorClass || 't-blue' %>">
+        <%= sec.title %>
+      </div>
+      <div class="col-links">
+        <% if (sec.posts && sec.posts.length) { %>
+          <% sec.posts.forEach(function(item) { %>
+            <a href="/post/<%= item.slug %>">&bull; <%= item.title %></a>
+          <% }) %>
+        <% } else { %>
+          <span class="text-muted">No posts available</span>
+        <% } %>
+      </div>
+      <div class="view-all-wrapper">
+        <a href="/category/<%= sec.category ? sec.category.slug : '' %>" class="view-all-btn">View All &rarr;</a>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('../weblayout/layout-bottom') %>

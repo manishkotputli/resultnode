@@ -1,0 +1,60 @@
+<%- include('../../weblayout/layout-top', { title: title }) %>
+
+<div class="app-shell">
+  <div class="shop-container" style="margin-top:26px;">
+    <div class="detail-hero">
+      <div class="detail-crumb"><a href="/">Home</a> &rsaquo; <a href="/courses">Courses</a> &rsaquo; <%= course.title %></div>
+      <span class="detail-badge">Video Course</span>
+      <h1><%= course.title %></h1>
+      <p class="lead"><%= course.description %></p>
+      <div class="detail-stats-row">
+        <div class="d-stat"><i class="ti ti-device-desktop"></i> Lifetime Access</div>
+        <div class="d-stat"><i class="ti ti-certificate"></i> Certificate Included</div>
+        <div class="d-stat"><i class="ti ti-language"></i> Hindi &amp; English</div>
+      </div>
+    </div>
+
+    <div class="detail-body-grid">
+      <div class="detail-main-card">
+        <h2>About This Course</h2>
+        <p><%= course.description %></p>
+
+        <h2 style="margin-top:26px;">What You'll Get</h2>
+        <ul class="feature-check-list">
+          <li><i class="ti ti-check"></i> Structured video lectures</li>
+          <li><i class="ti ti-check"></i> Downloadable study notes</li>
+          <li><i class="ti ti-check"></i> Weekly practice tests</li>
+          <li><i class="ti ti-check"></i> Doubt-clearing support</li>
+          <li><i class="ti ti-check"></i> Mobile &amp; desktop access</li>
+          <li><i class="ti ti-check"></i> Regularly updated content</li>
+        </ul>
+      </div>
+
+      <aside class="buy-sticky-card">
+        <div>
+          <span class="price-now">&#8377;<%= course.discount_price || course.price %></span>
+          <% if (course.discount_price) { %>
+            <span class="price-old">&#8377;<%= course.price %></span>
+            <span class="discount-tag"><%= Math.round((1 - course.discount_price / course.price) * 100) %>% OFF</span>
+          <% } %>
+        </div>
+
+        <% if (owned) { %>
+          <span class="owned-tag" style="margin-top:18px;"><i class="ti ti-circle-check"></i> You own this course</span>
+        <% } else { %>
+          <form method="POST" action="/courses/<%= course.slug %>/buy">
+            <button type="submit" class="buy-btn-premium">Buy Now</button>
+          </form>
+        <% } %>
+
+        <div class="trust-row">
+          <div class="t-item"><i class="ti ti-shield-check"></i> Secure checkout</div>
+          <div class="t-item"><i class="ti ti-infinity"></i> Lifetime access, learn at your pace</div>
+          <div class="t-item"><i class="ti ti-headset"></i> Support included</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

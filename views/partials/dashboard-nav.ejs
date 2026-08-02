@@ -1,0 +1,58 @@
+<%
+const navItems = [
+  { id: 'index', title: 'My Account', url: '/dashboard', icon: 'ti-layout-dashboard' },
+  { id: 'purchases', title: 'My Purchases', url: '/dashboard/purchases', icon: 'ti-shopping-bag' },
+  { id: 'income-expense', title: 'Income & Expense', url: '/dashboard/income-expense', icon: 'ti-chart-bar' },
+  { id: 'finance-settings', title: 'Banks & Categories', url: '/dashboard/finance-settings', icon: 'ti-credit-card' },
+];
+%>
+<aside class="dash-sidebar" id="dashSidebar">
+  <div>
+    <div class="sidebar-header">
+      <div class="brand-wrapper">
+        <div class="brand-icon"><i class="ti ti-school"></i></div>
+        <div class="brand-info">
+          <h3><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h3>
+          <span>Student Portal</span>
+        </div>
+      </div>
+      <button class="toggle-btn" id="sidebarToggleBtn" title="Toggle Sidebar">
+        <i class="ti ti-chevron-left"></i>
+      </button>
+    </div>
+
+    <nav class="dash-nav">
+      <% navItems.forEach(function(item) { %>
+        <a href="<%= item.url %>" class="<%= (typeof active !== 'undefined' && active === item.id) ? 'active' : '' %>" data-tooltip="<%= item.title %>">
+          <i class="ti <%= item.icon %>"></i>
+          <span class="nav-text"><%= item.title %></span>
+        </a>
+      <% }) %>
+    </nav>
+  </div>
+
+  <div class="dash-nav">
+    <a href="/" data-tooltip="Back to Site">
+      <i class="ti ti-arrow-back-up"></i>
+      <span class="nav-text">Back to Site</span>
+    </a>
+    <form method="POST" action="/logout">
+      <button type="submit" data-tooltip="Logout">
+        <i class="ti ti-logout"></i>
+        <span class="nav-text">Logout</span>
+      </button>
+    </form>
+  </div>
+</aside>
+
+<script>
+  (function () {
+    var appContainer = document.getElementById('appContainer');
+    var toggleBtn = document.getElementById('sidebarToggleBtn');
+    var mobileToggle = document.getElementById('mobileNavToggle');
+    var overlay = document.getElementById('sidebarOverlay');
+    if (toggleBtn) toggleBtn.addEventListener('click', function () { appContainer.classList.toggle('collapsed'); });
+    if (mobileToggle) mobileToggle.addEventListener('click', function () { appContainer.classList.add('mobile-open'); });
+    if (overlay) overlay.addEventListener('click', function () { appContainer.classList.remove('mobile-open'); });
+  })();
+</script>

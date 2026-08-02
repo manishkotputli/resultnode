@@ -1,0 +1,25 @@
+<!-- FOOTER -->
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const navToggleBtn = document.getElementById('navToggleBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    if (navToggleBtn && navMenu) {
+      navToggleBtn.addEventListener('click', function() {
+        navMenu.classList.toggle('show');
+      });
+    }
+  });
+</script>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p><%- (site_setting && site_setting.footer_text) || '&copy; 2026 Sarkari Result - All Rights Reserved' %></p>
+    </div>
+    <div class="footer-links">
+      <a href="/contact">Contact Us</a>
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/disclaimer">Disclaimer</a>
+    </div>
+  </div>
+</footer>

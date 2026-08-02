@@ -1,0 +1,79 @@
+<%
+var pageStyles = `
+.blog-wrapper{ max-width:1200px; margin:40px auto; padding:0 15px; }
+.blog-header{ text-align:center; margin-bottom:40px; }
+.blog-header h1{ color:#0a58ca; font-size:34px; font-weight:800; }
+.blog-header p{ color:#666; }
+.top-grid{ display:grid; grid-template-columns:2fr 1fr; gap:15px; }
+.small-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:15px; }
+.blog-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:30px; }
+.blog-card{ position:relative; overflow:hidden; border-radius:12px; display:block; }
+.blog-card img{ width:100%; height:100%; object-fit:cover; transition:.4s; display:block; background:#ddd; }
+.blog-card:hover img{ transform:scale(1.07); }
+.big{ height:420px; } .small{ height:200px; } .medium{ height:240px; }
+.overlay{ position:absolute; bottom:0; left:0; right:0; padding:15px; background:linear-gradient(transparent,rgba(0,0,0,.75)); color:#fff; }
+.overlay span{ font-size:13px; color:#ffc107; font-weight:600; }
+.overlay h2{ font-size:22px; margin-top:5px; }
+.overlay h3{ font-size:16px; margin-top:5px; }
+@media(max-width:991px){ .top-grid{ grid-template-columns:1fr; } .blog-row{ grid-template-columns:1fr; } }
+`;
+function thumb(b) { return b.thumbnail ? '/uploads/blog/' + b.thumbnail : '/images/placeholder.svg'; }
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="blog-wrapper">
+  <div class="blog-header">
+    <h1>Latest Blogs</h1>
+    <p>Updates, Guides & Industry Insights</p>
+  </div>
+
+  <div class="blog-grid top-grid">
+    <% if (featured) { %>
+      <a href="/blog/<%= featured.slug %>" class="blog-card big">
+        <img src="<%= thumb(featured) %>">
+        <div class="overlay">
+          <span><%= featured.BlogCategory ? featured.BlogCategory.name : '' %></span>
+          <h2><%= featured.title %></h2>
+        </div>
+      </a>
+    <% } %>
+
+    <div class="small-grid">
+      <% (grid1 || []).forEach(function(blog) { %>
+        <a href="/blog/<%= blog.slug %>" class="blog-card small">
+          <img src="<%= thumb(blog) %>">
+          <div class="overlay">
+            <span><%= blog.BlogCategory ? blog.BlogCategory.name : '' %></span>
+            <h3><%= blog.title %></h3>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="blog-row">
+    <% (grid2 || []).forEach(function(blog) { %>
+      <a href="/blog/<%= blog.slug %>" class="blog-card medium">
+        <img src="<%= thumb(blog) %>">
+        <div class="overlay">
+          <span><%= blog.BlogCategory ? blog.BlogCategory.name : '' %></span>
+          <h3><%= blog.title %></h3>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+
+  <div class="blog-row">
+    <% (grid3 || []).forEach(function(blog) { %>
+      <a href="/blog/<%= blog.slug %>" class="blog-card medium">
+        <img src="<%= thumb(blog) %>">
+        <div class="overlay">
+          <span><%= blog.BlogCategory ? blog.BlogCategory.name : '' %></span>
+          <h3><%= blog.title %></h3>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('../weblayout/layout-bottom') %>

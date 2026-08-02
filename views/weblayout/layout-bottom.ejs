@@ -1,0 +1,11 @@
+  </div>
+
+  <%- include('./footer') %>
+
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <% if (typeof pageScripts !== 'undefined' && pageScripts) { %>
+    <script><%- pageScripts %></script>
+  <% } %>
+
+</body>
+</html>

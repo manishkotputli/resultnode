@@ -1,0 +1,107 @@
+<%- include('../../weblayout/layout-top', { title: title }) %>
+
+<div class="app-shell">
+<div class="app-container" id="appContainer">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <%- include('../../partials/dashboard-nav', { active: 'index' }) %>
+
+  <main class="dash-content">
+    <header class="top-header">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="ti ti-menu-2"></i></button>
+        <div class="page-title">
+          <h1>My Account</h1>
+          <p>Your learning &amp; finance overview</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="user-welcome-card">
+      <div>
+        <h1>Welcome back, <%= currentUser.name %> &#128075;</h1>
+        <p>Keep learning and stay on top of your exam prep!</p>
+      </div>
+      <div class="id-badge"><%= currentUser.user_code %> &middot; <%= currentUser.email %></div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-box c-indigo">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-shopping-bag"></i></div></div>
+        <div><div class="val"><%= purchaseCount %></div><div class="label">Total Purchases</div></div>
+      </div>
+      <div class="stat-box c-green">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-wallet"></i></div></div>
+        <div><div class="val">&#8377;<%= totals.income %></div><div class="label">Total Income</div></div>
+      </div>
+      <div class="stat-box c-red">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-report-money"></i></div></div>
+        <div><div class="val">&#8377;<%= totals.expense %></div><div class="label">Total Expense</div></div>
+      </div>
+      <div class="stat-box c-amber">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-scale"></i></div></div>
+        <div><div class="val">&#8377;<%= totals.balance %></div><div class="label">Net Balance</div></div>
+      </div>
+    </div>
+
+    <section>
+      <div class="section-title">
+        <h2>Suggested for You</h2>
+        <a href="/courses">View All &rarr;</a>
+      </div>
+      <% var gradients = ['g1','g2','g3','g4']; %>
+      <% if (suggestedCourses && suggestedCourses.length) { %>
+        <div class="course-scroll-container">
+          <% suggestedCourses.forEach(function(course, idx) { %>
+            <a href="/courses/<%= course.slug %>" class="course-card">
+              <div class="course-thumb <%= gradients[idx % gradients.length] %>"><i class="ti ti-book-2"></i></div>
+              <div class="course-body">
+                <span class="course-tag">Course</span>
+                <div class="course-title"><%= course.title %></div>
+                <div class="course-price-wrapper">
+                  <div class="price">&#8377;<%= course.discount_price || course.price %><% if (course.discount_price) { %><span>&#8377;<%= course.price %></span><% } %></div>
+                  <span class="course-btn">View</span>
+                </div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">You've explored all available courses. Check back soon for new ones!</div>
+      <% } %>
+    </section>
+
+    <div class="dashboard-grid-2">
+      <div class="dash-subcard">
+        <div class="section-title">
+          <h2>Recent Purchases</h2>
+          <a href="/dashboard/purchases">View All &rarr;</a>
+        </div>
+        <% if (recentPurchases && recentPurchases.length) { %>
+          <% recentPurchases.forEach(function(p) { %>
+            <div class="activity-item">
+              <div class="act-info">
+                <h4><%= p.title %></h4>
+                <span><%= formatDate(p.createdAt, 'DD MMM YYYY') %> &middot; <span class="badge <%= p.payment_status %>"><%= p.payment_status %></span></span>
+              </div>
+              <strong style="color:#10b981;">&#8377;<%= p.amount %></strong>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="empty-state">No purchases yet. Browse <a href="/courses">Courses</a> to get started.</div>
+        <% } %>
+      </div>
+
+      <div class="dash-subcard">
+        <div class="section-title"><h2>Quick Actions</h2></div>
+        <div class="quick-actions">
+          <a href="/dashboard/income-expense" class="qa-btn"><i class="ti ti-plus"></i> Add Income / Expense</a>
+          <a href="/dashboard/finance-settings" class="qa-btn"><i class="ti ti-building-bank"></i> Manage Banks</a>
+          <a href="/test-series" class="qa-btn"><i class="ti ti-clipboard-list"></i> Browse Test Series</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

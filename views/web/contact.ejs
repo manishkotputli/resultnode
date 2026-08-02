@@ -1,0 +1,88 @@
+<%
+var pageStyles = `
+.page-header { text-align: center; margin: 40px 0 20px; }
+.page-header h1 { font-size: 34px; color: #c00; font-weight: 800; }
+.page-header .subtitle { color: #555; font-size: 16px; }
+.contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; max-width: 950px; margin: 0 auto 50px; padding: 0 10px; }
+.contact-info, .contact-form { background: #fff; padding: 25px; border: 1px solid #eee; border-radius: 12px; box-shadow: 0px 3px 12px rgba(0,0,0,0.05); }
+.section-title { color: #c00; margin-bottom: 18px; font-size: 22px; font-weight: 700; }
+.info-line { margin-bottom: 12px; font-size: 15px; color: #333; }
+.social-links a { display: block; margin: 7px 0; font-size: 15px; color: #0077cc; }
+.form-box input, .form-box textarea { width: 94%; border: 1px solid #ccc; border-radius: 8px; padding: 12px; font-size: 15px; margin-bottom: 15px; background: #fafafa; }
+.btn-submit { width: 100%; background: #c00; color: #fff; padding: 12px; border: none; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.2s ease; }
+.btn-submit:hover { background: #900; }
+.faq-wrapper { max-width: 900px; margin: 20px auto 50px; }
+.faq-title { text-align: center; font-size: 28px; font-weight: 700; color: #c00; margin-bottom: 20px; }
+.faq-box { background: #fff; border: 1px solid #ddd; padding: 18px 20px; margin-bottom: 12px; border-radius: 10px; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0px 2px 6px rgba(0,0,0,0.05); }
+.faq-box h4 { margin-bottom: 8px; color: #222; }
+.map-section { max-width: 950px; margin: 40px auto; text-align: center; }
+.map-title { font-size: 26px; margin-bottom: 15px; color: #c00; }
+@media(max-width: 768px){ .contact-wrapper { grid-template-columns: 1fr; } }
+`;
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="page-header">
+  <h1>Contact Us</h1>
+  <p class="subtitle">We are here to help you anytime - Get in touch!</p>
+</div>
+
+<div class="contact-wrapper">
+  <div class="contact-info">
+    <h3 class="section-title">&#128222; Get in Touch</h3>
+    <p class="info-line"><strong>Email:</strong> <%= (site_setting && site_setting.contact_email) || 'Not Available' %></p>
+    <p class="info-line"><strong>Phone:</strong> <%= (site_setting && site_setting.contact_phone) || 'Not Available' %></p>
+    <p class="info-line"><strong>Office Hours:</strong> <%= (site_setting && site_setting.contact_hours) || 'Mon-Sat (10AM-6PM)' %></p>
+    <hr>
+    <h3 class="section-title">&#127760; Our Office</h3>
+    <p class="info-line"><%- ((site_setting && site_setting.contact_address) || 'Address not available.').replace(/\n/g, '<br>') %></p>
+    <hr>
+    <h3 class="section-title">&#128279; Follow Us</h3>
+    <div class="social-links">
+      <% if (site_setting && site_setting.facebook_url) { %><a href="<%= site_setting.facebook_url %>" target="_blank">Facebook</a><% } %>
+      <% if (site_setting && site_setting.instagram_url) { %><a href="<%= site_setting.instagram_url %>" target="_blank">Instagram</a><% } %>
+      <% if (site_setting && site_setting.twitter_url) { %><a href="<%= site_setting.twitter_url %>" target="_blank">Twitter</a><% } %>
+      <% if (site_setting && site_setting.youtube_url) { %><a href="<%= site_setting.youtube_url %>" target="_blank">YouTube</a><% } %>
+    </div>
+  </div>
+
+  <div class="contact-form">
+    <h3 class="section-title">&#128231; Send Us a Message</h3>
+    <form action="/contact/send" method="POST" class="form-box">
+      <label>Your Name</label>
+      <input type="text" name="name" class="form-control" required>
+      <label>Your Email</label>
+      <input type="email" name="email" class="form-control" required>
+      <label>Subject</label>
+      <input type="text" name="subject" class="form-control">
+      <label>Your Message</label>
+      <textarea name="message" class="form-control" rows="5" required></textarea>
+      <button type="submit" class="btn-submit">Send Message</button>
+    </form>
+  </div>
+</div>
+
+<div class="faq-wrapper">
+  <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
+  <div class="faq-box">
+    <h4>&#128204; How can I check my exam results?</h4>
+    <p>You can check all government exam results from the "Result" section of our website.</p>
+  </div>
+  <div class="faq-box">
+    <h4>&#128204; How do I apply for government jobs?</h4>
+    <p>Visit the "Latest Jobs" section to find all active job openings with eligibility and apply links.</p>
+  </div>
+  <div class="faq-box">
+    <h4>&#128204; How can I download my admit card?</h4>
+    <p>Go to the "Admit Card" page where all admit card links are updated daily.</p>
+  </div>
+</div>
+
+<% if (site_setting && site_setting.google_map_embed) { %>
+  <div class="map-section">
+    <h2 class="map-title">&#128205; Find Us on Google Maps</h2>
+    <iframe src="<%= site_setting.google_map_embed %>" width="100%" height="350" style="border:0;" allowfullscreen loading="lazy"></iframe>
+  </div>
+<% } %>
+
+<%- include('../weblayout/layout-bottom') %>

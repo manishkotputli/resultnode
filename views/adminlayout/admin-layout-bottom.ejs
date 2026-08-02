@@ -1,0 +1,18 @@
+                </div>
+            </main>
+
+            <%- include('./admin-footer') %>
+
+        </div>
+    </div>
+
+    <!-- Charts (only needed on pages that render a chart) -->
+    <script src="/admin-assets/apexcharts.min.js"></script>
+
+    <% if (typeof pageScripts !== 'undefined' && pageScripts) { %>
+        <script><%- pageScripts %></script>
+    <% } %>
+
+</body>
+
+</html>

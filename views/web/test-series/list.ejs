@@ -1,0 +1,42 @@
+<%
+var pageStyles = `
+.shop-header { text-align: center; margin: 40px 0 30px; }
+.shop-header h1 { font-size: 32px; color: #c00; font-weight: 800; }
+.shop-header p { color: #666; }
+.shop-grid { max-width: 1100px; margin: 0 auto 60px; padding: 0 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.shop-card { background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden; box-shadow: 0px 3px 12px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: block; }
+.shop-card .thumb { height: 150px; background: linear-gradient(135deg,#0033cc,#001a80); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 40px; }
+.shop-card .body { padding: 16px; }
+.shop-card h3 { font-size: 17px; margin: 0 0 8px; color: #111; }
+.shop-card p { font-size: 13px; color: #666; margin: 0 0 12px; height: 36px; overflow: hidden; }
+.price-row { display: flex; align-items: center; gap: 8px; }
+.price-now { font-size: 18px; font-weight: 800; color: #c00; }
+.price-old { font-size: 14px; color: #999; text-decoration: line-through; }
+@media(max-width: 900px){ .shop-grid { grid-template-columns: repeat(2,1fr); } }
+@media(max-width: 600px){ .shop-grid { grid-template-columns: 1fr; } }
+`;
+%>
+<%- include('../../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="shop-header">
+  <h1>Test Series</h1>
+  <p>Full-length mock tests with All-India rank</p>
+</div>
+
+<div class="shop-grid">
+  <% (testSeriesList || []).forEach(function(ts) { %>
+    <a href="/test-series/<%= ts.slug %>" class="shop-card">
+      <div class="thumb">&#128221;</div>
+      <div class="body">
+        <h3><%= ts.title %></h3>
+        <p><%= ts.description %></p>
+        <div class="price-row">
+          <span class="price-now">&#8377;<%= ts.discount_price || ts.price %></span>
+          <% if (ts.discount_price) { %><span class="price-old">&#8377;<%= ts.price %></span><% } %>
+        </div>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

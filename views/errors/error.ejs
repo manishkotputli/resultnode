@@ -1,0 +1,7 @@
+<%- include('../weblayout/layout-top', { title: (status || 500) + ' - ' + message }) %>
+  <div style="max-width:700px;margin:60px auto;text-align:center;padding:0 15px;">
+    <h1 style="font-size:64px;color:#c00;margin:0;"><%= status || 500 %></h1>
+    <p style="font-size:18px;color:#333;margin:10px 0 24px;"><%= message || 'Something went wrong.' %></p>
+    <a href="/" style="display:inline-block;background:#c00;color:#fff;padding:10px 22px;border-radius:4px;text-decoration:none;">Back to Home</a>
+  </div>
+<%- include('../weblayout/layout-bottom') %>

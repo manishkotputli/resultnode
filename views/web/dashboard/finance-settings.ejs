@@ -1,0 +1,142 @@
+<%- include('../../weblayout/layout-top', { title: title }) %>
+
+<% 
+  // Helper function to format balance in K / M format
+  function formatAmount(amount) {
+    var num = Number(amount) || 0;
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    } else if (num >= 10000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num.toLocaleString('en-IN');
+  }
+
+  // Helper function for masking account number
+  function maskAccountNumber(accNum) {
+    if (!accNum) return '**** **** **** ****';
+    var str = String(accNum).trim();
+    var last4 = str.slice(-4);
+    return '**** **** **** ' + last4;
+  }
+%>
+
+<div class="app-shell">
+  <div class="app-container" id="appContainer">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <%- include('../../partials/dashboard-nav', { active: 'finance-settings' }) %>
+
+    <main class="dash-content">
+      <header class="top-header">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="ti ti-menu-2"></i></button>
+          <div class="page-title">
+            <h1>Banks &amp; Categories</h1>
+            <p>Manage the accounts and categories you track money against</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="dash-subcard">
+        <div class="section-title">
+          <h2><i class="ti ti-building-bank" style="color:var(--primary-color);"></i> Your Banks &amp; Wallets</h2>
+        </div>
+
+        <% var themes = ['theme-obsidian', 'theme-royal', 'theme-emerald', 'theme-titanium']; %>
+        
+        <div class="bank-card-grid">
+          <% (banks || []).forEach(function(b, idx) { %>
+            <div class="bank-card <%= themes[idx % themes.length] %>">
+              <div class="card-glass-shine"></div>
+              
+              <!-- Card Header -->
+              <div class="row-top">
+                <span class="bank-brand-name"><%= b.name %></span>
+                <div class="sim-chip">
+                  <span class="chip-line"></span>
+                  <span class="chip-line"></span>
+                </div>
+              </div>
+
+              <!-- Masked Account Number -->
+              <div class="acct-number">
+                <%= maskAccountNumber(b.account_number) %>
+              </div>
+
+              <!-- Card Bottom Details -->
+              <div class="row-bottom">
+                <div class="card-col">
+                  <div class="field-label">Account Holder</div>
+                  <div class="field-value"><%= currentUser ? currentUser.name : 'Valued Holder' %></div>
+                </div>
+                <div class="card-col text-end">
+                  <div class="field-label">Balance</div>
+                  <div class="balance-value">&#8377;<%= formatAmount(b.opening_balance) %></div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+
+          <!-- Add Card Button Container -->
+          <div class="bank-card-add" onclick="document.getElementById('newBankNameInput').focus();">
+            <div class="add-icon-wrapper">
+              <i class="ti ti-plus"></i>
+            </div>
+            <span>Add new account</span>
+          </div>
+        </div>
+
+        <% if (!banks || !banks.length) { %>
+          <div class="empty-state">No bank accounts added yet - add your first one below.</div>
+        <% } %>
+
+        <!-- Add Bank Form -->
+        <form class="mini-form" method="POST" action="/dashboard/finance-settings/bank">
+          <div class="mini-form-title">Add New Account</div>
+          <div class="input-group">
+            <input type="text" id="newBankNameInput" name="name" placeholder="Bank / Wallet name (e.g. HDFC, Paytm)" required>
+            <input type="text" name="account_number" placeholder="Account number (optional)">
+          </div>
+          <div class="input-group">
+            <input type="number" step="0.01" name="opening_balance" placeholder="Opening balance (&#8377;)">
+            <button type="submit" class="btn-submit"><i class="ti ti-plus"></i> Add Bank</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Categories Section -->
+      <div class="dash-subcard" style="margin-top:22px;">
+        <div class="section-title">
+          <h2><i class="ti ti-tags" style="color:var(--primary-color);"></i> Income / Expense Categories</h2>
+        </div>
+
+        <div class="item-list">
+          <% (categories || []).forEach(function(c) { %>
+            <div class="item-row">
+              <span class="item-name"><%= c.name %></span>
+              <span class="pill <%= c.type === 1 ? 'income' : 'expense' %>"><%= c.type === 1 ? 'Income' : 'Expense' %></span>
+            </div>
+          <% }) %>
+          <% if (!categories || !categories.length) { %>
+            <div class="empty-state">No categories added yet.</div>
+          <% } %>
+        </div>
+
+        <form class="mini-form" method="POST" action="/dashboard/finance-settings/category">
+          <div class="mini-form-title">Create New Category</div>
+          <div class="input-group">
+            <input type="text" name="name" placeholder="Category name" required>
+            <select name="type" required>
+              <option value="" disabled selected>Select type</option>
+              <option value="1">Income (Credit)</option>
+              <option value="2">Expense (Debit)</option>
+            </select>
+            <button type="submit" class="btn-submit"><i class="ti ti-plus"></i> Add</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

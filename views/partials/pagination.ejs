@@ -1,0 +1,17 @@
+<% if (pagination && pagination.totalPages > 1) { %>
+  <div class="pagination-wrapper" style="text-align:center;margin:20px 0;">
+    <% if (pagination.hasPrev) { %>
+      <a href="<%= pagination.baseUrl %>?page=<%= pagination.page - 1 %>" style="margin:0 4px;">&laquo; Prev</a>
+    <% } %>
+    <% pagination.pages.forEach(function(p) { %>
+      <% if (p === pagination.page) { %>
+        <strong style="margin:0 6px;color:#c00;"><%= p %></strong>
+      <% } else { %>
+        <a href="<%= pagination.baseUrl %>?page=<%= p %>" style="margin:0 6px;"><%= p %></a>
+      <% } %>
+    <% }) %>
+    <% if (pagination.hasNext) { %>
+      <a href="<%= pagination.baseUrl %>?page=<%= pagination.page + 1 %>" style="margin:0 4px;">Next &raquo;</a>
+    <% } %>
+  </div>
+<% } %>

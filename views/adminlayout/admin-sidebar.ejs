@@ -1,0 +1,129 @@
+<!-- Sidenav Menu Start -->
+<aside class="sidebar" id="sidebar">
+
+    <!-- Start Logo -->
+    <div class="sidebar-logo">
+        <div>
+            <a href="/admin/dashboard" class="logo logo-normal">
+                <img src="/admin-assets/logo.svg" alt="Logo">
+            </a>
+            <a href="/admin/dashboard" class="logo-small">
+                <img src="/admin-assets/logo-small.svg" alt="Logo">
+            </a>
+            <a href="/admin/dashboard" class="dark-logo">
+                <img src="/admin-assets/logo-white.svg" alt="Logo">
+            </a>
+        </div>
+        <button class="sidenav-toggle-btn btn p-0 active" id="toggle_btn" aria-label="toggle">
+            <i class="icon-chevron-left"></i>
+        </button>
+        <button type="button" class="sidebar-close" aria-label="close">
+            <i class="icon icon-x align-middle"></i>
+        </button>
+    </div>
+    <!-- End Logo -->
+
+    <!-- Sidenav Menu -->
+    <div class="sidebar-inner" data-simplebar>
+        <div id="sidebar-menu" class="sidebar-menu">
+            <ul role="menu" aria-label="Main navigation menu">
+                <li class="menu-title" aria-disabled="true"><span>Main</span></li>
+                <li>
+                    <a href="/admin/dashboard" class="<%= active === 'dashboard' ? 'active' : '' %>">
+                        <i class="icon-layout-panel-left"></i><span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="menu-title" aria-disabled="true"><span>Content</span></li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);" data-sidebar-group="posts">
+                        <i class="icon-file-text"></i><span>Posts</span><span class="menu-arrow"></span>
+                    </a>
+                    <ul>
+                        <li><a href="/admin/posts" class="<%= active === 'posts' ? 'active' : '' %>"><span>All Posts</span></a></li>
+                        <li><a href="/admin/posts/create" class="<%= active === 'add-post' ? 'active' : '' %>"><span>Add Post</span></a></li>
+                        <% if (typeof navCategories !== 'undefined' && navCategories) { %>
+                            <% navCategories.forEach(function(cat) { %>
+                            <li><a href="/admin/posts?category=<%= cat.slug %>"><span><%= cat.name %></span></a></li>
+                            <% }) %>
+                        <% } %>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="/admin/categories" class="<%= active === 'categories' ? 'active' : '' %>">
+                        <i class="icon-folder-tree"></i><span>Categories</span>
+                    </a>
+                </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);" data-sidebar-group="blog">
+                        <i class="icon-newspaper"></i><span>Blog</span><span class="menu-arrow"></span>
+                    </a>
+                    <ul>
+                        <li><a href="/admin/blogs" class="<%= active === 'blogs' ? 'active' : '' %>"><span>All Blog Posts</span></a></li>
+                        <li><a href="/admin/blogs/create"><span>Add Blog Post</span></a></li>
+                        <li><a href="/admin/blog-categories"><span>Blog Categories</span></a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="/admin/courses" class="<%= active === 'courses' ? 'active' : '' %>">
+                        <i class="icon-graduation-cap"></i><span>Courses</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/test-series" class="<%= active === 'test-series' ? 'active' : '' %>">
+                        <i class="icon-clipboard-check"></i><span>Test Series</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/banners" class="<%= active === 'banners' ? 'active' : '' %>">
+                        <i class="icon-image"></i><span>Banners</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/faqs" class="<%= active === 'faqs' ? 'active' : '' %>">
+                        <i class="icon-circle-help"></i><span>FAQs</span>
+                    </a>
+                </li>
+
+                <li class="menu-title" aria-disabled="true"><span>Engagement</span></li>
+                <li>
+                    <a href="/admin/comments" class="<%= active === 'comments' ? 'active' : '' %>">
+                        <i class="icon-message-square"></i><span>Comments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/contact-messages" class="<%= active === 'contact-messages' ? 'active' : '' %>">
+                        <i class="icon-mail"></i><span>Contact Messages</span>
+                    </a>
+                </li>
+
+                <li class="menu-title" aria-disabled="true"><span>Administration</span></li>
+                <li>
+                    <a href="/admin/users" class="<%= active === 'users' ? 'active' : '' %>">
+                        <i class="icon-users"></i><span>Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/roles" class="<%= active === 'roles' ? 'active' : '' %>">
+                        <i class="icon-shield-check"></i><span>Roles &amp; Permissions</span>
+                    </a>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:void(0);" data-sidebar-group="settings">
+                        <i class="icon-settings"></i><span>Settings</span><span class="menu-arrow"></span>
+                    </a>
+                    <ul>
+                        <li><a href="/admin/settings" class="<%= active === 'settings' ? 'active' : '' %>"><span>General Settings</span></a></li>
+                        <li><a href="/admin/profile" class="<%= active === 'profile' ? 'active' : '' %>"><span>Profile</span></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</aside>
+<!-- Sidenav Menu End -->

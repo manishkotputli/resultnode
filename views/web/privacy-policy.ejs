@@ -1,0 +1,88 @@
+<%
+var pageStyles = `
+.page-header { text-align: center; margin: 40px 0 20px; }
+.page-header h1 { font-size: 32px; color: #c00; font-weight: 800; }
+.page-header .subtitle { font-size: 15px; color: #666; }
+.policy-wrapper { max-width: 900px; margin: 0 auto 60px; padding: 0 15px; display: flex; flex-direction: column; gap: 16px; }
+.policy-card { background: #fff; border-radius: 10px; padding: 22px 26px; border: 1px solid #ececec; box-shadow: 0 6px 20px rgba(0,0,0,0.03); }
+.policy-card h2 { color: #1b1b1b; font-size: 19px; margin: 0 0 10px; font-weight: 700; }
+.policy-card h3 { color: #333; font-size: 16px; margin: 14px 0 8px; font-weight: 700; }
+.policy-card p, .policy-card li { color: #444; font-size: 15px; line-height: 1.7; }
+.policy-card ul { margin-left: 18px; margin-bottom: 10px; }
+`;
+%>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<div class="page-header">
+  <h1>Privacy Policy</h1>
+  <p class="subtitle">We value your privacy - Learn how your data is used & protected.</p>
+</div>
+
+<div class="policy-wrapper">
+  <div class="policy-card">
+    <h2>Introduction</h2>
+    <p>At <strong><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></strong>, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains what data we collect, how we use it, and your rights regarding your information.</p>
+    <p>This policy applies to all visitors, users, and anyone who interacts with our website or services.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>Information We Collect</h2>
+    <h3>1. Information You Provide</h3>
+    <ul><li>Name</li><li>Email address</li><li>Phone number (if submitted)</li><li>Messages sent through contact forms</li></ul>
+    <h3>2. Automatically Collected Data</h3>
+    <p>We may collect:</p>
+    <ul><li>IP address</li><li>Browser type & version</li><li>Device information</li><li>Cookies & usage analytics</li><li>Pages visited and time spent</li></ul>
+    <h3>3. Cookies</h3>
+    <p>We use cookies to improve your browsing experience and deliver personalized content. You can disable cookies from your browser settings.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>How We Use Your Information</h2>
+    <p>We use your information for the following purposes:</p>
+    <ul>
+      <li>To provide accurate exam & job information</li>
+      <li>To respond to your questions or support requests</li>
+      <li>To improve website performance and functionality</li>
+      <li>To send updates if you subscribe to alerts</li>
+      <li>To analyze user behavior for better services</li>
+    </ul>
+  </div>
+
+  <div class="policy-card">
+    <h2>Data Protection & Security</h2>
+    <p>We use best security practices to protect your data from unauthorized access, misuse, or disclosure. Although we take all precautions, no online platform is 100% secure.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>Third-Party Services</h2>
+    <p>We may use third-party tools such as:</p>
+    <ul><li>Google Analytics</li><li>Advertisement Networks</li><li>External job/notice links</li></ul>
+    <p>These third parties may collect user data independently according to their own privacy policies.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>External Links</h2>
+    <p>Our website contains links to government sites, job portals, and official resources. We are not responsible for privacy practices on external websites.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>Children's Privacy</h2>
+    <p>We do not knowingly collect personal information from children under 13. If you believe your child has submitted information, please contact us immediately.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>Changes to This Privacy Policy</h2>
+    <p>We may update this policy from time to time. All updates will be posted on this page with the revised date.</p>
+  </div>
+
+  <div class="policy-card">
+    <h2>Contact Us</h2>
+    <p>If you have any questions or concerns, feel free to contact us at:</p>
+    <p>
+      <strong>Email:</strong> <%= (site_setting && site_setting.contact_email) || 'support@example.com' %><br>
+      <strong>Phone:</strong> <%= (site_setting && site_setting.contact_phone) || '+91 9876543210' %>
+    </p>
+  </div>
+</div>
+
+<%- include('../weblayout/layout-bottom') %>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= (site_setting && site_setting.site_title) || 'Website' %> - Under Maintenance</title>
+  <style>
+    body { background:#f8f8f8; text-align:center; padding:60px; font-family:Arial, sans-serif; }
+    .box{ max-width:600px; margin:auto; background:white; padding:40px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+    h1 { color:#c00; }
+    .loader{ width:60px;height:60px;border-radius:50%; border:6px solid #ddd; border-top:6px solid #c00; animation:spin 1s linear infinite; margin:auto; margin-bottom:20px; }
+    @keyframes spin{ 100% { transform:rotate(360deg);} }
+    .footer-text { margin-top:25px; color:#555; font-size:14px; }
+    .time { font-weight:bold; color:#c00; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div class="loader"></div>
+  <h1><%= title || "We'll Be Back Soon" %></h1>
+  <p><%= message || 'The website is under scheduled maintenance.' %><br>Please check back later.</p>
+  <div class="footer-text">
+    <%= (site_setting && site_setting.site_title) || 'Our Website' %><br>
+    <span id="liveTime" class="time"></span>
+  </div>
+</div>
+
+<script>
+function updateISTTime() {
+  var options = { timeZone: "Asia/Kolkata", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" };
+  var formatter = new Intl.DateTimeFormat("en-IN", options);
+  document.getElementById("liveTime").textContent = formatter.format(new Date());
+}
+setInterval(updateISTTime, 1000);
+updateISTTime();
+</script>
+
+</body>
+</html>

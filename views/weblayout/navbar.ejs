@@ -1,0 +1,40 @@
+<div class="navbar">
+  <!-- Mobile Toggle Button (3 Lines) -->
+  <button class="nav-toggle-btn" id="navToggleBtn" aria-label="Toggle Menu">
+    <i class="ti ti-menu-2"></i>
+  </button>
+
+  <ul id="navMenu">
+    <li><a href="/">Home</a></li>
+
+    <% (navCategories || []).forEach(function(cat) { %>
+      <li><a href="/category/<%= cat.slug %>"><%= cat.name %></a></li>
+    <% }) %>
+
+    <li><a href="/blog">blog</a></li>
+
+    <li class="dropdown mega-drop">
+      <a href="#" class="drop-btn">More &#9662;</a>
+      <div class="mega-menu">
+        <div class="mega-col">
+          <a href="/contact">Contact Us</a>
+          <a href="/privacy-policy">Privacy Policy</a>
+          <a href="/disclaimer">Disclaimer</a>
+        </div>
+        <div class="mega-col">
+          <a href="/about">About Us</a>
+          <a href="/terms">Terms & Conditions</a>
+          <a href="/faqs">FAQ</a>
+        </div>
+      </div>
+    </li>
+
+    <li><a href="#">&#128269;</a></li>
+
+    <% if (currentUser) { %>
+      <li><a href="/dashboard"><%= currentUser.name %></a></li>
+    <% } else { %>
+      <li><a href="/login">Login</a></li>
+    <% } %>
+  </ul>
+</div>

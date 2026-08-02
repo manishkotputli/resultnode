@@ -1,0 +1,93 @@
+<%- include('../../weblayout/layout-top', { title: title }) %>
+
+<div class="app-shell">
+<div class="app-container" id="appContainer">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <%- include('../../partials/dashboard-nav', { active: 'income-expense' }) %>
+
+  <main class="dash-content">
+    <header class="top-header">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <button class="mobile-nav-toggle" id="mobileNavToggle"><i class="ti ti-menu-2"></i></button>
+        <div class="page-title">
+          <h1>Income &amp; Expense</h1>
+          <p>Track your personal cash flow</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat-box c-green">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-trending-up"></i></div></div>
+        <div><div class="val">&#8377;<%= totals.income %></div><div class="label">Total Income</div></div>
+      </div>
+      <div class="stat-box c-red">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-trending-down"></i></div></div>
+        <div><div class="val">&#8377;<%= totals.expense %></div><div class="label">Total Expense</div></div>
+      </div>
+      <div class="stat-box c-indigo">
+        <div class="stat-header"><div class="stat-icon"><i class="ti ti-scale"></i></div></div>
+        <div><div class="val">&#8377;<%= balance %></div><div class="label">Balance</div></div>
+      </div>
+    </div>
+
+    <div class="dash-subcard">
+      <div class="section-title"><h2>Add Entry</h2></div>
+      <% if (categories && categories.length) { %>
+        <form class="mini-form" method="POST" action="/dashboard/income-expense">
+          <div class="input-group">
+            <select name="type" required>
+              <option value="1">Income</option>
+              <option value="2">Expense</option>
+            </select>
+            <select name="category_id" required>
+              <% categories.forEach(function(c) { %>
+                <option value="<%= c.id %>"><%= c.name %> (<%= c.type === 1 ? 'Income' : 'Expense' %>)</option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="input-group">
+            <input type="text" name="title" placeholder="Title (e.g. Salary, Groceries)" required>
+            <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+            <input type="date" name="transaction_date" required>
+          </div>
+          <div class="input-group">
+            <% if (banks && banks.length) { %>
+              <select name="bank_id">
+                <option value="">No bank / cash</option>
+                <% banks.forEach(function(b) { %><option value="<%= b.id %>"><%= b.name %></option><% }) %>
+              </select>
+            <% } %>
+            <input type="text" name="note" placeholder="Note (optional)">
+            <button type="submit" class="btn-submit"><i class="ti ti-plus"></i> Add Entry</button>
+          </div>
+        </form>
+      <% } else { %>
+        <div class="empty-state">Add an <a href="/dashboard/finance-settings">income/expense category</a> first before logging entries.</div>
+      <% } %>
+    </div>
+
+    <div class="dash-subcard">
+      <div class="section-title"><h2>Entries</h2></div>
+      <% if (entries && entries.length) { %>
+        <table class="data-table">
+          <tr><th>Date</th><th>Title</th><th>Category</th><th>Type</th><th>Amount</th></tr>
+          <% entries.forEach(function(e) { %>
+            <tr>
+              <td><%= formatDate(e.transaction_date, 'DD MMM YYYY') %></td>
+              <td><%= e.title %></td>
+              <td><%= e.IncomeExpenseCategory ? e.IncomeExpenseCategory.name : '-' %></td>
+              <td><span class="pill <%= e.type === 1 ? 'income' : 'expense' %>"><%= e.type === 1 ? 'Income' : 'Expense' %></span></td>
+              <td>&#8377;<%= e.amount %></td>
+            </tr>
+          <% }) %>
+        </table>
+      <% } else { %>
+        <div class="empty-state">No entries yet.</div>
+      <% } %>
+    </div>
+  </main>
+</div>
+</div>
+
+<%- include('../../weblayout/layout-bottom') %>

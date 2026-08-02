@@ -1,0 +1,9 @@
+<!-- HEADER -->
+<div class="header">
+  <% if (site_setting && site_setting.logo) { %>
+    <img src="/uploads/logo/<%= site_setting.logo %>" alt="Logo" style="height:70px; margin-bottom:10px;">
+  <% } %>
+
+  <h1><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h1>
+  <p><%= (site_setting && site_setting.tagline) || "India's No.1 Sarkari Result Website" %></p>
+</div>
