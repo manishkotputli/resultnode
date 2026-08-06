@@ -11,7 +11,7 @@ async function index(req, res, next) {
     res.render('admin/income-expense/index', {
       title: 'Income & Expense',
       active: 'income-expense',
-      entries,
+      entries, 
       total,
       page,
       perPage,
