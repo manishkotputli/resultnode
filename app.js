@@ -135,19 +135,27 @@ async function startServer() {
 
         if (process.env.ENV === "production") {
 
+            const NODE_BIN = process.execPath;
+
+            console.log("========================================");
+            console.log("Node Binary :", NODE_BIN);
+            console.log("========================================");
+
             console.log("🚀 Running Database Migrations...");
 
             try {
 
                 const output = execSync(
-                    "node node_modules/sequelize-cli/lib/sequelize db:migrate",
+                    `"${NODE_BIN}" node_modules/sequelize-cli/lib/sequelize db:migrate`,
                     {
+                        cwd: __dirname,
                         env: {
                             ...process.env,
                             NODE_ENV: "production",
                             ENV: "production",
                         },
                         encoding: "utf8",
+                        stdio: "pipe",
                     }
                 );
 
@@ -158,10 +166,10 @@ async function startServer() {
                 console.log("========================================");
                 console.log("❌ MIGRATION FAILED");
                 console.log("stdout:");
-                console.log(e.stdout?.toString());
+                console.log(e.stdout?.toString() || "");
 
                 console.log("stderr:");
-                console.log(e.stderr?.toString());
+                console.log(e.stderr?.toString() || "");
 
                 console.log("message:");
                 console.log(e.message);
@@ -178,14 +186,16 @@ async function startServer() {
                 try {
 
                     const output = execSync(
-                        "node node_modules/sequelize-cli/lib/sequelize db:seed:all",
+                        `"${NODE_BIN}" node_modules/sequelize-cli/lib/sequelize db:seed:all`,
                         {
+                            cwd: __dirname,
                             env: {
                                 ...process.env,
                                 NODE_ENV: "production",
                                 ENV: "production",
                             },
                             encoding: "utf8",
+                            stdio: "pipe",
                         }
                     );
 
@@ -195,9 +205,16 @@ async function startServer() {
 
                     console.log("========================================");
                     console.log("❌ SEED FAILED");
-                    console.log(e.stdout?.toString());
-                    console.log(e.stderr?.toString());
+
+                    console.log("stdout:");
+                    console.log(e.stdout?.toString() || "");
+
+                    console.log("stderr:");
+                    console.log(e.stderr?.toString() || "");
+
+                    console.log("message:");
                     console.log(e.message);
+
                     console.log("========================================");
 
                     throw e;
@@ -208,7 +225,7 @@ async function startServer() {
         }
 
         app.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
+            console.log(`🚀 Server running on port ${PORT}`);
         });
 
     } catch (err) {
@@ -219,6 +236,7 @@ async function startServer() {
         process.exit(1);
     }
 }
+
 
 startServer();
 
