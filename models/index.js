@@ -12,7 +12,7 @@ const appEnv = (process.env.ENV || 'local').trim().toLowerCase();
 const sequelizeEnv =
   appEnv === 'production'
     ? 'production'
-    : 'development';
+    : 'production';
 
 const config = require(path.join(__dirname, '..', 'config', 'config.js'))[sequelizeEnv];
 
