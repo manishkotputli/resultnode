@@ -19,6 +19,12 @@ module.exports = async function globals(req, res, next) {
     res.locals.messages = { success: req.flash('success'), error: req.flash('error') };
     next();
   } catch (err) {
+   console.error("========== MYSQL ERROR ==========");
+    console.error(err);
+    console.error(err.message);
+    console.error(err.original);
+    console.error(err.parent);
+    console.error("================================");
     next(err);
   }
 };
