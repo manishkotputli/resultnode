@@ -4,6 +4,7 @@ const router = express.Router();
 const incomeExpenseController = require('../../controllers/admin/incomeExpense.controller');
 const { isAdminAuthenticated } = require('../../middlewares/adminAuth');
 
+
 router.use(isAdminAuthenticated);
 
 router.get('/income-expense', incomeExpenseController.index);
