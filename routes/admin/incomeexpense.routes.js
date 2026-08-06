@@ -1,7 +1,7 @@
 'use strict';
 const express = require('express');
 const router = express.Router();
-const incomeExpenseController = require('../../controllers/admin/incomeExpense.controller');
+const incomeExpenseController = require('../../controllers/admin/incomeexpense.controller');
 const { isAdminAuthenticated } = require('../../middlewares/adminAuth');
 
 
