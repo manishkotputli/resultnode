@@ -1,5 +1,5 @@
 'use strict';
-const repo = require('../../repositories/admin/incomeExpense.repository');
+const repo = require('../../repositories/admin/incomeexpense.repository');
 
 const PER_PAGE = 15;
 const BANKS_PER_PAGE = 8;
