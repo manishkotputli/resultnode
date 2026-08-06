@@ -1,8 +1,8 @@
 'use strict';
 require('dotenv').config();
-console.log("APP_ENV =", process.env.APP_ENV);
-console.log("LOCAL_DB_USER =", process.env.LOCAL_DB_USER);
-console.log("PROD_DB_USER =", process.env.PROD_DB_USER);
+console.log("ENV =", process.env.ENV);
+console.log("LOCAL_DB_USER =", process.env.LOCAL_DB_USERNAME);
+console.log("PROD_DB_USER =", process.env.PROD_DB_USERNAME);
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
@@ -22,9 +22,9 @@ const adminRoutes = require('./routes/admin/index');
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
-console.log(process.env.APP_ENV);
-console.log(process.env.LOCAL_DB_USER);
-console.log(process.env.PROD_DB_USER);
+console.log(process.env.ENV);
+console.log(process.env.LOCAL_DB_USERNAME);
+console.log(process.env.PROD_DB_USERNAME);
 // ---- view engine ----
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
