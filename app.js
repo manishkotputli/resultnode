@@ -246,9 +246,13 @@ app.use(notFoundHandler);
 app.use(errorHandler);
         }
 
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-        });
+      if (!global.__SERVER_STARTED__) {
+    global.__SERVER_STARTED__ = true;
+
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+    });
+}
 
     } catch (err) {
 
