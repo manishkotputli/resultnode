@@ -1,0 +1,144 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <div>
+        <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold mb-1">Purchases</h1>
+        <p class="text-sm text-gray-500 mb-0">Order history across courses and test series.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-12 gap-4 lg:gap-6 mb-4 lg:mb-6">
+    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 flex flex-col justify-between gap-3 h-full">
+            <span class="size-14 shrink-0 flex items-center justify-center rounded-full bg-success text-white text-2xl"><i class="icon-indian-rupee"></i></span>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                <h3 class="text-xl font-bold text-gray-900 leading-none mb-0">₹<%= Number(stats.totalRevenue).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 flex flex-col justify-between gap-3 h-full">
+            <span class="size-14 shrink-0 flex items-center justify-center rounded-full bg-primary text-white text-2xl"><i class="icon-receipt"></i></span>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
+                <h3 class="text-xl font-bold text-gray-900 leading-none mb-0"><%= stats.totalOrders %></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 flex flex-col justify-between gap-3 h-full">
+            <span class="size-14 shrink-0 flex items-center justify-center rounded-full bg-secondary text-white text-2xl"><i class="icon-check-circle"></i></span>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Completed</p>
+                <h3 class="text-xl font-bold text-gray-900 leading-none mb-0"><%= stats.completedOrders %></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 flex flex-col justify-between gap-3 h-full">
+            <span class="size-14 shrink-0 flex items-center justify-center rounded-full bg-danger text-white text-2xl"><i class="icon-banknote-x"></i></span>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Refunded</p>
+                <h3 class="text-xl font-bold text-gray-900 leading-none mb-0"><%= stats.refundedOrders %></h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <form method="GET" action="/admin/purchases" class="flex items-center justify-between flex-wrap gap-3 p-4 border-b border-border-color">
+            <div class="relative w-full sm:w-64">
+                <input type="text" name="search" value="<%= filters.search %>" placeholder="Search by order ID..." class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-full py-2 pl-4 pr-10! focus:ring-0 focus:border-border-color">
+                <button type="submit" class="absolute top-1/2 -translate-y-1/2 right-3.5 text-base text-gray-500 leading-none cursor-pointer bg-transparent border-0"><i class="icon-search"></i></button>
+            </div>
+            <div class="flex items-center flex-wrap gap-2 md:gap-3">
+                <select name="type" onchange="this.form.submit()" class="form-select bg-white border border-border-color text-sm font-medium text-gray-900 rounded-full py-2 px-3 focus:ring-0">
+                    <option value="">All Items</option>
+                    <option value="course" <%= filters.type === 'course' ? 'selected' : '' %>>Courses</option>
+                    <option value="test_series" <%= filters.type === 'test_series' ? 'selected' : '' %>>Test Series</option>
+                </select>
+                <select name="status" onchange="this.form.submit()" class="form-select bg-white border border-border-color text-sm font-medium text-gray-900 rounded-full py-2 px-3 focus:ring-0">
+                    <option value="">All Status</option>
+                    <option value="pending" <%= filters.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                    <option value="failed" <%= filters.status === 'failed' ? 'selected' : '' %>>Failed</option>
+                    <option value="refunded" <%= filters.status === 'refunded' ? 'selected' : '' %>>Refunded</option>
+                </select>
+                <select name="user" onchange="this.form.submit()" class="form-select bg-white border border-border-color text-sm font-medium text-gray-900 rounded-full py-2 px-3 focus:ring-0">
+                    <option value="">All Users</option>
+                    <% users.forEach(function(u) { %>
+                        <option value="<%= u.id %>" <%= String(filters.user) === String(u.id) ? 'selected' : '' %>><%= u.name %></option>
+                    <% }) %>
+                </select>
+                <% if (filters.search || filters.type || filters.status || filters.user) { %>
+                <a href="/admin/purchases" class="text-sm text-gray-600 hover:text-primary font-medium">Clear</a>
+                <% } %>
+            </div>
+        </form>
+
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[920px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Order ID</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Item</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Amount</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (purchases && purchases.length) { %>
+                        <% purchases.forEach(function(p) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-semibold text-gray-900"><%= p.order_id || ('#' + p.id) %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <p class="text-sm text-gray-900 mb-0"><%= p.itemTitle %></p>
+                                <span class="text-xs text-gray-500"><%= p.purchasable_type === 'course' ? 'Course' : 'Test Series' %></span>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <p class="text-sm font-medium text-gray-900 mb-0"><%= p.User ? p.User.name : '—' %></p>
+                                <p class="text-xs text-gray-500 mb-0"><%= p.User ? p.User.email : '' %></p>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-bold text-gray-900">₹<%= Number(p.amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <form method="POST" action="/admin/purchases/<%= p.id %>/status" class="inline">
+                                    <select name="payment_status" onchange="this.form.submit()" class="text-xs font-bold rounded-lg px-2 py-1 border cursor-pointer <%= p.payment_status === 'completed' ? 'text-success border-success' : p.payment_status === 'refunded' ? 'text-gray-500 border-gray-300' : p.payment_status === 'failed' ? 'text-danger border-danger' : 'text-warning border-warning' %>">
+                                        <option value="pending" <%= p.payment_status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="completed" <%= p.payment_status === 'completed' ? 'selected' : '' %>>Completed</option>
+                                        <option value="failed" <%= p.payment_status === 'failed' ? 'selected' : '' %>>Failed</option>
+                                        <option value="refunded" <%= p.payment_status === 'refunded' ? 'selected' : '' %>>Refunded</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= formatDate(p.created_at) %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <a href="/admin/purchases/<%= p.id %>/receipt" target="_blank" class="size-9 rounded-full hover:bg-gray-100 text-gray-900 inline-flex items-center justify-center transition-colors" aria-label="Receipt"><i class="icon-receipt text-sm"></i></a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500 bg-white">No purchases found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (pagination.totalPages > 1) { %>
+        <div class="flex items-center justify-between flex-wrap gap-3 p-4 border-t border-border-color">
+            <p class="text-sm text-gray-600 mb-0">Page <%= pagination.page %> of <%= pagination.totalPages %> &middot; <%= total %> total</p>
+            <div class="flex items-center gap-1">
+                <% if (pagination.hasPrev) { %><a href="/admin/purchases?page=<%= pagination.page - 1 %>&search=<%= filters.search %>&type=<%= filters.type %>&status=<%= filters.status %>&user=<%= filters.user %>" class="size-9 flex items-center justify-center rounded-full border border-border-color text-sm hover:bg-light"><i class="icon-chevron-left"></i></a><% } %>
+                <% pagination.pages.forEach(function(p) { %><a href="/admin/purchases?page=<%= p %>&search=<%= filters.search %>&type=<%= filters.type %>&status=<%= filters.status %>&user=<%= filters.user %>" class="size-9 flex items-center justify-center rounded-full border text-sm <%= p === pagination.page ? 'bg-primary text-white border-primary' : 'border-border-color hover:bg-light' %>"><%= p %></a><% }) %>
+                <% if (pagination.hasNext) { %><a href="/admin/purchases?page=<%= pagination.page + 1 %>&search=<%= filters.search %>&type=<%= filters.type %>&status=<%= filters.status %>&user=<%= filters.user %>" class="size-9 flex items-center justify-center rounded-full border border-border-color text-sm hover:bg-light"><i class="icon-chevron-right"></i></a><% } %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

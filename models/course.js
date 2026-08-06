@@ -2,7 +2,9 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
-    static associate() {}
+    static associate(models) {
+      Course.hasMany(models.CourseLesson, { foreignKey: 'course_id' });
+    }
   }
   Course.init(
     {
@@ -13,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
       discount_price: DataTypes.DECIMAL(10, 2),
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
+      duration_hours: DataTypes.DECIMAL(6, 1),
     },
     { sequelize, modelName: 'Course', tableName: 'courses' }
   );

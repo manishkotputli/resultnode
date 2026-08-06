@@ -12,9 +12,20 @@ router.use((req, res, next) => {
 
 router.use(require('./auth.routes'));
 router.use(require('./dashboard.routes'));
-
-// NOTE: controlroute.js and postroutes.js are still empty placeholders in the
-// original project (Posts / Categories / Roles / Settings admin CRUD).
-// We'll fill these in and wire them here in the next steps.
-
+router.use(require('./post.routes'));
+router.use(require('./category.routes'));
+router.use(require('./user.routes'));
+router.use(require('./role.routes'));
+router.use(require('./blogCategory.routes'));
+router.use(require('./blog.routes'));
+router.use(require('./course.routes'));
+router.use(require('./testSeries.routes'));
+router.use(require('./banner.routes'));
+router.use(require('./faq.routes'));
+router.use(require('./comment.routes'));
+router.use(require('./contactMessage.routes'));
+router.use(require('./settings.routes'));
+router.use(require('./incomeexpense.routes'));
+router.use(require('./incomeExpense.routes'));
+router.use(require('./purchase.routes'));
 module.exports = router;

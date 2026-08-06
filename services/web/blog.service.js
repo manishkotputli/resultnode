@@ -1,26 +1,33 @@
 'use strict';
 const blogRepo = require('../../repositories/web/blog.repository');
 
-async function getBlogListing() {
-  const blogs = await blogRepo.getPublishedBlogs(14);
-  return {
-    featured: blogs[0],
-    grid1: blogs.slice(1, 5),
-    grid2: blogs.slice(5, 8),
-    grid3: blogs.slice(8, 11),
-  };
+async function getBlogListing(query = {}) {
+  const page = parseInt(query.page, 10) || 1;
+  const sort = query.sort === 'popular' ? 'popular' : 'latest';
+  const search = query.q ? query.q.trim() : null;
+  const categorySlug = query.category || null;
+
+  const [{ blogs, totalPages, totalCount, currentPage }, categories, popularBlogs] = await Promise.all([
+    blogRepo.getPublishedBlogs({ page, perPage: 4, categorySlug, search, sort }),
+    blogRepo.getCategoriesWithCount(),
+    blogRepo.getPopularBlogs(4),
+  ]);
+
+  return { blogs, totalPages, totalCount, currentPage, categories, popularBlogs, activeCategory: categorySlug, sort, search };
 }
 
 async function getBlogDetail(slug, userId) {
   const blog = await blogRepo.findBlogBySlug(slug);
   if (!blog) return null;
   await blogRepo.incrementBlogViews(blog.id);
-  const [relatedBlogs, comments, liked] = await Promise.all([
-    blogRepo.getRelatedBlogs(blog.category_id, blog.id, 6),
+  const [relatedBlogs, comments, liked, categories, popularBlogs] = await Promise.all([
+    blogRepo.getRelatedBlogs(blog.category_id, blog.id, 3),
     blogRepo.getApprovedComments(blog.id),
     blogRepo.hasLiked(blog.id, userId),
+    blogRepo.getCategoriesWithCount(),
+    blogRepo.getPopularBlogs(4),
   ]);
-  return { blog, relatedBlogs, comments, liked };
+  return { blog, relatedBlogs, comments, liked, categories, popularBlogs };
 }
 
 async function postComment(slug, userId, content) {

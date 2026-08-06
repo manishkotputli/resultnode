@@ -1,0 +1,121 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-2">
+    <a href="/admin/test-series/<%= series.id %>/tests" class="text-sm font-medium text-gray-600 hover:text-primary flex items-center gap-1"><i class="icon-arrow-left"></i> Back to Tests</a>
+</div>
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <div>
+        <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold mb-1">Results - <%= series.title %></h1>
+        <p class="text-sm text-gray-500 mb-0"><%= total %> attempt<%= total === 1 ? '' : 's' %> across all tests in this series.</p>
+    </div>
+</div>
+
+<form method="GET" action="/admin/test-series/<%= series.id %>/results" class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4 mb-6 flex items-center flex-wrap gap-3">
+    <select name="test" onchange="this.form.submit()" class="form-select bg-white border border-border-color text-sm font-medium text-gray-900 rounded-full py-2 px-3 focus:ring-0">
+        <option value="">All Tests</option>
+        <% tests.forEach(function(t) { %>
+            <option value="<%= t.id %>" <%= String(filters.test) === String(t.id) ? 'selected' : '' %>>Test <%= t.test_number %>: <%= t.title %></option>
+        <% }) %>
+    </select>
+    <% if (filters.test || filters.user) { %>
+        <a href="/admin/test-series/<%= series.id %>/results" class="text-sm text-gray-600 hover:text-primary font-medium">Clear filters</a>
+    <% } %>
+</form>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[820px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">User</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Test</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Correct</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Wrong</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Unattempted</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Score</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Submitted</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (attempts && attempts.length) { %>
+                        <% attempts.forEach(function(a) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <p class="text-sm font-semibold text-gray-900 mb-0"><%= a.User ? a.User.name : '—' %></p>
+                                <p class="text-xs text-gray-500 mb-0"><%= a.User ? a.User.email : '' %></p>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600">Test <%= a.Test.test_number %>: <%= a.Test.title %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-semibold text-success"><%= a.correct_count %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-semibold text-danger"><%= a.wrong_count %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= a.unattempted_count %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-bold text-gray-900"><%= a.score %> / <%= a.total_questions %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= a.submitted_at ? formatDate(a.submitted_at) : '—' %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <button type="button"
+                                    class="deleteAttemptBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger inline-flex items-center justify-center transition-colors"
+                                    aria-label="Delete"
+                                    data-hs-overlay="#deleteAttemptModal"
+                                    data-id="<%= a.id %>">
+                                    <i class="icon-trash-2 text-sm"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="8" class="px-6 py-10 text-center text-gray-500 bg-white">No attempts yet for this series.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (pagination.totalPages > 1) { %>
+        <div class="flex items-center justify-between flex-wrap gap-3 p-4 border-t border-border-color">
+            <p class="text-sm text-gray-600 mb-0">Page <%= pagination.page %> of <%= pagination.totalPages %> &middot; <%= total %> total</p>
+            <div class="flex items-center gap-1">
+                <% if (pagination.hasPrev) { %><a href="/admin/test-series/<%= series.id %>/results?page=<%= pagination.page - 1 %>&test=<%= filters.test %>" class="size-9 flex items-center justify-center rounded-full border border-border-color text-sm hover:bg-light"><i class="icon-chevron-left"></i></a><% } %>
+                <% pagination.pages.forEach(function(p) { %><a href="/admin/test-series/<%= series.id %>/results?page=<%= p %>&test=<%= filters.test %>" class="size-9 flex items-center justify-center rounded-full border text-sm <%= p === pagination.page ? 'bg-primary text-white border-primary' : 'border-border-color hover:bg-light' %>"><%= p %></a><% }) %>
+                <% if (pagination.hasNext) { %><a href="/admin/test-series/<%= series.id %>/results?page=<%= pagination.page + 1 %>&test=<%= filters.test %>" class="size-9 flex items-center justify-center rounded-full border border-border-color text-sm hover:bg-light"><i class="icon-chevron-right"></i></a><% } %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Delete Attempt Modal -->
+<div id="deleteAttemptModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="deleteAttemptForm" action="">
+                    <div class="p-4 sm:p-7">
+                        <div class="text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="flex items-center justify-center size-14 rounded-full bg-danger/10"><i class="icon-trash-2 text-danger text-2xl!"></i></div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Remove Attempt</h3>
+                            <p class="text-sm text-gray-600 mb-0">This clears the result, letting the user retake the test. This cannot be undone.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#deleteAttemptModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-danger rounded-lg hover:bg-danger-hover cursor-pointer">Remove</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+var pageScripts = `
+document.querySelectorAll('.deleteAttemptBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('deleteAttemptForm').action = '/admin/test-series/${series.id}/results/' + btn.dataset.id + '/delete';
+  });
+});
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

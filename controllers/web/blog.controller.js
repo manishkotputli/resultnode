@@ -3,7 +3,7 @@ const blogService = require('../../services/web/blog.service');
 
 async function list(req, res, next) {
   try {
-    const data = await blogService.getBlogListing();
+    const data = await blogService.getBlogListing(req.query);
     res.render('web/blog-list', { title: 'Blog', ...data });
   } catch (err) {
     next(err);

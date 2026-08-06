@@ -1,0 +1,186 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">Settings</h1>
+</div>
+
+<form method="POST" action="/admin/settings" enctype="multipart/form-data">
+<div class="grid grid-cols-12 gap-4 lg:gap-6">
+
+    <!-- Tabs -->
+    <div class="col-span-12 lg:col-span-3" style="width: 632px;">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-2 lg:sticky lg:top-4">
+            <nav class="flex lg:flex-col gap-1 overflow-x-auto" id="settingsTabs">
+                <button type="button" data-tab="general" class="settingsTabBtn text-left px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap w-full">General</button>
+                <button type="button" data-tab="contact" class="settingsTabBtn text-left px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap w-full">Contact &amp; Social</button>
+                <button type="button" data-tab="seo" class="settingsTabBtn text-left px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap w-full">SEO &amp; Scripts</button>
+                <button type="button" data-tab="smtp" class="settingsTabBtn text-left px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap w-full">SMTP</button>
+                <button type="button" data-tab="maintenance" class="settingsTabBtn text-left px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap w-full">Maintenance Mode</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="col-span-12 lg:col-span-9 space-y-4 lg:space-y-6">
+
+        <!-- General -->
+        <div class="settingsTabPanel" data-tab-panel="general">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">General</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Site Title</label>
+                        <input type="text" name="site_title" value="<%= setting.site_title || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Tagline</label>
+                        <input type="text" name="tagline" value="<%= setting.tagline || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Home Page Note</label>
+                    <textarea name="home_note" rows="3" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.home_note || '' %></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Footer Text</label>
+                        <textarea name="footer_text" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.footer_text || '' %></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Footer Copyright</label>
+                        <input type="text" name="footer_copyright" value="<%= setting.footer_copyright || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mt-4 lg:mt-6">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">Branding</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Logo</label>
+                        <% if (setting.logo) { %><img src="<%= setting.logo %>" class="h-12 mb-2 object-contain" alt=""><% } %>
+                        <input type="file" name="logo" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Favicon</label>
+                        <% if (setting.favicon) { %><img src="<%= setting.favicon %>" class="h-12 mb-2 object-contain" alt=""><% } %>
+                        <input type="file" name="favicon" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Footer Logo</label>
+                        <% if (setting.footer_logo) { %><img src="<%= setting.footer_logo %>" class="h-12 mb-2 object-contain" alt=""><% } %>
+                        <input type="file" name="footer_logo" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact & Social -->
+        <div class="settingsTabPanel hidden" data-tab-panel="contact">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">Contact Info</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Contact Email</label><input type="email" name="contact_email" value="<%= setting.contact_email || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Contact Phone</label><input type="text" name="contact_phone" value="<%= setting.contact_phone || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">WhatsApp Number</label><input type="text" name="whatsapp_number" value="<%= setting.whatsapp_number || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Contact Hours</label><input type="text" name="contact_hours" value="<%= setting.contact_hours || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                </div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Contact Address</label><textarea name="contact_address" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.contact_address || '' %></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Google Map Embed</label><textarea name="google_map_embed" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.google_map_embed || '' %></textarea></div>
+            </div>
+
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mt-4 lg:mt-6 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">Social Links</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Facebook URL</label><input type="url" name="facebook_url" value="<%= setting.facebook_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Twitter / X URL</label><input type="url" name="twitter_url" value="<%= setting.twitter_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Instagram URL</label><input type="url" name="instagram_url" value="<%= setting.instagram_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">YouTube URL</label><input type="url" name="youtube_url" value="<%= setting.youtube_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">LinkedIn URL</label><input type="url" name="linkedin_url" value="<%= setting.linkedin_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Telegram URL</label><input type="url" name="telegram_url" value="<%= setting.telegram_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Android App URL</label><input type="url" name="android_app_url" value="<%= setting.android_app_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">iOS App URL</label><input type="url" name="ios_app_url" value="<%= setting.ios_app_url || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO & Scripts -->
+        <div class="settingsTabPanel hidden" data-tab-panel="seo">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">SEO</h2>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Meta Title</label><input type="text" name="meta_title" value="<%= setting.meta_title || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Meta Description</label><textarea name="meta_description" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.meta_description || '' %></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Meta Keywords</label><input type="text" name="meta_keywords" value="<%= setting.meta_keywords || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+            </div>
+
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mt-4 lg:mt-6 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">Analytics &amp; Ads</h2>
+                <p class="text-xs text-gray-400 -mt-2 mb-0">Paste tracking IDs / snippets as provided by each service.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Google Analytics</label><textarea name="google_analytics" rows="2" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.google_analytics || '' %></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Google Tag Manager</label><textarea name="google_tag_manager" rows="2" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.google_tag_manager || '' %></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">Facebook Pixel</label><textarea name="facebook_pixel" rows="2" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.facebook_pixel || '' %></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">AdSense (Header)</label><textarea name="adsense_header" rows="2" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.adsense_header || '' %></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">AdSense (Footer)</label><textarea name="adsense_footer" rows="2" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.adsense_footer || '' %></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">AdSense (Sidebar)</label><textarea name="adsense_sidebar" rows="2" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.adsense_sidebar || '' %></textarea></div>
+                </div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Custom Header Script</label><textarea name="header_script" rows="3" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.header_script || '' %></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Custom Footer Script</label><textarea name="footer_script" rows="3" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.footer_script || '' %></textarea></div>
+            </div>
+        </div>
+
+        <!-- SMTP -->
+        <div class="settingsTabPanel hidden" data-tab-panel="smtp">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">SMTP (Outgoing Email)</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">SMTP Host</label><input type="text" name="smtp_host" value="<%= setting.smtp_host || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">SMTP Port</label><input type="text" name="smtp_port" value="<%= setting.smtp_port || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">SMTP Username</label><input type="text" name="smtp_username" value="<%= setting.smtp_username || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                    <div><label class="block text-sm font-medium text-gray-900 mb-2">SMTP Password</label><input type="password" name="smtp_password" value="<%= setting.smtp_password || '' %>" placeholder="••••••••" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance -->
+        <div class="settingsTabPanel hidden" data-tab-panel="maintenance">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-2">Maintenance Mode</h2>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-900">Enable Maintenance Mode <span class="text-gray-400 font-normal">(public site shows a maintenance page)</span></label>
+                    <input type="checkbox" name="maintenance_mode" <%= setting.maintenance_mode ? 'checked' : '' %> class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                </div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Maintenance Title</label><input type="text" name="maintenance_title" value="<%= setting.maintenance_title || '' %>" placeholder="We'll be back soon" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                <div><label class="block text-sm font-medium text-gray-900 mb-2">Maintenance Message</label><textarea name="maintenance_message" rows="3" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= setting.maintenance_message || '' %></textarea></div>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="py-2.5 px-6 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">Save Settings</button>
+        </div>
+    </div>
+</div>
+</form>
+<%
+var pageScripts = `
+var initialTab = '${tab}';
+function activateTab(name) {
+  document.querySelectorAll('.settingsTabBtn').forEach(function (b) {
+    b.classList.toggle('bg-primary', b.dataset.tab === name);
+    b.classList.toggle('text-white', b.dataset.tab === name);
+    b.classList.toggle('text-gray-700', b.dataset.tab !== name);
+  });
+  document.querySelectorAll('.settingsTabPanel').forEach(function (p) {
+    p.classList.toggle('hidden', p.dataset.tabPanel !== name);
+  });
+}
+document.querySelectorAll('.settingsTabBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () { activateTab(btn.dataset.tab); });
+});
+activateTab(initialTab || 'general');
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom', { pageScripts }) %>

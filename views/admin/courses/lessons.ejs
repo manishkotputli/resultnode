@@ -1,0 +1,240 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-2">
+    <a href="/admin/courses" class="text-sm font-medium text-gray-600 hover:text-primary flex items-center gap-1"><i class="icon-arrow-left"></i> Back to Courses</a>
+</div>
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <div>
+        <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold mb-1"><%= course.title %></h1>
+        <p class="text-sm text-gray-500 mb-0">Manage the lessons inside this course.</p>
+    </div>
+    <button data-hs-overlay="#addLessonModal" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition hover:text-white">
+        <span class="flex"><i class="icon-plus"></i></span> Add Lesson
+    </button>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[760px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">#</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Lesson</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Video</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Duration</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Preview</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (lessons && lessons.length) { %>
+                        <% lessons.forEach(function(l) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-semibold text-gray-900">#<%= l.lesson_number %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <p class="text-sm font-semibold text-gray-900 mb-0"><%= l.title %></p>
+                                <% if (l.notes) { %><p class="text-xs text-gray-500 mb-0 line-clamp-1"><%= l.notes %></p><% } %>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <% if (l.video_url) { %>
+                                    <a href="<%= l.video_url %>" target="_blank" rel="noopener" class="text-sm text-primary font-medium hover:underline inline-flex items-center gap-1"><i class="icon-play-circle"></i> Watch</a>
+                                <% } else { %>
+                                    <span class="text-sm text-gray-400">—</span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= l.duration_minutes ? l.duration_minutes + ' min' : '—' %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <% if (l.is_free_preview) { %><span class="inline-flex items-center text-xs font-bold rounded-lg px-2.5 py-1 border text-primary border-primary">Free</span><% } else { %><span class="text-sm text-gray-400">—</span><% } %>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button type="button"
+                                        class="editLessonBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors"
+                                        aria-label="Edit"
+                                        data-hs-overlay="#editLessonModal"
+                                        data-id="<%= l.id %>"
+                                        data-number="<%= l.lesson_number %>"
+                                        data-title="<%= l.title %>"
+                                        data-video="<%= l.video_url || '' %>"
+                                        data-notes="<%= l.notes || '' %>"
+                                        data-duration="<%= l.duration_minutes || '' %>"
+                                        data-preview="<%= l.is_free_preview ? '1' : '0' %>">
+                                        <i class="icon-pencil-line text-sm"></i>
+                                    </button>
+                                    <button type="button"
+                                        class="deleteLessonBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger flex items-center justify-center transition-colors"
+                                        aria-label="Delete"
+                                        data-hs-overlay="#deleteLessonModal"
+                                        data-id="<%= l.id %>"
+                                        data-title="<%= l.title %>">
+                                        <i class="icon-trash-2 text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="6" class="px-6 py-10 text-center text-gray-500 bg-white">No lessons yet. Add the first one to get started.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (pagination.totalPages > 1) { %>
+        <div class="flex items-center justify-between flex-wrap gap-3 p-4 border-t border-border-color">
+            <p class="text-sm text-gray-600 mb-0">Page <%= pagination.page %> of <%= pagination.totalPages %> &middot; <%= total %> total</p>
+            <div class="flex items-center gap-1">
+                <% if (pagination.hasPrev) { %><a href="/admin/courses/<%= course.id %>/lessons?page=<%= pagination.page - 1 %>" class="size-9 flex items-center justify-center rounded-full border border-border-color text-sm hover:bg-light"><i class="icon-chevron-left"></i></a><% } %>
+                <% pagination.pages.forEach(function(p) { %><a href="/admin/courses/<%= course.id %>/lessons?page=<%= p %>" class="size-9 flex items-center justify-center rounded-full border text-sm <%= p === pagination.page ? 'bg-primary text-white border-primary' : 'border-border-color hover:bg-light' %>"><%= p %></a><% }) %>
+                <% if (pagination.hasNext) { %><a href="/admin/courses/<%= course.id %>/lessons?page=<%= pagination.page + 1 %>" class="size-9 flex items-center justify-center rounded-full border border-border-color text-sm hover:bg-light"><i class="icon-chevron-right"></i></a><% } %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Add Lesson Modal -->
+<div id="addLessonModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" action="/admin/courses/<%= course.id %>/lessons">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Add Lesson</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#addLessonModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Lesson Number <span class="text-danger">*</span></label>
+                                <input type="number" min="1" name="lesson_number" required value="<%= nextLessonNumber %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Duration (min)</label>
+                                <input type="number" min="1" name="duration_minutes" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Title <span class="text-danger">*</span></label>
+                            <input type="text" name="title" required placeholder="e.g. Introduction to the Syllabus" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Video URL</label>
+                            <input type="text" name="video_url" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Notes</label>
+                            <textarea name="notes" rows="3" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-gray-900">Free Preview</label>
+                            <input type="checkbox" name="is_free_preview" class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#addLessonModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Add Lesson</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Lesson Modal -->
+<div id="editLessonModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="editLessonForm" action="">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Edit Lesson</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#editLessonModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Lesson Number <span class="text-danger">*</span></label>
+                                <input type="number" min="1" name="lesson_number" id="editLessonNumber" required class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Duration (min)</label>
+                                <input type="number" min="1" name="duration_minutes" id="editLessonDuration" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Title <span class="text-danger">*</span></label>
+                            <input type="text" name="title" id="editLessonTitle" required class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Video URL</label>
+                            <input type="text" name="video_url" id="editLessonVideo" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Notes</label>
+                            <textarea name="notes" id="editLessonNotes" rows="3" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-gray-900">Free Preview</label>
+                            <input type="checkbox" name="is_free_preview" id="editLessonPreview" class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#editLessonModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Lesson Modal -->
+<div id="deleteLessonModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="deleteLessonForm" action="">
+                    <div class="p-4 sm:p-7">
+                        <div class="text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="flex items-center justify-center size-14 rounded-full bg-danger/10"><i class="icon-trash-2 text-danger text-2xl!"></i></div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Delete Lesson</h3>
+                            <p class="text-sm text-gray-600 mb-0">Delete "<span id="deleteLessonTitle" class="font-semibold"></span>"? This cannot be undone.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#deleteLessonModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-danger rounded-lg hover:bg-danger-hover cursor-pointer">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+var pageScripts = `
+document.querySelectorAll('.editLessonBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('editLessonForm').action = '/admin/courses/${course.id}/lessons/' + btn.dataset.id + '/update';
+    document.getElementById('editLessonNumber').value = btn.dataset.number || '';
+    document.getElementById('editLessonTitle').value = btn.dataset.title || '';
+    document.getElementById('editLessonVideo').value = btn.dataset.video || '';
+    document.getElementById('editLessonNotes').value = btn.dataset.notes || '';
+    document.getElementById('editLessonDuration').value = btn.dataset.duration || '';
+    document.getElementById('editLessonPreview').checked = btn.dataset.preview === '1';
+  });
+});
+document.querySelectorAll('.deleteLessonBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('deleteLessonForm').action = '/admin/courses/${course.id}/lessons/' + btn.dataset.id + '/delete';
+    document.getElementById('deleteLessonTitle').textContent = btn.dataset.title || '';
+  });
+});
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

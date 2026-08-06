@@ -1,0 +1,181 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">Banners</h1>
+    <button data-hs-overlay="#addBannerModal" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition hover:text-white">
+        <span class="flex"><i class="icon-plus"></i></span> Add Banner
+    </button>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="flex items-center justify-between p-4 border-b border-border-color gap-2 flex-wrap">
+            <h2 class="text-gray-900 text-lg font-bold mb-0">All Banners</h2>
+            <form method="GET" action="/admin/banners" class="relative w-full md:w-64">
+                <input type="text" name="search" value="<%= search %>" placeholder="Search banner text..." class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-full py-2 pl-4 pr-10! focus:ring-0 focus:border-border-color">
+                <button type="submit" class="absolute top-1/2 -translate-y-1/2 right-3.5 text-base text-gray-500 leading-none cursor-pointer bg-transparent border-0"><i class="icon-search"></i></button>
+            </form>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[700px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Text</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">URL</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Colour</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (banners && banners.length) { %>
+                        <% banners.forEach(function(b) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm font-semibold text-gray-900"><%= b.text %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-500 truncate max-w-[220px] block"><%= b.url || '-' %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <% if (b.color) { %>
+                                <span class="inline-flex items-center gap-2 text-xs text-gray-600"><span class="size-4 rounded-full border border-border-color" style="background-color: <%= b.color %>"></span><%= b.color %></span>
+                                <% } else { %>-<% } %>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <form method="POST" action="/admin/banners/<%= b.id %>/toggle-status">
+                                    <button type="submit" class="cursor-pointer inline-flex items-center text-xs font-bold rounded-lg px-3 py-1 border <%= b.status ? 'text-success border-success' : 'text-gray-500 border-gray-300' %>"><%= b.status ? 'Active' : 'Inactive' %></button>
+                                </form>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button type="button" class="editBannerBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors" aria-label="Edit" data-hs-overlay="#editBannerModal" data-id="<%= b.id %>" data-text="<%= b.text %>" data-url="<%= b.url || '' %>" data-color="<%= b.color || '' %>">
+                                        <i class="icon-pencil-line text-sm"></i>
+                                    </button>
+                                    <button type="button" class="deleteBannerBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger flex items-center justify-center transition-colors" aria-label="Delete" data-hs-overlay="#deleteBannerModal" data-id="<%= b.id %>" data-text="<%= b.text %>">
+                                        <i class="icon-trash-2 text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-500 bg-white">No banners found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div id="addBannerModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" action="/admin/banners">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Add Banner</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#addBannerModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Banner Text <span class="text-danger">*</span></label>
+                            <input type="text" name="text" required placeholder="e.g. SSC CGL 2026 Notification Out" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Link URL</label>
+                            <input type="text" name="url" placeholder="/post/ssc-cgl-2026" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Colour</label>
+                            <input type="text" name="color" placeholder="#ff0000 or red" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-gray-900">Active</label>
+                            <input type="checkbox" name="status" checked class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#addBannerModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Add Banner</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editBannerModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="editBannerForm" action="">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Edit Banner</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#editBannerModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Banner Text <span class="text-danger">*</span></label>
+                            <input type="text" name="text" id="editBannerText" required class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Link URL</label>
+                            <input type="text" name="url" id="editBannerUrl" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Colour</label>
+                            <input type="text" name="color" id="editBannerColor" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#editBannerModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteBannerModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="deleteBannerForm" action="">
+                    <div class="p-4 sm:p-7">
+                        <div class="text-center">
+                            <div class="flex justify-center mb-4"><div class="flex items-center justify-center size-14 rounded-full bg-danger/10"><i class="icon-trash-2 text-danger text-2xl!"></i></div></div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Delete Banner</h3>
+                            <p class="text-sm text-gray-600 mb-0">Delete "<span id="deleteBannerText" class="font-semibold"></span>"?</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#deleteBannerModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-danger rounded-lg hover:bg-danger-hover cursor-pointer">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+var pageScripts = `
+document.querySelectorAll('.editBannerBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('editBannerForm').action = '/admin/banners/' + btn.dataset.id + '/update';
+    document.getElementById('editBannerText').value = btn.dataset.text || '';
+    document.getElementById('editBannerUrl').value = btn.dataset.url || '';
+    document.getElementById('editBannerColor').value = btn.dataset.color || '';
+  });
+});
+document.querySelectorAll('.deleteBannerBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('deleteBannerForm').action = '/admin/banners/' + btn.dataset.id + '/delete';
+    document.getElementById('deleteBannerText').textContent = btn.dataset.text || '';
+  });
+});
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

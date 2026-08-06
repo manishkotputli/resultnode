@@ -1,0 +1,59 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">FAQs</h1>
+    <a href="/admin/faqs/create" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition hover:text-white">
+        <span class="flex"><i class="icon-plus"></i></span> Add FAQ
+    </a>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="flex items-center justify-between p-4 border-b border-border-color gap-2 flex-wrap">
+            <h2 class="text-gray-900 text-lg font-bold mb-0">All FAQs</h2>
+            <form method="GET" action="/admin/faqs" class="relative w-full md:w-64">
+                <input type="text" name="search" value="<%= search %>" placeholder="Search question..." class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-full py-2 pl-4 pr-10! focus:ring-0 focus:border-border-color">
+                <button type="submit" class="absolute top-1/2 -translate-y-1/2 right-3.5 text-base text-gray-500 leading-none cursor-pointer bg-transparent border-0"><i class="icon-search"></i></button>
+            </form>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[700px]">
+                <thead>
+                    <tr class="bg-light">
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Question</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Category</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Order</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (faqs && faqs.length) { %>
+                        <% faqs.forEach(function(f) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <a href="/admin/faqs/<%= f.id %>/edit" class="text-sm font-semibold text-gray-900 hover:text-primary transition-colors"><%= f.question %></a>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= f.Category ? f.Category.name : 'General' %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= f.ordering %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="inline-flex items-center text-xs font-bold rounded-lg px-3 py-1 border <%= f.status ? 'text-success border-success' : 'text-gray-500 border-gray-300' %>"><%= f.status ? 'Active' : 'Inactive' %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="/admin/faqs/<%= f.id %>/edit" class="size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors"><i class="icon-pencil-line text-sm"></i></a>
+                                    <form method="POST" action="/admin/faqs/<%= f.id %>/delete" onsubmit="return confirm('Delete this FAQ?');">
+                                        <button type="submit" class="size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger flex items-center justify-center transition-colors cursor-pointer"><i class="icon-trash-2 text-sm"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-500 bg-white">No FAQs found. <a href="/admin/faqs/create" class="text-primary font-medium">Add your first FAQ</a>.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

@@ -2,13 +2,52 @@
 const { Op } = require('sequelize');
 const db = require('../../models');
 
-async function getPublishedBlogs(limit) {
+async function getCategoriesWithCount() {
+  const categories = await db.BlogCategory.findAll({ raw: true });
+  const counts = await db.Blog.findAll({
+    attributes: ['category_id', [db.sequelize.fn('COUNT', db.sequelize.col('id')), 'count']],
+    where: { status: 'published' },
+    group: ['category_id'],
+    raw: true,
+  });
+  const countMap = {};
+  counts.forEach((c) => { countMap[c.category_id] = parseInt(c.count, 10); });
+  return categories.map((c) => ({ ...c, count: countMap[c.id] || 0 }));
+}
+
+async function getPopularBlogs(limit = 5) {
   return db.Blog.findAll({
     where: { status: 'published' },
-    include: [{ model: db.BlogCategory }],
-    order: [['published_at', 'DESC']],
+    order: [['views', 'DESC']],
     limit,
   });
+}
+
+async function getPublishedBlogs({ page = 1, perPage = 4, categorySlug = null, search = null, sort = 'latest' } = {}) {
+  const where = { status: 'published' };
+  const include = [{ model: db.BlogCategory, ...(categorySlug ? { where: { slug: categorySlug }, required: true } : {}) }];
+
+  if (search) {
+    where.title = { [Op.like]: `%${search}%` };
+  }
+
+  const order = sort === 'popular' ? [['views', 'DESC']] : [['published_at', 'DESC']];
+
+  const { rows, count } = await db.Blog.findAndCountAll({
+    where,
+    include,
+    order,
+    limit: perPage,
+    offset: (page - 1) * perPage,
+    distinct: true,
+  });
+
+  return {
+    blogs: rows,
+    totalPages: Math.ceil(count / perPage),
+    totalCount: count,
+    currentPage: page,
+  };
 }
 
 async function findBlogBySlug(slug) {
@@ -18,7 +57,7 @@ async function findBlogBySlug(slug) {
   });
 }
 
-async function getRelatedBlogs(categoryId, excludeId, limit = 6) {
+async function getRelatedBlogs(categoryId, excludeId, limit = 3) {
   return db.Blog.findAll({
     where: { category_id: categoryId, status: 'published', id: { [Op.ne]: excludeId } },
     order: [['published_at', 'DESC']],
@@ -65,6 +104,6 @@ async function hasLiked(blogId, userId) {
 }
 
 module.exports = {
-  getPublishedBlogs, findBlogBySlug, getRelatedBlogs, incrementBlogViews,
-  getApprovedComments, addComment, toggleLike, hasLiked,
+  getCategoriesWithCount, getPopularBlogs, getPublishedBlogs, findBlogBySlug, getRelatedBlogs,
+  incrementBlogViews, getApprovedComments, addComment, toggleLike, hasLiked,
 };

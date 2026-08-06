@@ -2,7 +2,7 @@
 const db = require('../../models');
 
 async function createPurchase({ userId, type, id, amount }) {
-  return db.Purchase.create({
+  const purchase = await db.Purchase.create({
     user_id: userId,
     purchasable_type: type,
     purchasable_id: id,
@@ -12,6 +12,10 @@ async function createPurchase({ userId, type, id, amount }) {
     transaction_id: `DEMO-${Date.now()}`,
     purchased_at: new Date(),
   });
+  const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const orderId = `ORD-${datePart}-${String(purchase.id).padStart(5, '0')}`;
+  await purchase.update({ order_id: orderId });
+  return purchase;
 }
 
 async function getPurchases(userId) {

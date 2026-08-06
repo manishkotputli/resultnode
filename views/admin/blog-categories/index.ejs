@@ -1,0 +1,166 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<!-- Title -->
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">Blog Categories</h1>
+    <button data-hs-overlay="#addBlogCatModal" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition hover:text-white">
+        <span class="flex"><i class="icon-plus"></i></span> Add Blog Category
+    </button>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="flex items-center justify-between p-4 border-b border-border-color gap-2 flex-wrap">
+            <h2 class="text-gray-900 text-lg font-bold mb-0">All Blog Categories</h2>
+            <form method="GET" action="/admin/blog-categories" class="relative w-full md:w-64">
+                <input type="text" name="search" value="<%= search %>" placeholder="Search category..." class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-full py-2 pl-4 pr-10! focus:ring-0 focus:border-border-color">
+                <button type="submit" class="absolute top-1/2 -translate-y-1/2 right-3.5 text-base text-gray-500 leading-none cursor-pointer bg-transparent border-0"><i class="icon-search"></i></button>
+            </form>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[500px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Category</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Slug</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Blog Posts</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (categories && categories.length) { %>
+                        <% categories.forEach(function(cat) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <div class="flex items-center gap-3">
+                                    <span class="size-10 shrink-0 flex items-center justify-center rounded-full bg-orange text-white text-lg"><i class="icon-newspaper"></i></span>
+                                    <span class="text-sm font-semibold text-gray-900"><%= cat.name %></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-500">/<%= cat.slug %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= cat.get('blogCount') %> posts</span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button type="button" class="editBlogCatBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors" aria-label="Edit" data-hs-overlay="#editBlogCatModal" data-id="<%= cat.id %>" data-name="<%= cat.name %>" data-slug="<%= cat.slug %>">
+                                        <i class="icon-pencil-line text-sm"></i>
+                                    </button>
+                                    <button type="button" class="deleteBlogCatBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger flex items-center justify-center transition-colors" aria-label="Delete" data-hs-overlay="#deleteBlogCatModal" data-id="<%= cat.id %>" data-name="<%= cat.name %>">
+                                        <i class="icon-trash-2 text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="4" class="px-6 py-10 text-center text-gray-500 bg-white">No blog categories found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div id="addBlogCatModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" action="/admin/blog-categories">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Add Blog Category</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#addBlogCatModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Category Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" required placeholder="e.g. Exam Tips" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Slug <span class="text-gray-400 font-normal">(optional)</span></label>
+                            <input type="text" name="slug" placeholder="exam-tips" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#addBlogCatModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Add Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editBlogCatModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="editBlogCatForm" action="">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Edit Blog Category</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#editBlogCatModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Category Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="editBlogCatName" required class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Slug</label>
+                            <input type="text" name="slug" id="editBlogCatSlug" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#editBlogCatModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteBlogCatModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="deleteBlogCatForm" action="">
+                    <div class="p-4 sm:p-7">
+                        <div class="text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="flex items-center justify-center size-14 rounded-full bg-danger/10"><i class="icon-trash-2 text-danger text-2xl!"></i></div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Delete Blog Category</h3>
+                            <p class="text-sm text-gray-600 mb-0">Delete "<span id="deleteBlogCatName" class="font-semibold"></span>"? Categories with existing blog posts cannot be deleted.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#deleteBlogCatModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-danger rounded-lg hover:bg-danger-hover cursor-pointer">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+var pageScripts = `
+document.querySelectorAll('.editBlogCatBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('editBlogCatForm').action = '/admin/blog-categories/' + btn.dataset.id + '/update';
+    document.getElementById('editBlogCatName').value = btn.dataset.name || '';
+    document.getElementById('editBlogCatSlug').value = btn.dataset.slug || '';
+  });
+});
+document.querySelectorAll('.deleteBlogCatBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('deleteBlogCatForm').action = '/admin/blog-categories/' + btn.dataset.id + '/delete';
+    document.getElementById('deleteBlogCatName').textContent = btn.dataset.name || '';
+  });
+});
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

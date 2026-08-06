@@ -1,37 +1,82 @@
 <%
 var pageStyles = `
-.blog-detail-container{ max-width:1200px; margin:30px auto 60px; padding:0 15px; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.blog-detail-container{ max-width:1280px; margin:30px auto 60px; padding:0 15px; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 .breadcrumb-box{ font-size:14px; color:#666; margin-bottom:15px; }
 .breadcrumb-box a{ color:#0a58ca; text-decoration:none; }
-.blog-title-area{ text-align:center; margin-bottom:30px; }
-.blog-category{ background:#0a58ca; color:#fff; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600; }
-.blog-title-area h1{ font-size:34px; font-weight:800; margin:12px 0; }
-.blog-meta{ font-size:14px; color:#777; }
-.blog-meta span{ margin: 0 6px; }
-.blog-detail-grid{ display:grid; grid-template-columns:3fr 1fr; gap:30px; }
-.blog-image img{ width:100%; border-radius:14px; margin-bottom:20px; background:#ddd; }
-.blog-short-desc{ background:#f8f9fa; padding:15px 18px; border-left:4px solid #0a58ca; font-size:16px; margin-bottom:20px; }
-.blog-content{ font-size:16px; line-height:1.8; color:#333; }
-.blog-content h2, .blog-content h3{ margin-top:25px; font-weight:700; }
+.blog-category-tag{ color:#0a58ca; font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase; }
+.blog-title-area h1{ font-size:32px; font-weight:800; margin:10px 0; color:#111; }
+.blog-title-area .sub{ color:#666; font-size:15px; margin-bottom:12px; }
+.blog-meta{ font-size:14px; color:#777; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.blog-meta img.avatar{ width:24px; height:24px; border-radius:50%; object-fit:cover; background:#ddd; vertical-align:middle; margin-right:4px; }
+
+.blog-detail-grid{ display:grid; grid-template-columns:2.3fr 1fr; gap:30px; margin-top:20px; }
+.blog-image img{ width:100%; max-height:420px; object-fit:cover; border-radius:14px; margin-bottom:20px; background:#ddd; }
+.blog-quote{ background:#f3f4fb; padding:18px 22px; border-left:4px solid #0a58ca; font-size:16px; font-style:italic; color:#333; margin-bottom:22px; border-radius:0 8px 8px 0; }
+.blog-quote span{ display:block; margin-top:8px; font-style:normal; font-size:13px; color:#888; }
+.blog-short-desc{ font-size:16px; color:#555; margin-bottom:20px; }
+.blog-content{ font-size:16px; line-height:1.85; color:#333; }
+.blog-content h2, .blog-content h3{ margin-top:28px; margin-bottom:10px; font-weight:700; color:#111; }
 .blog-content img{ max-width:100%; border-radius:10px; margin:15px 0; }
-.blog-share{ margin-top:30px; font-size:14px; }
-.blog-share a{ margin-right:10px; color:#0a58ca; text-decoration:none; font-weight:600; }
-.like-btn{ margin-top:20px; border:1px solid #0a58ca; background:#fff; color:#0a58ca; padding:8px 18px; border-radius:20px; font-weight:600; cursor:pointer; }
+.blog-content table{ width:100%; border-collapse:collapse; margin:15px 0; }
+.blog-content table th, .blog-content table td{ border:1px solid #eee; padding:10px 12px; text-align:left; font-size:14px; }
+.blog-content table th{ background:#f6f7fb; }
+
+.tags-row{ margin:25px 0 10px; }
+.tags-row .label{ font-weight:600; margin-right:10px; color:#333; }
+.tags-row .tag-pill{ display:inline-block; background:#eef1fd; color:#0a58ca; font-size:13px; padding:5px 14px; border-radius:20px; margin:4px 4px 4px 0; text-decoration:none; }
+
+.blog-share{ display:flex; align-items:center; gap:10px; margin:15px 0 25px; }
+.blog-share .label{ font-weight:600; color:#333; margin-right:5px; }
+.blog-share a{ width:34px; height:34px; border-radius:50%; background:#f1f2f6; display:flex; align-items:center; justify-content:center; text-decoration:none; color:#0a58ca; font-weight:700; }
+.like-btn{ border:1px solid #0a58ca; background:#fff; color:#0a58ca; padding:8px 20px; border-radius:20px; font-weight:600; cursor:pointer; font-size:14px; }
 .like-btn.liked{ background:#0a58ca; color:#fff; }
-.comments-section{ margin-top:40px; }
-.comments-section h3{ font-size:20px; color:#0a58ca; margin-bottom:15px; }
-.comment-form textarea{ width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-family:inherit; }
-.comment-form button{ margin-top:8px; background:#0a58ca; color:#fff; border:none; padding:8px 18px; border-radius:20px; font-weight:600; cursor:pointer; }
-.comment-item{ padding:12px 0; border-bottom:1px solid #eee; }
-.comment-item b{ color:#111; }
-.comment-item .comment-date{ font-size:12px; color:#888; }
-.blog-sidebar{ background:#fafafa; padding:20px; border-radius:14px; }
-.blog-sidebar h3{ font-size:20px; margin-bottom:15px; color:#0a58ca; }
-.related-blog-item{ display:flex; gap:10px; margin-bottom:15px; text-decoration:none; color:#111; }
-.related-blog-item img{ width:70px; height:60px; object-fit:cover; border-radius:8px; background:#ddd; }
-.related-blog-item h4{ font-size:14px; font-weight:600; }
-.related-blog-item span{ font-size:12px; color:#777; }
-@media(max-width:991px){ .blog-detail-grid{ grid-template-columns:1fr; } }
+
+.author-box{ display:flex; gap:15px; align-items:flex-start; background:#fafafa; border-radius:14px; padding:20px; margin:25px 0; }
+.author-box img{ width:60px; height:60px; border-radius:50%; object-fit:cover; background:#ddd; }
+.author-box h4{ font-size:16px; margin-bottom:4px; }
+.author-box p{ font-size:13px; color:#666; }
+
+.comments-section{ margin-top:35px; }
+.comments-section h3{ font-size:20px; color:#111; margin-bottom:15px; }
+.comment-form textarea{ width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size:14px; }
+.comment-form button{ margin-top:10px; background:#0a58ca; color:#fff; border:none; padding:9px 20px; border-radius:20px; font-weight:600; cursor:pointer; }
+.comment-item{ display:flex; gap:12px; padding:16px 0; border-bottom:1px solid #eee; }
+.comment-item img{ width:38px; height:38px; border-radius:50%; object-fit:cover; background:#ddd; }
+.comment-item b{ color:#111; font-size:14px; }
+.comment-item .comment-date{ font-size:12px; color:#888; margin-left:6px; }
+.comment-item p{ font-size:14px; color:#444; margin-top:4px; }
+
+.related-posts{ margin-top:35px; }
+.related-posts h3{ font-size:20px; margin-bottom:15px; }
+.related-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.related-card{ text-decoration:none; color:inherit; border-radius:12px; overflow:hidden; border:1px solid #eee; }
+.related-card img{ width:100%; height:130px; object-fit:cover; background:#ddd; }
+.related-card .rc-body{ padding:12px; }
+.related-card .rc-cat{ font-size:11px; color:#0a58ca; font-weight:700; text-transform:uppercase; }
+.related-card h4{ font-size:14px; margin:6px 0; }
+.related-card span{ font-size:12px; color:#888; }
+
+.sidebar-box{ background:#fafafa; border-radius:16px; padding:20px; margin-bottom:20px; }
+.sidebar-box h3{ font-size:18px; margin-bottom:15px; color:#111; }
+.search-box{ display:flex; }
+.search-box input{ flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px 0 0 8px; font-size:14px; }
+.search-box button{ background:#0a58ca; border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
+.author-sidebar{ text-align:center; }
+.author-sidebar img{ width:70px; height:70px; border-radius:50%; object-fit:cover; margin-bottom:10px; background:#ddd; }
+.author-sidebar .stats{ display:flex; justify-content:space-around; margin:14px 0; }
+.author-sidebar .stats div{ font-size:18px; font-weight:700; color:#111; }
+.author-sidebar .stats span{ display:block; font-size:12px; color:#888; font-weight:400; }
+.author-sidebar a.btn{ display:block; border:1px solid #0a58ca; color:#0a58ca; padding:8px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px; }
+.toc-list{ list-style:none; padding:0; margin:0; border-left:2px solid #eef1fd; }
+.toc-list li{ padding:6px 0 6px 14px; font-size:14px; }
+.toc-list a{ color:#333; text-decoration:none; }
+.cat-list a{ display:flex; justify-content:space-between; padding:8px 0; color:#333; text-decoration:none; font-size:14px; border-bottom:1px solid #eee; }
+.cat-list span.count{ background:#eef1fd; color:#0a58ca; font-size:12px; padding:2px 8px; border-radius:10px; }
+.popular-item{ display:flex; gap:10px; margin-bottom:14px; text-decoration:none; color:inherit; }
+.popular-item img{ width:64px; height:56px; object-fit:cover; border-radius:8px; background:#ddd; }
+.popular-item h4{ font-size:14px; font-weight:600; margin-bottom:4px; }
+.popular-item span{ font-size:12px; color:#888; }
+@media(max-width:991px){ .blog-detail-grid{ grid-template-columns:1fr; } .related-grid{ grid-template-columns:1fr; } }
 `;
 var pageScripts = `
 var likeBtn = document.getElementById('likeBtn');
@@ -41,30 +86,41 @@ if (likeBtn) {
       .then(function (r) { if (r.status === 401) { window.location.href = '/login'; return null; } return r.json(); })
       .then(function (data) {
         if (!data) return;
+        var countEl = document.getElementById('likeCount');
+        var current = parseInt(countEl.dataset.count, 10) || 0;
+        var next = data.liked ? current + 1 : current - 1;
+        countEl.dataset.count = next;
         likeBtn.classList.toggle('liked', data.liked);
-        likeBtn.textContent = (data.liked ? '\u2665 Liked' : '\u2661 Like');
+        likeBtn.innerHTML = (data.liked ? '\u2665 Liked' : '\u2661 Like') + ' (' + next + ')';
       });
   });
 }
 `;
-function thumb(b) { return b.thumbnail ? '/uploads/blog/' + b.thumbnail : '/images/placeholder.svg'; }
+function thumb(b) { return b.thumbnail ? '' + b.thumbnail : '/images/placeholder.svg'; }
+var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.slug;
 %>
 <%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
 
 <div class="blog-detail-container">
   <div class="breadcrumb-box">
-    <a href="/">Home</a> <span>&rsaquo;</span> <a href="/blog">Blog</a> <span>&rsaquo;</span> <span><%= blog.title %></span>
+    <a href="/">Home</a> &rsaquo;
+    <a href="/blog?category=<%= blog.BlogCategory ? blog.BlogCategory.slug : '' %>"><%= blog.BlogCategory ? blog.BlogCategory.name : 'Blog' %></a> &rsaquo;
+    <span><%= blog.title %></span>
   </div>
 
   <div class="blog-title-area">
-    <span class="blog-category"><%= blog.BlogCategory ? blog.BlogCategory.name : 'General' %></span>
+    <div class="blog-category-tag"><%= blog.BlogCategory ? blog.BlogCategory.name : 'General' %></div>
     <h1><%= blog.title %></h1>
+    <% if (blog.short_description) { %><p class="sub"><%= blog.short_description %></p><% } %>
     <div class="blog-meta">
-      <span>&#128197; <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span>
-      <span>&middot;</span>
-      <span><%= blog.read_time || 1 %> min read</span>
-      <span>&middot;</span>
-      <span><%= blog.views || 0 %> views</span>
+      <% if (blog.author) { %>
+        <img class="avatar" src="<%= blog.author.profile_photo ? '/uploads/users/' + blog.author.profile_photo : '/images/avatar-placeholder.png' %>">
+        By <%= blog.author.name %> &#8226;
+      <% } %>
+      <span>&#128197; <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span> &#8226;
+      <span>&#128340; <%= blog.read_time || 1 %> min read</span> &#8226;
+      <span>&#128065; <%= blog.views || 0 %> Views</span> &#8226;
+      <span>&#128172; <%= blog.comments_count || (comments ? comments.length : 0) %> Comments</span>
     </div>
   </div>
 
@@ -74,22 +130,38 @@ function thumb(b) { return b.thumbnail ? '/uploads/blog/' + b.thumbnail : '/imag
         <div class="blog-image"><img src="<%= thumb(blog) %>" alt="<%= blog.title %>"></div>
       <% } %>
 
-      <% if (blog.short_description) { %>
-        <div class="blog-short-desc"><%= blog.short_description %></div>
-      <% } %>
-
       <div class="blog-content"><%- blog.content %></div>
 
-      <button id="likeBtn" class="like-btn <%= liked ? 'liked' : '' %>" data-url="/blog/<%= blog.slug %>/like">
-        <%= liked ? '\u2665 Liked' : '\u2661 Like' %> (<%= blog.likes_count || 0 %>)
-      </button>
+      <% if (blog.tags) { %>
+        <div class="tags-row">
+          <span class="label">Tags:</span>
+          <% blog.tags.split(',').forEach(function(t) { %>
+            <a class="tag-pill" href="/blog?q=<%= t.trim() %>"><%= t.trim() %></a>
+          <% }) %>
+        </div>
+      <% } %>
 
       <div class="blog-share">
-        <span>Share:</span>
-        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=/blog/<%= blog.slug %>">Facebook</a>
-        <a target="_blank" href="https://twitter.com/intent/tweet?url=/blog/<%= blog.slug %>">Twitter</a>
-        <a target="_blank" href="https://api.whatsapp.com/send?text=/blog/<%= blog.slug %>">WhatsApp</a>
+        <span class="label">Share this article:</span>
+        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(pageUrl) %>" title="Facebook">f</a>
+        <a target="_blank" href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(pageUrl) %>&text=<%= encodeURIComponent(blog.title) %>" title="Twitter">t</a>
+        <a target="_blank" href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(pageUrl) %>" title="LinkedIn">in</a>
+        <a target="_blank" href="https://api.whatsapp.com/send?text=<%= encodeURIComponent(blog.title + ' ' + pageUrl) %>" title="WhatsApp">w</a>
       </div>
+
+      <button id="likeBtn" class="like-btn <%= liked ? 'liked' : '' %>" data-url="/blog/<%= blog.slug %>/like">
+        <span id="likeCount" data-count="<%= blog.likes_count || 0 %>"><%= liked ? '\u2665 Liked' : '\u2661 Like' %> (<%= blog.likes_count || 0 %>)</span>
+      </button>
+
+      <% if (blog.author) { %>
+        <div class="author-box">
+          <img src="<%= blog.author.profile_photo ? '/uploads/users/' + blog.author.profile_photo : '/images/avatar-placeholder.png' %>">
+          <div>
+            <h4><%= blog.author.name %></h4>
+            <p><%= blog.author.bio || 'Content writer & contributor at ' + (typeof siteName !== 'undefined' ? siteName : 'our blog') %>.</p>
+          </div>
+        </div>
+      <% } %>
 
       <div class="comments-section" id="comments">
         <h3>Comments (<%= comments ? comments.length : 0 %>)</h3>
@@ -105,29 +177,79 @@ function thumb(b) { return b.thumbnail ? '/uploads/blog/' + b.thumbnail : '/imag
 
         <% (comments || []).forEach(function(c) { %>
           <div class="comment-item">
-            <b><%= c.User ? c.User.name : 'User' %></b>
-            <span class="comment-date"> &middot; <%= timeAgo(c.createdAt) %></span>
-            <p><%= c.content %></p>
+            <img src="<%= c.User && c.User.profile_photo ? '/uploads/users/' + c.User.profile_photo : '/images/avatar-placeholder.png' %>">
+            <div>
+              <b><%= c.User ? c.User.name : 'User' %></b>
+              <span class="comment-date"><%= timeAgo(c.created_at || c.createdAt) %></span>
+              <p><%= c.content %></p>
+            </div>
           </div>
         <% }) %>
       </div>
+
+      <% if (relatedBlogs && relatedBlogs.length) { %>
+        <div class="related-posts">
+          <h3>Related Posts</h3>
+          <div class="related-grid">
+            <% relatedBlogs.forEach(function(rb) { %>
+              <a href="/blog/<%= rb.slug %>" class="related-card">
+                <img src="<%= thumb(rb) %>" alt="<%= rb.title %>">
+                <div class="rc-body">
+                  <div class="rc-cat"><%= rb.BlogCategory ? rb.BlogCategory.name : '' %></div>
+                  <h4><%= rb.title %></h4>
+                  <span><%= rb.published_at ? formatDate(rb.published_at, 'DD MMM YYYY') : '' %></span>
+                </div>
+              </a>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
     </div>
 
     <aside class="blog-sidebar">
-      <h3>Related Blogs</h3>
-      <% if (relatedBlogs && relatedBlogs.length) { %>
-        <% relatedBlogs.forEach(function(rb) { %>
-          <a href="/blog/<%= rb.slug %>" class="related-blog-item">
-            <img src="<%= thumb(rb) %>" alt="<%= rb.title %>">
+      <div class="sidebar-box">
+        <h3>Search Articles</h3>
+        <form class="search-box" method="GET" action="/blog">
+          <input type="text" name="q" placeholder="Search articles...">
+          <button type="submit">&#128269;</button>
+        </form>
+      </div>
+
+      <% if (blog.author) { %>
+        <div class="sidebar-box author-sidebar">
+          <h3>About the Author</h3>
+          <img src="<%= blog.author.profile_photo ? '/uploads/users/' + blog.author.profile_photo : '/images/avatar-placeholder.png' %>">
+          <h4><%= blog.author.name %></h4>
+          <p style="font-size:13px;color:#666;"><%= blog.author.bio || 'Content Writer' %></p>
+          <div class="stats">
+            <div><%= blog.author.articles_count || 0 %><span>Articles</span></div>
+            <div><%= blog.author.followers_count || 0 %><span>Followers</span></div>
+          </div>
+          <a class="btn" href="/blog?author=<%= blog.author.id %>">View All Articles</a>
+        </div>
+      <% } %>
+
+      <div class="sidebar-box">
+        <h3>Categories</h3>
+        <div class="cat-list">
+          <% categories.forEach(function(c) { %>
+            <a href="/blog?category=<%= c.slug %>"><%= c.name %> <span class="count"><%= c.count %></span></a>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="sidebar-box">
+        <h3>Popular Posts</h3>
+        <% (popularBlogs || []).forEach(function(pb) { %>
+          <a href="/blog/<%= pb.slug %>" class="popular-item">
+            <img src="<%= thumb(pb) %>" alt="<%= pb.title %>">
             <div>
-              <h4><%= rb.title %></h4>
-              <span><%= rb.published_at ? formatDate(rb.published_at, 'DD MMM YYYY') : '' %></span>
+              <h4><%= pb.title %></h4>
+              <span><%= pb.published_at ? formatDate(pb.published_at, 'DD MMM YYYY') : '' %></span>
             </div>
           </a>
         <% }) %>
-      <% } else { %>
-        <p class="no-related">No related blogs</p>
-      <% } %>
+      </div>
     </aside>
   </div>
 </div>

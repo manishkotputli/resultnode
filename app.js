@@ -61,10 +61,11 @@ app.use(flash());
 
 // ---- globals (site_setting, navCategories, currentUser, formatDate...) ----
 app.use(globals);
-app.use(maintenanceMode);
+
 
 // ---- routes ----
 app.use('/admin', adminRoutes);
+app.use(maintenanceMode);
 app.use('/', webRoutes);
 
 // ---- errors ----

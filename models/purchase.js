@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: { type: DataTypes.INTEGER, allowNull: false },
       purchasable_type: { type: DataTypes.STRING, allowNull: false },
       purchasable_id: { type: DataTypes.INTEGER, allowNull: false },
+      order_id: { type: DataTypes.STRING, unique: true },
       amount: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
       // TODO: wire a real gateway (Razorpay/PayU/etc). For now "buy" marks
       // this completed immediately so the flow is fully testable end-to-end.

@@ -109,7 +109,7 @@
                 <div class="profile-dropdown hs-dropdown [--placement:bottom-right] [--auto-close:inside] relative">
                     <a href="#" class="hs-dropdown-toggle relative flex items-center gap-2" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
                         <div class="size-8 rounded-full overflow-hidden border border-white">
-                            <img src="<%= (typeof currentUser !== 'undefined' && currentUser.avatar) || '/admin-assets/avatar-default.jpg' %>" class="size-full object-cover" alt="<%= (typeof currentUser !== 'undefined' && currentUser.name) || 'Admin' %>">
+                            <img src="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.avatar) || '/admin-assets/avatar-default.jpg' %>" class="size-full object-cover" alt="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) || 'Admin' %>">
                         </div>
                     </a>
                     <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-50 p-5 bg-white border border-border-color shadow rounded-lg mt-2 z-1 divide-y divide-border-color" role="menu" aria-orientation="vertical">

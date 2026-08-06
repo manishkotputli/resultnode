@@ -1,9 +1,38 @@
 <!-- HEADER -->
+ <style>
+  .header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* or space-between */
+  gap: 15px;
+  padding: 15px;
+}
+
+.logo {
+  height: 70px;
+  width: auto;
+      margin-top: 115px;
+    margin-bottom: 26px;
+
+}
+.header-content{
+      margin-top: 85px;
+}
+.header-content h1 {
+  margin: 0;
+}
+
+.header-content p {
+  margin: 5px 0 0;
+}
+ </style>
 <div class="header">
   <% if (site_setting && site_setting.logo) { %>
-    <img src="/uploads/logo/<%= site_setting.logo %>" alt="Logo" style="height:70px; margin-bottom:10px;">
+    <img src="/uploads/logo/<%= site_setting.logo %>" alt="Logo" class="logo">
   <% } %>
 
-  <h1><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h1>
-  <p><%= (site_setting && site_setting.tagline) || "India's No.1 Sarkari Result Website" %></p>
+  <div class="header-content">
+    <h1><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h1>
+    <p><%= (site_setting && site_setting.tagline) || "India's No.1 Sarkari Result Website" %></p>
+  </div>
 </div>

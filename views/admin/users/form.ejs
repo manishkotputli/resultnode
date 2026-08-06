@@ -1,0 +1,86 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<!-- Title -->
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold"><%= mode === 'edit' ? 'Edit User' : 'Add User' %></h1>
+    <a href="/admin/users" class="text-sm font-medium text-gray-600 hover:text-primary flex items-center gap-1"><i class="icon-arrow-left"></i> Back to Users</a>
+</div>
+
+<form method="POST" action="<%= formAction %>">
+    <div class="grid grid-cols-12 gap-4 lg:gap-6">
+
+        <div class="col-span-12 xxl:col-span-8 space-y-4 lg:space-y-6">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">User Details</h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" required value="<%= user ? user.name : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" required value="<%= user ? user.email : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Username <span class="text-gray-400 font-normal">(optional, auto-generated)</span></label>
+                        <input type="text" name="username" value="<%= user ? (user.username || '') : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Phone</label>
+                        <input type="text" name="phone" value="<%= user ? (user.phone || '') : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Password <%= mode === 'edit' ? '' : '<span class="text-danger">*</span>' %></label>
+                        <input type="password" name="password" <%= mode === 'edit' ? '' : 'required' %> placeholder="<%= mode === 'edit' ? 'Leave blank to keep current password' : 'Set a password' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Role <span class="text-danger">*</span></label>
+                        <select name="role_id" required class="form-select w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            <option value="">Select Role</option>
+                            <% roles.forEach(function(r) { %>
+                                <option value="<%= r.id %>" <%= user && user.role_id === r.id ? 'selected' : '' %>><%= r.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Address</label>
+                    <textarea name="address" rows="3" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= user ? (user.address || '') : '' %></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 xxl:col-span-4 space-y-4 lg:space-y-6">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">Status</h2>
+                <div class="flex items-center justify-between mb-4">
+                    <label for="isActiveCheck" class="text-sm font-medium text-gray-900">Active</label>
+                    <input type="checkbox" id="isActiveCheck" name="is_active" <%= (!user || user.is_active) ? 'checked' : '' %> class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                </div>
+                <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">
+                    <%= mode === 'edit' ? 'Update User' : 'Save User' %>
+                </button>
+            </div>
+
+            <% if (mode === 'edit' && user) { %>
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-3">Record Info</h2>
+                <div class="text-sm text-gray-600 space-y-2">
+                    <p class="mb-0">User Code: <span class="font-medium text-gray-900"><%= user.user_code || '-' %></span></p>
+                    <p class="mb-0">Joined: <%= formatDate(user.created_at) %></p>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</form>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

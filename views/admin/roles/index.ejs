@@ -1,0 +1,185 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<!-- Title -->
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">Roles &amp; Permissions</h1>
+    <button data-hs-overlay="#addRoleModal" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition hover:text-white">
+        <span class="flex"><i class="icon-plus"></i></span> Add Role
+    </button>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="flex items-center justify-between p-4 border-b border-border-color gap-2 flex-wrap">
+            <h2 class="text-gray-900 text-lg font-bold mb-0">All Roles</h2>
+            <form method="GET" action="/admin/roles" class="relative w-full md:w-64">
+                <input type="text" name="search" value="<%= search %>" placeholder="Search role..." class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-full py-2 pl-4 pr-10! focus:ring-0 focus:border-border-color">
+                <button type="submit" class="absolute top-1/2 -translate-y-1/2 right-3.5 text-base text-gray-500 leading-none cursor-pointer bg-transparent border-0"><i class="icon-search"></i></button>
+            </form>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[560px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Prefix</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Users</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (roles && roles.length) { %>
+                        <% roles.forEach(function(role) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <div class="flex items-center gap-3">
+                                    <span class="size-10 shrink-0 flex items-center justify-center rounded-full bg-secondary text-white text-lg"><i class="icon-shield-check"></i></span>
+                                    <span class="text-sm font-semibold text-gray-900"><%= role.name %></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="inline-flex items-center text-xs font-bold text-gray-700 bg-gray-100 rounded-md px-2 py-0.5"><%= role.prefix %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= role.get('userCount') %> users</span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button type="button"
+                                        class="editRoleBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors"
+                                        aria-label="Edit"
+                                        data-hs-overlay="#editRoleModal"
+                                        data-id="<%= role.id %>"
+                                        data-name="<%= role.name %>"
+                                        data-prefix="<%= role.prefix %>">
+                                        <i class="icon-pencil-line text-sm"></i>
+                                    </button>
+                                    <button type="button"
+                                        class="deleteRoleBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger flex items-center justify-center transition-colors"
+                                        aria-label="Delete"
+                                        data-hs-overlay="#deleteRoleModal"
+                                        data-id="<%= role.id %>"
+                                        data-name="<%= role.name %>">
+                                        <i class="icon-trash-2 text-sm"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="4" class="px-6 py-10 text-center text-gray-500 bg-white">No roles found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Role Modal -->
+<div id="addRoleModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" action="/admin/roles">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Add Role</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#addRoleModal">
+                            <i class="icon-x"></i>
+                        </button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Role Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" required placeholder="e.g. Content Editor" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Prefix <span class="text-danger">*</span></label>
+                            <input type="text" name="prefix" required maxlength="10" placeholder="e.g. CE" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary uppercase">
+                            <p class="text-xs text-gray-400 mt-1 mb-0">Used to build user codes, e.g. CE-000001</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#addRoleModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Add Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Role Modal (shared) -->
+<div id="editRoleModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="editRoleForm" action="">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Edit Role</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#editRoleModal">
+                            <i class="icon-x"></i>
+                        </button>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Role Name <span class="text-danger">*</span></label>
+                            <input type="text" name="name" id="editRoleName" required class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Prefix <span class="text-danger">*</span></label>
+                            <input type="text" name="prefix" id="editRolePrefix" required maxlength="10" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary uppercase">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#editRoleModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Role Modal (shared) -->
+<div id="deleteRoleModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="deleteRoleForm" action="">
+                    <div class="p-4 sm:p-7">
+                        <div class="text-center">
+                            <div class="flex justify-center mb-4">
+                                <div class="flex items-center justify-center size-14 rounded-full bg-danger/10">
+                                    <i class="icon-trash-2 text-danger text-2xl!"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Delete Role</h3>
+                            <p class="text-sm text-gray-600 mb-0">Are you sure you want to delete "<span id="deleteRoleName" class="font-semibold"></span>"? Roles with existing users cannot be deleted.</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#deleteRoleModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-danger rounded-lg hover:bg-danger-hover cursor-pointer">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+var pageScripts = `
+document.querySelectorAll('.editRoleBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('editRoleForm').action = '/admin/roles/' + btn.dataset.id + '/update';
+    document.getElementById('editRoleName').value = btn.dataset.name || '';
+    document.getElementById('editRolePrefix').value = btn.dataset.prefix || '';
+  });
+});
+
+document.querySelectorAll('.deleteRoleBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('deleteRoleForm').action = '/admin/roles/' + btn.dataset.id + '/delete';
+    document.getElementById('deleteRoleName').textContent = btn.dataset.name || '';
+  });
+});
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

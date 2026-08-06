@@ -1,0 +1,76 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold"><%= mode === 'edit' ? 'Edit Test Series' : 'Add Test Series' %></h1>
+    <a href="/admin/test-series" class="text-sm font-medium text-gray-600 hover:text-primary flex items-center gap-1"><i class="icon-arrow-left"></i> Back to Test Series</a>
+</div>
+
+<form method="POST" action="<%= formAction %>" enctype="multipart/form-data">
+    <div class="grid grid-cols-12 gap-4 lg:gap-6">
+        <div class="col-span-12 xxl:col-span-8 space-y-4 lg:space-y-6">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">Test Series Details</h2>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Title <span class="text-danger">*</span></label>
+                    <input type="text" name="title" required value="<%= item ? item.title : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Slug <span class="text-gray-400 font-normal">(optional)</span></label>
+                    <input type="text" name="slug" value="<%= item ? item.slug : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Description</label>
+                    <textarea name="description" rows="8" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= item ? (item.description || '') : '' %></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 xxl:col-span-4 space-y-4 lg:space-y-6">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">Thumbnail</h2>
+                <% if (item && item.thumbnail) { %>
+                    <img src="<%= item.thumbnail %>" class="w-full h-40 object-cover rounded-lg mb-3 bg-light" alt="">
+                <% } %>
+                <input type="file" name="thumbnail" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                <p class="text-xs text-gray-400 mt-1 mb-0">JPG/PNG/WEBP, max 5MB<%= item && item.thumbnail ? '. Leave blank to keep current image.' : '' %></p>
+            </div>
+
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+    <h2 class="text-gray-900 text-lg font-bold mb-1">Exam Settings</h2>
+    <p class="text-xs text-gray-400 mb-4">Defaults for tests in this series — each test can override these.</p>
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-900 mb-2">Default Duration (minutes)</label>
+        <input type="number" min="1" name="default_duration_minutes" value="<%= item && item.default_duration_minutes ? item.default_duration_minutes : '' %>" placeholder="e.g. 60" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-gray-900 mb-2">Default Negative Marking</label>
+        <input type="number" step="0.01" min="0" name="default_negative_marking" value="<%= item ? item.default_negative_marking : '0' %>" placeholder="e.g. 0.25" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+    </div>
+</div>
+
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">Pricing &amp; Status</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Price (₹) <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" name="price" required value="<%= item ? item.price : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Discount Price (₹)</label>
+                    <input type="number" step="0.01" name="discount_price" value="<%= item && item.discount_price ? item.discount_price : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <label class="text-sm font-medium text-gray-900">Active</label>
+                    <input type="checkbox" name="is_active" <%= (!item || item.is_active) ? 'checked' : '' %> class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                </div>
+                <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">
+                    <%= mode === 'edit' ? 'Update Test Series' : 'Save Test Series' %>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>
