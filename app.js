@@ -102,24 +102,24 @@ app.use(flash());
    Global Middleware
 ---------------------------------------- */
 
-app.use(globals);
+//app.use(globals);
 
 /* ---------------------------------------
    Routes
 ---------------------------------------- */
 
-app.use('/admin', adminRoutes);
-
-app.use(maintenanceMode);
-
-app.use('/', webRoutes);
+//app.use('/admin', adminRoutes);
+//
+//app.use(maintenanceMode);
+//
+//app.use('/', webRoutes);
 
 /* ---------------------------------------
    Error Handler
 ---------------------------------------- */
 
-app.use(notFoundHandler);
-app.use(errorHandler);
+//app.use(notFoundHandler);
+//app.use(errorHandler);
 
 /* ---------------------------------------
    Start Server
@@ -222,6 +222,28 @@ async function startServer() {
             }
 
             console.log("✅ Database Ready");
+            /* ---------------------------------------
+   Global Middleware
+---------------------------------------- */
+
+app.use(globals);
+
+/* ---------------------------------------
+   Routes
+---------------------------------------- */
+
+app.use('/admin', adminRoutes);
+
+app.use(maintenanceMode);
+
+app.use('/', webRoutes);
+
+/* ---------------------------------------
+   Error Handler
+---------------------------------------- */
+
+app.use(notFoundHandler);
+app.use(errorHandler);
         }
 
         app.listen(PORT, () => {
