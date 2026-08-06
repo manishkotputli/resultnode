@@ -20,7 +20,9 @@ const adminRoutes = require('./routes/admin/index');
 
 const app = express();
 const PORT = process.env.APP_PORT || 3000;
-
+console.log(process.env.APP_ENV);
+console.log(process.env.LOCAL_DB_USER);
+console.log(process.env.PROD_DB_USER);
 // ---- view engine ----
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
