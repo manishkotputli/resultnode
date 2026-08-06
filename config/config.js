@@ -1,34 +1,24 @@
-require('dotenv').config();
+require("dotenv").config();
 
-/**
- * Sequelize-CLI config. Same file drives migrations, seeders and the app's
- * own connection (see models/index.js). DB_DIALECT switches the whole stack
- * between sqlite (zero-setup default, matches the Laravel app's own default)
- * and mysql/postgres for production.
- */
-const dialect = process.env.DB_DIALECT || 'sqlite';
+const isProduction = process.env.APP_ENV === "production";
+const prefix = isProduction ? "PROD_" : "LOCAL_";
 
-const base = {
-  dialect,
+const databaseConfig = {
+  dialect: process.env[`${prefix}DB_DIALECT`] || "mysql",
+  host: process.env[`${prefix}DB_HOST`],
+  port: Number(process.env[`${prefix}DB_PORT`]) || 3306,
+  username: process.env[`${prefix}DB_USER`],
+  password: process.env[`${prefix}DB_PASSWORD`] || "",
+  database: process.env[`${prefix}DB_NAME`],
   logging: false,
   define: {
-    underscored: true, // created_at / updated_at style columns everywhere
+    underscored: true,
+    timestamps: true,
   },
 };
 
-const sqlSettings =
-  dialect === 'sqlite'
-    ? { storage: process.env.DB_STORAGE || './database/database.sqlite' }
-    : {
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD || null,
-        database: process.env.DB_NAME,
-      };
-
 module.exports = {
-  development: { ...base, ...sqlSettings },
-  test: { ...base, ...sqlSettings },
-  production: { ...base, ...sqlSettings },
+  development: databaseConfig,
+  test: databaseConfig,
+  production: databaseConfig,
 };
