@@ -125,48 +125,83 @@ app.use(errorHandler);
    Start Server
 ---------------------------------------- */
 
-async function startServer() {
 
+
+async function startServer() {
     try {
 
         await sequelize.authenticate();
-
         console.log("✅ Database Connected");
 
         if (process.env.ENV === "production") {
 
             console.log("🚀 Running Database Migrations...");
 
-            execSync(
-                "node node_modules/sequelize-cli/lib/sequelize db:migrate",
-                {
-                    stdio: "inherit",
-                    env: {
-                        ...process.env,
-                        NODE_ENV: "production",
-                    },
-                }
-            );
+            try {
 
-            /**
-             * Seed only if explicitly enabled
-             *
-             * RUN_SEED=true
-             */
+                const output = execSync(
+                    "node node_modules/sequelize-cli/lib/sequelize db:migrate",
+                    {
+                        env: {
+                            ...process.env,
+                            NODE_ENV: "production",
+                            ENV: "production",
+                        },
+                        encoding: "utf8",
+                    }
+                );
+
+                console.log(output);
+
+            } catch (e) {
+
+                console.log("========================================");
+                console.log("❌ MIGRATION FAILED");
+                console.log("stdout:");
+                console.log(e.stdout?.toString());
+
+                console.log("stderr:");
+                console.log(e.stderr?.toString());
+
+                console.log("message:");
+                console.log(e.message);
+
+                console.log("========================================");
+
+                throw e;
+            }
+
             if (process.env.RUN_SEED === "true") {
 
                 console.log("🌱 Running Database Seeders...");
 
-                execSync(
-                    "node node_modules/sequelize-cli/lib/sequelize db:seed:all",
-                    {
-                        stdio: "inherit",
-                        env: {
-                            ...process.env,
-                            NODE_ENV: "production",
-                        },
-                    }
-                );
+                try {
+
+                    const output = execSync(
+                        "node node_modules/sequelize-cli/lib/sequelize db:seed:all",
+                        {
+                            env: {
+                                ...process.env,
+                                NODE_ENV: "production",
+                                ENV: "production",
+                            },
+                            encoding: "utf8",
+                        }
+                    );
+
+                    console.log(output);
+
+                } catch (e) {
+
+                    console.log("========================================");
+                    console.log("❌ SEED FAILED");
+                    console.log(e.stdout?.toString());
+                    console.log(e.stderr?.toString());
+                    console.log(e.message);
+                    console.log("========================================");
+
+                    throw e;
+                }
             }
 
             console.log("✅ Database Ready");
@@ -183,7 +218,6 @@ async function startServer() {
 
         process.exit(1);
     }
-
 }
 
 startServer();
