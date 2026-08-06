@@ -1,6 +1,8 @@
 'use strict';
 require('dotenv').config();
-
+console.log("APP_ENV =", process.env.APP_ENV);
+console.log("LOCAL_DB_USER =", process.env.LOCAL_DB_USER);
+console.log("PROD_DB_USER =", process.env.PROD_DB_USER);
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
