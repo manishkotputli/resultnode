@@ -4,8 +4,7 @@ require('dotenv').config();
 
 console.log('================================');
 console.log('ENV =', process.env.ENV);
-console.log('LOCAL_DB_USER =', process.env.LOCAL_DB_USERNAME);
-console.log('PROD_DB_USER =', process.env.PROD_DB_USERNAME);
+console.log('NODE_ENV =', process.env.NODE_ENV);
 console.log('================================');
 
 const express = require('express');
@@ -18,7 +17,6 @@ const compression = require('compression');
 const cors = require('cors');
 const morgan = require('morgan');
 const fs = require('fs');
-const { execSync } = require('child_process');
 
 const { sequelize } = require('./models');
 
@@ -36,16 +34,22 @@ const app = express();
 
 const PORT = process.env.APP_PORT || 3000;
 
-/* ---------------------------------------
-   View Engine
----------------------------------------- */
+
+/*
+|--------------------------------------------------------------------------
+| View Engine
+|--------------------------------------------------------------------------
+*/
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-/* ---------------------------------------
-   Logging
----------------------------------------- */
+
+/*
+|--------------------------------------------------------------------------
+| Logging
+|--------------------------------------------------------------------------
+*/
 
 const logDir = path.join(__dirname, 'storage', 'logs');
 
@@ -68,9 +72,12 @@ app.use(
     })
 );
 
-/* ---------------------------------------
-   Security
----------------------------------------- */
+
+/*
+|--------------------------------------------------------------------------
+| Security
+|--------------------------------------------------------------------------
+*/
 
 app.use(
     helmet({
@@ -82,9 +89,12 @@ app.use(compression());
 
 app.use(cors());
 
-/* ---------------------------------------
-   Body Parser
----------------------------------------- */
+
+/*
+|--------------------------------------------------------------------------
+| Body Parser
+|--------------------------------------------------------------------------
+*/
 
 app.use(express.json());
 
@@ -96,9 +106,12 @@ app.use(
 
 app.use(cookieParser());
 
-/* ---------------------------------------
-   Static Files
----------------------------------------- */
+
+/*
+|--------------------------------------------------------------------------
+| Static Files
+|--------------------------------------------------------------------------
+*/
 
 app.use(
     express.static(
@@ -106,9 +119,12 @@ app.use(
     )
 );
 
-/* ---------------------------------------
-   Session
----------------------------------------- */
+
+/*
+|--------------------------------------------------------------------------
+| Session
+|--------------------------------------------------------------------------
+*/
 
 app.use(
     session({
@@ -121,235 +137,112 @@ app.use(
         saveUninitialized: false,
 
         cookie: {
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            maxAge:
+                7 *
+                24 *
+                60 *
+                60 *
+                1000
         }
     })
 );
 
 app.use(flash());
 
-/* ---------------------------------------
-   GLOBAL MIDDLEWARE
----------------------------------------- */
 
 /*
- * IMPORTANT:
- * Keep this OUTSIDE startServer().
- *
- * This makes it available when Hostinger/
- * Passenger loads module.exports = app.
- */
-app.use(globals);
-
-/* ---------------------------------------
-   ADMIN ROUTES
----------------------------------------- */
-
-app.use('/admin', adminRoutes);
-
-/* ---------------------------------------
-   MAINTENANCE MODE
----------------------------------------- */
-
-app.use(maintenanceMode);
-
-/* ---------------------------------------
-   WEB ROUTES
----------------------------------------- */
-
-app.use('/', webRoutes);
-
-/* ---------------------------------------
-   TEST ROUTE
----------------------------------------- */
-
-/*
- * Temporary test route.
- *
- * Open:
- * https://sarkariresultess.com/test
- *
- * If it shows "Express is working",
- * Express + route loading is working.
- *
- * You can remove this later.
- */
-app.get('/test', (req, res) => {
-    res.send('Express is working');
-});
-
-/* ---------------------------------------
-   404 HANDLER
----------------------------------------- */
-
-app.use(notFoundHandler);
-
-/* ---------------------------------------
-   ERROR HANDLER
----------------------------------------- */
-
-app.use(errorHandler);
-
-/* =======================================
-   DATABASE + MIGRATION STARTUP
-======================================= */
+|--------------------------------------------------------------------------
+| Database
+|--------------------------------------------------------------------------
+*/
 
 async function startServer() {
-    try {
 
-        /* ---------------------------------------
-           Database Connection
-        ---------------------------------------- */
+    try {
 
         await sequelize.authenticate();
 
         console.log('✅ Database Connected');
 
-        /* ---------------------------------------
-           Production Migrations
-        ---------------------------------------- */
+        /*
+        |--------------------------------------------------------------------------
+        | Global Middleware
+        |--------------------------------------------------------------------------
+        */
 
-        if (process.env.ENV === 'production') {
+        app.use(globals);
 
-            const NODE_BIN = process.execPath;
-
-            console.log('========================================');
-            console.log('Node Binary :', NODE_BIN);
-            console.log('========================================');
-
-            console.log('🚀 Running Database Migrations...');
-
-            try {
-
-                const output = execSync(
-                    `"${NODE_BIN}" node_modules/sequelize-cli/lib/sequelize db:migrate`,
-                    {
-                        cwd: __dirname,
-
-                        env: {
-                            ...process.env,
-                            NODE_ENV: 'production',
-                            ENV: 'production'
-                        },
-
-                        encoding: 'utf8',
-
-                        stdio: 'pipe'
-                    }
-                );
-
-                console.log(output);
-
-            } catch (e) {
-
-                console.log('========================================');
-                console.log('❌ MIGRATION FAILED');
-
-                console.log('stdout:');
-                console.log(
-                    e.stdout?.toString() || ''
-                );
-
-                console.log('stderr:');
-                console.log(
-                    e.stderr?.toString() || ''
-                );
-
-                console.log('message:');
-                console.log(e.message);
-
-                console.log('========================================');
-
-                throw e;
-            }
-
-            /* ---------------------------------------
-               Seeders
-            ---------------------------------------- */
-
-            if (process.env.RUN_SEED === 'true') {
-
-                console.log(
-                    '🌱 Running Database Seeders...'
-                );
-
-                try {
-
-                    const output = execSync(
-                        `"${NODE_BIN}" node_modules/sequelize-cli/lib/sequelize db:seed:all`,
-                        {
-                            cwd: __dirname,
-
-                            env: {
-                                ...process.env,
-                                NODE_ENV: 'production',
-                                ENV: 'production'
-                            },
-
-                            encoding: 'utf8',
-
-                            stdio: 'pipe'
-                        }
-                    );
-
-                    console.log(output);
-
-                } catch (e) {
-
-                    console.log('========================================');
-                    console.log('❌ SEED FAILED');
-
-                    console.log('stdout:');
-                    console.log(
-                        e.stdout?.toString() || ''
-                    );
-
-                    console.log('stderr:');
-                    console.log(
-                        e.stderr?.toString() || ''
-                    );
-
-                    console.log('message:');
-                    console.log(e.message);
-
-                    console.log('========================================');
-
-                    throw e;
-                }
-            }
-        }
-
-        console.log('✅ Database Ready');
-
-        /* ---------------------------------------
-           Direct Node Server
-        ---------------------------------------- */
 
         /*
-         * IMPORTANT:
-         *
-         * app.listen() only runs when this
-         * file is directly executed:
-         *
-         * node app.js
-         *
-         * Hostinger/Passenger can instead
-         * require/export this app.
-         */
-        if (require.main === module) {
+        |--------------------------------------------------------------------------
+        | Admin Routes
+        |--------------------------------------------------------------------------
+        */
 
-            app.listen(PORT, () => {
+        app.use(
+            '/admin',
+            adminRoutes
+        );
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Maintenance Mode
+        |--------------------------------------------------------------------------
+        */
+
+        app.use(
+            maintenanceMode
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Web Routes
+        |--------------------------------------------------------------------------
+        */
+
+        app.use(
+            '/',
+            webRoutes
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Error Handler
+        |--------------------------------------------------------------------------
+        */
+
+        app.use(
+            notFoundHandler
+        );
+
+        app.use(
+            errorHandler
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Start Server
+        |--------------------------------------------------------------------------
+        */
+
+        app.listen(
+            PORT,
+            () => {
                 console.log(
                     `🚀 Server running on port ${PORT}`
                 );
-
-            });
-        }
+            }
+        );
 
     } catch (err) {
 
-        console.error('❌ Startup Error');
+        console.error(
+            '❌ Startup Error'
+        );
 
         console.error(err);
 
@@ -357,16 +250,6 @@ async function startServer() {
     }
 }
 
-/* ---------------------------------------
-   Start only when directly executed
----------------------------------------- */
-
-if (require.main === module) {
-    startServer();
-}
-
-/* ---------------------------------------
-   Export Express App
----------------------------------------- */
+startServer();
 
 module.exports = app;
