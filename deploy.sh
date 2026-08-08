@@ -77,6 +77,13 @@ echo "✅ Migrations completed"
 # --------------------------------------------------
 # DO NOT RUN SEEDERS
 # --------------------------------------------------
+echo "========================================"
+echo "🌱 Running database seeders"
+echo "========================================"
+
+"$NODE_BIN" ./node_modules/sequelize-cli/lib/sequelize db:seed:all --env production
+
+echo "✅ Seeders completed"
 
 echo "========================================"
 echo "🌱 Seeders skipped"
