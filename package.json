@@ -34,9 +34,10 @@
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
     "mysql2": "^3.23.2",
-    "sequelize": "^6.37.8",
     "sqlite3": "^5.1.7",
-    "uuid": "^14.0.1"
+    "uuid": "^14.0.1",
+    "sequelize": "^6.37.8",
+    "sequelize-cli": "^6.6.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
