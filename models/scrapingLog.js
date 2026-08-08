@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       post_id: { type: DataTypes.INTEGER },
       scraped_at: DataTypes.DATE,
     },
-    { sequelize, modelName: 'ScrapingLog', tableName: 'scraping_logs' }
+    { sequelize, modelName: 'ScrapingLog', tableName: 'scraping_logs',timestamps: false }
   );
   return ScrapingLog;
 };

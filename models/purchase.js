@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       transaction_id: DataTypes.STRING,
       purchased_at: DataTypes.DATE,
     },
-    { sequelize, modelName: 'Purchase', tableName: 'purchases' }
+    { sequelize, modelName: 'Purchase', tableName: 'purchases',timestamps: false }
   );
   return Purchase;
 };

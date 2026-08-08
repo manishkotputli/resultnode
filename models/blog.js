@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       likes_count: { type: DataTypes.INTEGER, defaultValue: 0 },
       comments_count: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
-    { sequelize, modelName: 'Blog', tableName: 'blogs', paranoid: true }
+    { sequelize, modelName: 'Blog', tableName: 'blogs', paranoid: true,timestamps: false }
   );
   return Blog;
 };

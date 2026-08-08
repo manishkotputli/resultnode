@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       default_duration_minutes: DataTypes.INTEGER,
       default_negative_marking: { type: DataTypes.DECIMAL(4, 2), defaultValue: 0 },
     },
-    { sequelize, modelName: 'TestSeries', tableName: 'test_series' }
+    { sequelize, modelName: 'TestSeries', tableName: 'test_series',timestamps: false }
   );
   return TestSeries;
 };

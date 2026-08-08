@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
       duration_hours: DataTypes.DECIMAL(6, 1),
     },
-    { sequelize, modelName: 'Course', tableName: 'courses' }
+    { sequelize, modelName: 'Course', tableName: 'courses',timestamps: false }
   );
   return Course;
 };

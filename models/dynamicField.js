@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'DynamicField',
       tableName: 'dynamic_fields',
+      timestamps: false,
       indexes: [{ fields: ['table_name', 'record_id'] }],
     }
   );

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       visit_date: DataTypes.DATEONLY,
       visits: { type: DataTypes.INTEGER, defaultValue: 1 },
     },
-    { sequelize, modelName: 'Visitor', tableName: 'visitors' }
+    { sequelize, modelName: 'Visitor', tableName: 'visitors' ,timestamps: false}
   );
   return Visitor;
 };

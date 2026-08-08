@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       color: { type: DataTypes.STRING },
       status: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'Banner', tableName: 'banners' }
+    { sequelize, modelName: 'Banner', tableName: 'banners',timestamps: false }
   );
 
   return Banner;

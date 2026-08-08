@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: { type: DataTypes.INTEGER, allowNull: false },
     },
     {
-      sequelize, modelName: 'Like', tableName: 'likes',
+      sequelize, modelName: 'Like', tableName: 'likes',timestamps: false,
       indexes: [{ unique: true, fields: ['likeable_type', 'likeable_id', 'user_id'] }],
     }
   );

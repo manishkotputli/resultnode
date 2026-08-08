@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       note: DataTypes.TEXT,
       transaction_date: { type: DataTypes.DATEONLY, allowNull: false },
     },
-    { sequelize, modelName: 'IncomeExpense', tableName: 'income_expenses' }
+    { sequelize, modelName: 'IncomeExpense', tableName: 'income_expenses',timestamps: false }
   );
   return IncomeExpense;
 };

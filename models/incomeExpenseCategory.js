@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       // 1 = income, 2 = expense (exactly as specified)
       type: { type: DataTypes.TINYINT, allowNull: false },
     },
-    { sequelize, modelName: 'IncomeExpenseCategory', tableName: 'income_expense_categories' }
+    { sequelize, modelName: 'IncomeExpenseCategory', tableName: 'income_expense_categories',timestamps: false }
   );
   return IncomeExpenseCategory;
 };

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       url: { type: DataTypes.STRING, allowNull: false },
       order_no: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
-    { sequelize, modelName: 'PostLink', tableName: 'post_links' }
+    { sequelize, modelName: 'PostLink', tableName: 'post_links',timestamps: false }
   );
 
   return PostLink;

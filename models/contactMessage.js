@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       message: { type: DataTypes.TEXT, allowNull: false },
       is_read: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
-    { sequelize, modelName: 'ContactMessage', tableName: 'contact_messages' }
+    { sequelize, modelName: 'ContactMessage', tableName: 'contact_messages',timestamps: false }
   );
   return ContactMessage;
 };

@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       marks: { type: DataTypes.DECIMAL(4, 2), allowNull: false, defaultValue: 1 },
       display_order: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
-    { sequelize, modelName: 'TestQuestion', tableName: 'test_questions' }
+    { sequelize, modelName: 'TestQuestion', tableName: 'test_questions' ,timestamps: false}
   );
   return TestQuestion;
 };

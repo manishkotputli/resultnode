@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       started_at: DataTypes.DATE,
       submitted_at: DataTypes.DATE,
     },
-    { sequelize, modelName: 'TestAttempt', tableName: 'test_attempts' }
+    { sequelize, modelName: 'TestAttempt', tableName: 'test_attempts',timestamps: false }
   );
   return TestAttempt;
 };

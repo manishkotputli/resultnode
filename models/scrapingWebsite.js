@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
       last_scraped_at: DataTypes.DATE,
     },
-    { sequelize, modelName: 'ScrapingWebsite', tableName: 'scraping_websites' }
+    { sequelize, modelName: 'ScrapingWebsite', tableName: 'scraping_websites',timestamps: false }
   );
   return ScrapingWebsite;
 };

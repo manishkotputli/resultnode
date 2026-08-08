@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       can_delete: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
-      sequelize, modelName: 'SidebarMenuPermission', tableName: 'sidebar_menu_permissions',
+      sequelize, modelName: 'SidebarMenuPermission', tableName: 'sidebar_menu_permissions',timestamps: false,
       indexes: [{ unique: true, fields: ['role_id', 'sidebar_menu_id'] }],
     }
   );

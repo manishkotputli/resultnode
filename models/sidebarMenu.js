@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       order: { type: DataTypes.INTEGER, defaultValue: 0 },
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'SidebarMenu', tableName: 'sidebar_menus' }
+    { sequelize, modelName: 'SidebarMenu', tableName: 'sidebar_menus',timestamps: false }
   );
   return SidebarMenu;
 };

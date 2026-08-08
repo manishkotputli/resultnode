@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       ordering: { type: DataTypes.INTEGER, defaultValue: 0 },
       status: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'Faq', tableName: 'faqs' }
+    { sequelize, modelName: 'Faq', tableName: 'faqs',timestamps: false }
   );
   return Faq;
 };

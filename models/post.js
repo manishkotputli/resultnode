@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'Post',
       tableName: 'posts',
+      timestamps: false,
       hooks: {
         beforeValidate(post) {
           if (!post.slug && post.title) post.slug = slugify(post.title);

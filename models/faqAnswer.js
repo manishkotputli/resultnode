@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       image: { type: DataTypes.STRING },
       ordering: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
-    { sequelize, modelName: 'FaqAnswer', tableName: 'faq_answers' }
+    { sequelize, modelName: 'FaqAnswer', tableName: 'faq_answers',timestamps: false }
   );
   return FaqAnswer;
 };

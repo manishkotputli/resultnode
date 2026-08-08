@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       is_approved: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
     {
-      sequelize, modelName: 'Comment', tableName: 'comments',
+      sequelize, modelName: 'Comment', tableName: 'comments',timestamps: false,
       indexes: [{ fields: ['commentable_type', 'commentable_id'] }],
     }
   );

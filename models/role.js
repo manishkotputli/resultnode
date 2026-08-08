@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       // Short code used to build human-readable user codes, e.g. US-000001
       prefix: { type: DataTypes.STRING(10), allowNull: false, unique: true },
     },
-    { sequelize, modelName: 'Role', tableName: 'roles' }
+    { sequelize, modelName: 'Role', tableName: 'roles',timestamps: false }
   );
 
   return Role;

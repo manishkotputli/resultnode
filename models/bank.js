@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       opening_balance: { type: DataTypes.DECIMAL(12, 2), defaultValue: 0 },
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'Bank', tableName: 'banks' }
+    { sequelize, modelName: 'Bank', tableName: 'banks',timestamps: false }
   );
   return Bank;
 };

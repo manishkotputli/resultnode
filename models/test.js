@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       negative_marking: DataTypes.DECIMAL(4, 2),
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'Test', tableName: 'tests' }
+    { sequelize, modelName: 'Test', tableName: 'tests',timestamps: false }
   );
   return Test;
 };
