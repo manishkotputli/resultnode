@@ -17,7 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       display_order: { type: DataTypes.INTEGER, defaultValue: 0 },
       status: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'Category', tableName: 'categories' }
+    {
+  sequelize,
+  modelName: 'Category',
+  tableName: 'categories',
+  timestamps: false
+}
   );
 
   return Category;

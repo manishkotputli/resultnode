@@ -49,7 +49,12 @@ module.exports = (sequelize, DataTypes) => {
       maintenance_title: DataTypes.STRING,
       maintenance_message: DataTypes.TEXT,
     },
-    { sequelize, modelName: 'Setting', tableName: 'settings' }
+   {
+  sequelize,
+  modelName: 'Setting',
+  tableName: 'settings',
+  timestamps: false
+}
   );
   return Setting;
 };
