@@ -6,6 +6,7 @@ const { buildPagination } = require('../../helpers/pagination');
 const PER_PAGE = 20;
 
 async function getHomeData() {
+  try{
   const [marqueeItems, topPosts, sections] = await Promise.all([
     siteRepo.getMarqueePosts(),
     siteRepo.getTopPosts(),
@@ -30,6 +31,20 @@ async function getHomeData() {
   );
 
   return { marqueeRows: Array.from(marqueeRows.entries()), topPosts, dynamicSections };
+}
+  catch (error) {
+    console.error("========================================");
+    console.error("HOME DATA ERROR");
+    console.error("NAME:", error.name);
+    console.error("MESSAGE:", error.message);
+    console.error("SQL:", error.sql);
+    console.error("PARENT:", error.parent?.message);
+    console.error("PARENT SQL:", error.parent?.sql);
+    console.error("========================================");
+
+    throw error;
+
+}
 }
 
 async function getCategoryPage(slug, page) {
