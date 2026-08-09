@@ -11,11 +11,29 @@
         <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
             <h2 class="text-gray-900 text-lg font-bold mb-4">Profile Information</h2>
             <form method="POST" action="/admin/profile" enctype="multipart/form-data">
+                
+                <!-- Profile Photo with Instant Preview -->
                 <div class="flex items-center gap-4 mb-5">
-                    <img src="<%= profileUser.profile_photo || '/admin-assets/avatar-default.jpg' %>" class="size-16 rounded-full object-cover border border-border-color" alt="<%= profileUser.name %>">
+                    <div class="relative w-16 h-16 flex-shrink-0">
+                        <% 
+                          var currentPhoto = profileUser.profile_photo 
+                            ? (profileUser.profile_photo.startsWith('/') ? profileUser.profile_photo : '/uploads/users/' + profileUser.profile_photo)
+                            : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(profileUser.name) + '&background=0f172a&color=fff';
+                        %>
+                        <img id="avatar-preview" 
+                             src="<%= currentPhoto %>" 
+                             class="w-16 h-16 rounded-full object-cover border-2 border-border-color shadow-sm" 
+                             alt="<%= profileUser.name %>"
+                             onerror="this.src='https://ui-avatars.com/api/?name=User&background=0f172a&color=fff'">
+                    </div>
                     <div class="flex-1">
                         <label class="block text-sm font-medium text-gray-900 mb-2">Profile Photo</label>
-                        <input type="file" name="profile_photo" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        <input type="file" 
+                               id="profile_photo_input" 
+                               name="profile_photo" 
+                               accept="image/*" 
+                               onchange="previewImage(event)" 
+                               class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
                     </div>
                 </div>
 
@@ -51,8 +69,8 @@
             <h2 class="text-gray-900 text-lg font-bold mb-3">Account Info</h2>
             <div class="text-sm text-gray-600 space-y-2">
                 <p class="mb-0">User Code: <span class="font-medium text-gray-900"><%= profileUser.user_code || '-' %></span></p>
-                <p class="mb-0">Role: <span class="font-medium text-gray-900"><%= profileUser.Role ? profileUser.Role.name : '-' %></span></p>
-                <p class="mb-0">Joined: <%= formatDate(profileUser.created_at) %></p>
+                <p class="mb-0">Role: <span class="font-medium text-gray-900"><%= profileUser.Role ? profileUser.Role.name : (profileUser.role_name || '-') %></span></p>
+                <p class="mb-0">Joined: <%= typeof formatDate === 'function' ? formatDate(profileUser.created_at) : (profileUser.created_at || '-') %></p>
             </div>
         </div>
 
@@ -76,5 +94,19 @@
         </div>
     </div>
 </div>
+
+<!-- Instant Image Preview Script -->
+<script>
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const output = document.getElementById('avatar-preview');
+      output.src = reader.result;
+    };
+    if(event.target.files && event.target.files[0]){
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+</script>
 
 <%- include('../../adminlayout/admin-layout-bottom') %>
