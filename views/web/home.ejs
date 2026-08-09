@@ -1,12 +1,128 @@
 <%- include('../weblayout/layout-top', { title: title }) %>
 
-<!-- MARQUEE NEWS TICKER (sourced from posts.is_marquee, grouped by category) -->
+<style>
+  /* Base Layout Adjustments */
+  .news-marquee-wrapper {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+    padding: 0 5px;
+  }
+  
+  .news-marquee a {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* TOP BOXES - 2 COLUMNS ON MOBILE & DESKTOP */
+  .top-boxes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 5px;
+    max-width: 1000px;
+    margin: 0 auto 15px auto;
+  }
+
+  .top-box-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff !important;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 8px 5px;
+    text-decoration: none;
+    border-radius: 2px;
+    min-height: 42px;
+    box-sizing: border-box;
+    line-height: 1.2;
+  }
+
+  /* DYNAMIC SECTIONS - 2 COLUMNS PARALLEL ON MOBILE */
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 5px;
+    max-width: 1000px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* If 3 columns needed on desktop, auto-adjusts */
+  @media (min-width: 768px) {
+    .columns {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .col-box {
+    border: 1px solid #777;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+  }
+
+  .col-title {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    padding: 6px 4px;
+    background-color: #ab2828; /* Default red header */
+  }
+
+  /* Different header colors if needed */
+  .t-blue { background-color: #0033cc; }
+  .t-red { background-color: #ab2828; }
+  .t-green { background-color: #008000; }
+
+  .col-links {
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .col-links a {
+    color: #0033cc;
+    font-weight: 600;
+    font-size: 12px;
+    text-decoration: none;
+    line-height: 1.3;
+    display: block;
+    word-break: break-word;
+  }
+
+  .col-links a:hover {
+    color: #ff0000;
+    text-decoration: underline;
+  }
+
+  .view-all-wrapper {
+    text-align: right;
+    padding: 4px 6px 6px 6px;
+  }
+
+  .view-all-btn {
+    font-size: 11px;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+  }
+</style>
+
+<!-- MARQUEE NEWS TICKER -->
 <div class="news-marquee-wrapper">
   <% (marqueeRows || []).forEach(function(entry) { %>
     <% var categoryName = entry[0]; var items = entry[1]; %>
     <marquee behavior="alternate" onmouseover="this.stop()" onmouseout="this.start()" class="news-marquee">
       <% items.forEach(function(post, idx) { %>
-        <a href="/post/<%= post.slug %>" target="_blank" style="color:<%= post.highlight_color || '#0033cc' %>; font-weight:600;">
+        <a href="/post/<%= post.slug %>" target="_blank" style="color:<%= post.highlight_color || '#0033cc' %>;">
           <%= post.title %>
         </a>
         <% if (idx !== items.length - 1) { %>
@@ -17,7 +133,7 @@
   <% }) %>
 </div>
 
-<!-- TOP BUTTON GRID (sourced from posts.is_top) -->
+<!-- TOP BUTTON GRID (2 COLUMNS ON MOBILE) -->
 <div class="top-boxes">
   <% (topPosts || []).forEach(function(post) { %>
     <a href="/post/<%= post.slug %>" class="top-box-item" style="background: <%= post.highlight_color || '#0033cc' %>">
@@ -26,21 +142,23 @@
   <% }) %>
 </div>
 
-<!-- DYNAMIC HOME SECTIONS -->
+<!-- DYNAMIC HOME SECTIONS (2 COLUMNS ON MOBILE) -->
 <div class="columns">
   <% (dynamicSections || []).forEach(function(sec) { %>
     <div class="col-box">
-      <div class="col-title <%= sec.colorClass || 't-blue' %>">
-        <%= sec.title %>
-      </div>
-      <div class="col-links">
-        <% if (sec.posts && sec.posts.length) { %>
-          <% sec.posts.forEach(function(item) { %>
-            <a href="/post/<%= item.slug %>">&bull; <%= item.title %></a>
-          <% }) %>
-        <% } else { %>
-          <span class="text-muted">No posts available</span>
-        <% } %>
+      <div>
+        <div class="col-title <%= sec.colorClass || 't-red' %>">
+          <%= sec.title %>
+        </div>
+        <div class="col-links">
+          <% if (sec.posts && sec.posts.length) { %>
+            <% sec.posts.forEach(function(item) { %>
+              <a href="/post/<%= item.slug %>">&bull; <%= item.title %></a>
+            <% }) %>
+          <% } else { %>
+            <span style="font-size:11px; color:#666;">No posts available</span>
+          <% } %>
+        </div>
       </div>
       <div class="view-all-wrapper">
         <a href="/category/<%= sec.category ? sec.category.slug : '' %>" class="view-all-btn">View All &rarr;</a>

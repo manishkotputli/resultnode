@@ -1,40 +1,271 @@
-<div class="navbar">
-  <!-- Mobile Toggle Button (3 Lines) -->
-  <button class="nav-toggle-btn" id="navToggleBtn" aria-label="Toggle Menu">
-    <i class="ti ti-menu-2"></i>
-  </button>
+<style>
+  /* BASE STYLES */
+  .navbar-wrapper {
+    background-color: #000000;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+  }
 
-  <ul id="navMenu">
+  /* MOBILE TOP BAR (Only Visible on Mobile/Tablet < 768px) */
+  .mobile-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #000000;
+  }
+
+  .nav-toggle-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 270px;
+  }
+
+  .nav-toggle-btn #navIcon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .mobile-search-btn {
+    color: #ffffff !important;
+    font-size: 18px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  /* MENU CONTAINER */
+  .nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+  }
+
+  /* DROPDOWN BASE */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-content {
+    display: none;
+    background-color: #111111;
+  }
+
+  .dropdown.open .dropdown-content,
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  /* ==========================================
+     DESKTOP STYLES (min-width: 769px)
+     ========================================== */
+  @media (min-width: 769px) {
+    /* Hide Mobile Header Bar on Desktop */
+    .mobile-header-bar {
+      display: none !important;
+    }
+
+    /* Horizontal Navbar Row */
+    .nav-menu {
+      display: flex !important;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-top: none;
+    }
+
+    .nav-menu li {
+      width: auto;
+    }
+
+    .nav-menu li a {
+      display: block;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 12px 16px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .nav-menu li a:hover {
+      background-color: #222222;
+    }
+
+    /* Desktop Hover Dropdown */
+    .dropdown-content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 160px;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      border-top: 2px solid #0033cc;
+    }
+
+    .dropdown-content a {
+      padding: 10px 15px !important;
+      border-bottom: 1px solid #222;
+    }
+  }
+
+  /* ==========================================
+     MOBILE & TABLET STYLES (max-width: 768px)
+     ========================================== */
+  @media (max-width: 768px) {
+    /* Show Mobile Header Bar */
+    .mobile-header-bar {
+      display: flex;
+    }
+
+    /* Hide Menu by Default until Toggled */
+    .nav-menu {
+      display: none;
+      flex-direction: column;
+      border-top: 1px solid #222222;
+      padding: 5px 0 15px 0;
+    }
+
+    /* Active State when Hamburger Clicked */
+    .nav-menu.active {
+      display: flex !important;
+    }
+
+    .nav-menu li {
+      width: 100%;
+    }
+
+    .nav-menu li a {
+      display: block;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 12px 25px;
+      text-decoration: none;
+    }
+
+    .nav-menu li a:hover {
+      background-color: #1a1a1a;
+    }
+
+    .dropdown-content {
+      padding-left: 20px;
+      background-color: #111111;
+    }
+
+    .dropdown-content a {
+      font-size: 14px !important;
+      padding: 10px 20px !important;
+      color: #ddd !important;
+    }
+
+    /* Hide Desktop Inline Search in Mobile Menu List (Use Top Right Search instead) */
+    .desktop-search-item {
+      display: none;
+    }
+  }
+</style>
+
+<!-- NAVBAR COMPONENT -->
+<div class="navbar-wrapper">
+  <!-- Mobile Header Bar (Only visible < 768px) -->
+  <div class="mobile-header-bar">
+    <button class="nav-toggle-btn" id="navToggleBtn" aria-label="Toggle Menu">
+      <span id="navIcon"><i class="ti ti-menu-2"></i></span>
+      <span class="menu-text">Menu</span>
+    </button>
+
+    <a href="/search" class="mobile-search-btn" aria-label="Search">
+      <i class="ti ti-search"></i>
+    </a>
+  </div>
+
+  <!-- Responsive Menu List -->
+  <ul id="navMenu" class="nav-menu">
     <li><a href="/">Home</a></li>
 
     <% (navCategories || []).forEach(function(cat) { %>
       <li><a href="/category/<%= cat.slug %>"><%= cat.name %></a></li>
     <% }) %>
 
-    <li><a href="/blog">blog</a></li>
+    <li><a href="/blog">Blog</a></li>
 
-    <li class="dropdown mega-drop">
-      <a href="#" class="drop-btn">More &#9662;</a>
-      <div class="mega-menu">
-        <div class="mega-col">
-          <a href="/contact">Contact Us</a>
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="/disclaimer">Disclaimer</a>
-        </div>
-        <div class="mega-col">
-          <a href="/about">About Us</a>
-          <a href="/terms">Terms & Conditions</a>
-          <a href="/faqs">FAQ</a>
-        </div>
+    <li class="dropdown" id="moreDropdown">
+      <a href="javascript:void(0)" class="drop-btn" id="moreDropBtn">
+        More &#9662;
+      </a>
+      <div class="dropdown-content">
+        <a href="/contact">Contact Us</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/about">About Us</a>
+        <a href="/terms">Terms & Conditions</a>
+        <a href="/faqs">FAQ</a>
       </div>
     </li>
-
-    <li><a href="#">&#128269;</a></li>
 
     <% if (currentUser) { %>
       <li><a href="/dashboard"><%= currentUser.name %></a></li>
     <% } else { %>
       <li><a href="/login">Login</a></li>
     <% } %>
+
+    <!-- Search icon for Desktop layout -->
+    <li class="desktop-search-item">
+      <a href="/search" aria-label="Search"><i class="ti ti-search"></i></a>
+    </li>
   </ul>
 </div>
+
+<!-- JAVASCRIPT FOR TOGGLE & RESPONSIVE BEHAVIOR -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const navToggleBtn = document.getElementById('navToggleBtn');
+    const navMenu = document.getElementById('navMenu');
+    const navIcon = document.getElementById('navIcon');
+    const moreDropBtn = document.getElementById('moreDropBtn');
+    const moreDropdown = document.getElementById('moreDropdown');
+
+    // Mobile Toggle Handler
+    navToggleBtn.addEventListener('click', function() {
+      navMenu.classList.toggle('active');
+      
+      if (navMenu.classList.contains('active')) {
+        navIcon.innerHTML = '<i class="ti ti-x"></i>'; 
+      } else {
+        navIcon.innerHTML = '<i class="ti ti-menu-2"></i>';
+      }
+    });
+
+    // Mobile Accordion Dropdown
+    if (moreDropBtn) {
+      moreDropBtn.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          moreDropdown.classList.toggle('open');
+        }
+      });
+    }
+
+    // Reset Mobile Classes on Resize to Desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        navMenu.classList.remove('active');
+        moreDropdown.classList.remove('open');
+        navIcon.innerHTML = '<i class="ti ti-menu-2"></i>';
+      }
+    });
+  });
+</script>

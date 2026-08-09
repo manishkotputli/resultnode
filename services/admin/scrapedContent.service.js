@@ -74,6 +74,12 @@ async function publish(id) {
     meta_description: data.meta_description || null,
   });
 
+  // Auto-populate the Important Links table with a link back to the
+  // original source, exactly like a manually-created post would have.
+  await postRepo.replaceLinks(post.id, [
+    { label: 'Official Notification / Source', url: log.detail_url, order_no: 0 },
+  ]);
+
   await contentRepo.update(log, { status: 'published', post_id: post.id });
   return post;
 }

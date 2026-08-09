@@ -51,8 +51,13 @@ module.exports = (sequelize, DataTypes) => {
       next_run_at: DataTypes.DATE,
       last_status: DataTypes.STRING(20), // success | failed | running
       last_error: DataTypes.TEXT,
+
+      // When true, scraped items publish straight to the Posts table with
+      // no manual review step — this is what makes the pipeline fully
+      // automatic (scrape -> publish, indistinguishable from a manual post).
+      auto_publish: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
-    { sequelize, modelName: 'ScrapingWebsite', tableName: 'scraping_websites',timestamps:false }
+    { sequelize, modelName: 'ScrapingWebsite', tableName: 'scraping_websites',timestamps:false  }
   );
   return ScrapingWebsite;
 };

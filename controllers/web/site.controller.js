@@ -30,8 +30,14 @@ async function postDetail(req, res, next) {
       referrer: req.get('Referer'),
     };
     const data = await siteService.getPostDetail(req.params.slug, viewerCtx);
-    if (!data) return res.status(404).render('errors/error', { status: 404, message: 'Post Not Found' });
-    res.render('web/post-detail', { title: data.post.meta_title || data.post.title, ...data });
+if (!data) return res.status(404).render('errors/error', { status: 404, message: 'Post Not Found' });
+const fallbackDescription = (data.post.short_description || '').replace(/<[^>]*>/g, '').trim().slice(0, 160);
+res.render('web/post-detail', {
+  title: data.post.meta_title || data.post.title,
+  metaDescription: data.post.meta_description || fallbackDescription,
+  metaKeywords: data.post.meta_keywords || '',
+  ...data,
+});
   } catch (err) {
     next(err);
   }

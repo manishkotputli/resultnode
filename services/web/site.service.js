@@ -69,11 +69,11 @@ async function getPostDetail(slug, viewerCtx) {
     trackableType: 'post', trackableId: post.id, eventType: 'view',
     userId: viewerCtx.userId, ip: viewerCtx.ip, userAgent: viewerCtx.userAgent, referrer: viewerCtx.referrer,
   });
+const relatedPosts = await siteRepo.getRelatedPosts(post.category_id, post.id, 10);
+const fieldGroups = groupDynamicFields(post.fields);
+const faqs = await siteRepo.getFaqsByCategoryOrGlobal(post.category_id);
 
-  const relatedPosts = await siteRepo.getRelatedPosts(post.category_id, post.id, 10);
-  const fieldGroups = groupDynamicFields(post.fields);
-
-  return { post, relatedPosts, fieldGroups };
+return { post, relatedPosts, fieldGroups, faqs };
 }
 
 async function trackLinkClick(postId, viewerCtx) {

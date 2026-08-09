@@ -1,0 +1,94 @@
+<%- include('../../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">Review Scraped Content</h1>
+    <a href="/admin/scraping/content" class="text-sm font-medium text-gray-600 hover:text-primary flex items-center gap-1"><i class="icon-arrow-left"></i> Back to Scraped Content</a>
+</div>
+
+<div class="grid grid-cols-12 gap-4 lg:gap-6">
+    <div class="col-span-12 xxl:col-span-8 space-y-4 lg:space-y-6">
+        <form method="POST" action="/admin/scraping/content/<%= item.id %>/update">
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-0">Edit Before Publishing</h2>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Title</label>
+                    <input type="text" name="title" value="<%= item.scraped_data.title || item.post_title %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Category <span class="text-danger">*</span> <span class="text-gray-400 font-normal">(required to publish)</span></label>
+                    <select name="category_id" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        <option value="">Select Category</option>
+                        <% categories.forEach(function(cat) { %>
+                            <option value="<%= cat.id %>" <%= item.scraped_data.category_id === cat.id ? 'selected' : '' %>><%= cat.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Short Description</label>
+                    <textarea name="short_description" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= item.scraped_data.short_description || '' %></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Full Description <span class="text-gray-400 font-normal">(HTML from the source page — review before publishing)</span></label>
+                    <textarea name="full_description" rows="12" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= item.scraped_data.full_description || '' %></textarea>
+                    <% if (!item.scraped_data.full_description) { %>
+                        <p class="text-xs text-gray-400 mt-1 mb-0">No content was auto-fetched. Paste/write the description manually, or open the <a href="<%= item.detail_url %>" target="_blank" rel="noopener" class="text-primary underline">original source</a> to copy it.</p>
+                    <% } %>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Tags <span class="text-gray-400 font-normal">(comma separated)</span></label>
+                    <input type="text" name="tags" value="<%= item.scraped_data.tags || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+            </div>
+
+            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mt-4 lg:mt-6 space-y-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-0">SEO Meta</h2>
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Meta Title</label>
+                    <input type="text" name="meta_title" value="<%= item.scraped_data.meta_title || '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Meta Description</label>
+                    <textarea name="meta_description" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= item.scraped_data.meta_description || '' %></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-4 lg:mt-6">
+                <button type="submit" class="py-2.5 px-6 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-span-12 xxl:col-span-4 space-y-4 lg:space-y-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Source</h2>
+            <div class="text-sm text-gray-600 space-y-2 mb-4">
+                <p class="mb-0">Website: <span class="font-medium text-gray-900"><%= item.ScrapingWebsite ? item.ScrapingWebsite.name : '-' %></span></p>
+                <p class="mb-0">Scraped: <%= formatDate(item.scraped_at) %></p>
+                <p class="mb-0">Status: <span class="font-medium text-gray-900"><%= item.status === 'draft' ? 'Pending' : item.status %></span></p>
+                <p class="mb-0"><a href="<%= item.detail_url %>" target="_blank" rel="noopener" class="text-primary underline break-all">View original source ↗</a></p>
+            </div>
+
+            <% if (item.status === 'draft') { %>
+            <div class="flex flex-col gap-2">
+                <form method="POST" action="/admin/scraping/content/<%= item.id %>/publish">
+                    <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-success rounded-lg hover:opacity-90 transition cursor-pointer">Approve &amp; Publish</button>
+                </form>
+                <form method="POST" action="/admin/scraping/content/<%= item.id %>/reject">
+                    <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-orange bg-white border border-orange rounded-lg hover:bg-orange/5 transition cursor-pointer">Reject</button>
+                </form>
+            </div>
+            <% } else if (item.status === 'published') { %>
+                <p class="text-sm text-success font-medium">✓ Already published<% if (item.post_id) { %> — <a href="/admin/posts/<%= item.post_id %>/edit" class="underline">view post</a><% } %></p>
+            <% } else { %>
+                <p class="text-sm text-danger font-medium">Rejected</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('../../../adminlayout/admin-layout-bottom') %>

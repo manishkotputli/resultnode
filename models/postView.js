@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       referrer_url: DataTypes.STRING,
     },
     {
-      sequelize, modelName: 'PostView', tableName: 'post_views', updatedAt: false,
+      sequelize, modelName: 'PostView', tableName: 'post_views', timestamps: false,
       indexes: [{ fields: ['trackable_type', 'trackable_id'] }],
     }
   );

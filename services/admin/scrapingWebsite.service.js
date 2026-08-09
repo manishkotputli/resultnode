@@ -1,6 +1,8 @@
 'use strict';
+const db = require('../../models');
 const websiteRepo = require('../../repositories/admin/scrapingWebsite.repository');
 const contentRepo = require('../../repositories/admin/scrapedContent.repository');
+const contentService = require('./scrapedContent.service');
 const engine = require('./scraperEngine');
 
 const SCHEDULE_MINUTES = {
@@ -58,6 +60,7 @@ function buildData(body) {
     cron_expression: body.schedule_type === 'custom' ? (body.cron_expression || null) : null,
     selectors,
     next_run_at: computeNextRun(body.schedule_type),
+    auto_publish: body.auto_publish === 'on' || body.auto_publish === undefined,
   };
 }
 
@@ -89,10 +92,18 @@ async function deleteWebsite(id) {
 
 /**
  * Runs one scrape pass for a website: fetches the listing, skips items
- * already seen (duplicate detail_url for this website), and inserts new
- * ScrapingLog rows with status 'draft' for admin review.
+ * already seen (duplicate detail_url for this website), and either:
+ *  - creates a ScrapingLog row + immediately publishes a real Post
+ *    (when website.auto_publish is true and a category can be resolved), or
+ *  - creates a ScrapingLog row with status 'draft' for manual review.
+ *
+ * `onProgress(update)` is called after every item (optional) so a caller
+ * (e.g. the AJAX "Run Now" endpoint) can stream live status to the UI.
+ * Detail-page fetches are done one at a time with a short pause between
+ * them — this is kinder to the source site and keeps any single run from
+ * ballooning into one giant blocking request.
  */
-async function runNow(id) {
+async function runNow(id, onProgress) {
   const website = await websiteRepo.findById(id);
   if (!website) {
     const err = new Error('Website not found');
@@ -102,17 +113,30 @@ async function runNow(id) {
 
   await websiteRepo.update(website, { last_status: 'running', last_error: null });
 
+  // Resolve this website's target Category once per run (used to
+  // auto-fill every scraped item so publishing needs no manual step).
+  let resolvedCategoryId = null;
+  const categorySlug = Array.isArray(website.categories) ? website.categories[0] : null;
+  if (categorySlug) {
+    const category = await db.Category.findOne({ where: { slug: categorySlug } });
+    if (category) resolvedCategoryId = category.id;
+  }
+
   let imported = 0;
   let skipped = 0;
+  let published = 0;
 
   try {
     const items = await engine.scrapeListing(website);
+    if (onProgress) onProgress({ phase: 'listing_done', total: items.length });
 
-    for (const item of items) {
+    for (let i = 0; i < items.length; i += 1) {
+      const item = items[i];
       const existing = await contentRepo.findByDetailUrl(website.id, item.detail_url);
       if (existing) {
         skipped += 1;
-        continue; // duplicate detection: skip already-seen items
+        if (onProgress) onProgress({ phase: 'item', index: i + 1, total: items.length, skipped: true, title: item.title });
+        continue;
       }
 
       let full_description = null;
@@ -121,11 +145,11 @@ async function runNow(id) {
         try {
           full_description = await engine.scrapeDetail(item.detail_url, detailSelector);
         } catch (e) {
-          full_description = null; // detail fetch failing shouldn't fail the whole run
+          full_description = null; // a single detail-page failure shouldn't fail the whole run
         }
       }
 
-      await contentRepo.create({
+      const log = await contentRepo.create({
         scraping_website_id: website.id,
         post_title: item.title,
         detail_url: item.detail_url,
@@ -135,7 +159,7 @@ async function runNow(id) {
           title: item.title,
           detail_url: item.detail_url,
           date_text: item.dateText,
-          category_id: null,
+          category_id: resolvedCategoryId,
           short_description: null,
           full_description,
           meta_title: null,
@@ -144,6 +168,27 @@ async function runNow(id) {
         },
       });
       imported += 1;
+
+      let autoPublished = false;
+      if (website.auto_publish && resolvedCategoryId) {
+        try {
+          await contentService.publish(log.id);
+          published += 1;
+          autoPublished = true;
+        } catch (e) {
+          // Leave it in the review queue if auto-publish fails for any reason.
+        }
+      }
+
+      if (onProgress) {
+        onProgress({ phase: 'item', index: i + 1, total: items.length, title: item.title, published: autoPublished });
+      }
+
+      // Small pause between detail-page fetches — polite to the source
+      // site and keeps a single run from becoming one long blocking call.
+      if (i < items.length - 1) {
+        await new Promise((r) => setTimeout(r, 400));
+      }
     }
 
     await websiteRepo.update(website, {
@@ -153,7 +198,7 @@ async function runNow(id) {
       next_run_at: computeNextRun(website.schedule_type),
     });
 
-    return { imported, skipped, total: items.length };
+    return { imported, skipped, published, total: items.length };
   } catch (err) {
     await websiteRepo.update(website, {
       last_status: 'failed',

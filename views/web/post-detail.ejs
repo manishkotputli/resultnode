@@ -17,8 +17,16 @@ var pageStyles = `
 .sr-list li{ margin:2px 0; }
 .sr-important-links{ width:100%; border-collapse:collapse; background:#fffbe6; }
 .sr-important-links td, .sr-important-links th{ border:1px solid #000; padding:5px; }
+.sr-link-cell{ background:#fff091; text-align:center; }
 .sr-link{ color:#0000ee; text-decoration:underline; }
 .sr-link:hover{ color:#cc0000; }
+.sr-faq-item{ padding:8px 0; border-bottom:1px solid #ddd; }
+.sr-faq-item:last-child{ border-bottom:none; }
+.sr-faq-q{ font-weight:700; color:#0033cc; margin:0 0 4px; }
+.sr-faq-a{ color:#222; }
+.sr-related-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; }
+.sr-related-item{ display:block; padding:3px 0; }
+@media (max-width:600px){ .sr-related-grid{ grid-template-columns:1fr; } }
 .sr-disclaimer{ font-size:12px; padding:6px; line-height:1.5; }
 `;
 var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
@@ -112,36 +120,32 @@ var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
     <% if (post.links && post.links.length) { %>
       <% post.links.forEach(function(link) { %>
         <tr>
-          <td><%= link.label %></td>
-          <td><a href="/go/<%= link.id %>" class="sr-link" target="_blank">Click Here</a></td>
+          <td class="sr-link-cell"><%= link.label %></td>
+          <td class="sr-link-cell"><a href="/go/<%= link.id %>" class="sr-link" target="_blank">Click Here</a></td>
         </tr>
       <% }) %>
     <% } else { %>
-      <tr><td colspan="2">No links added yet.</td></tr>
+      <tr><td colspan="2" class="sr-link-cell">No links added yet.</td></tr>
     <% } %>
   </table>
 
-  <table class="sr-main-table">
-    <tr><td class="sr-blue-head"><b>Meta Information</b></td></tr>
-    <tr>
-      <td>
-        <b>Meta Title:</b> <%= post.meta_title || '-' %> <br><br>
-        <b>Meta Keywords:</b> <%= post.meta_keywords || '-' %> <br><br>
-        <b>Meta Description:</b><br>
-        <%= post.meta_description || '-' %>
-      </td>
-    </tr>
-  </table>
-
-  <table class="sr-main-table">
-    <tr><td class="sr-purple-head"><b>Record Info</b></td></tr>
-    <tr>
-      <td>
-        <b>Created At:</b> <%= formatDate(post.createdAt, 'DD MMM YYYY, hh:mm A') %> <br>
-        <b>Updated At:</b> <%= formatDate(post.updatedAt, 'DD MMM YYYY, hh:mm A') %>
-      </td>
-    </tr>
-  </table>
+  <% if (faqs && faqs.length) { %>
+    <table class="sr-main-table">
+      <tr><td class="sr-yellow-head"><b>Important Questions</b></td></tr>
+      <tr>
+        <td>
+          <% faqs.forEach(function(f) { %>
+            <div class="sr-faq-item">
+              <p class="sr-faq-q">Q: <%= f.question %></p>
+              <% (f.answers || []).forEach(function(a) { %>
+                <div class="sr-faq-a"><%- a.answer %></div>
+              <% }) %>
+            </div>
+          <% }) %>
+        </td>
+      </tr>
+    </table>
+  <% } %>
 
   <table class="sr-main-table">
     <tr><td class="sr-red-head"><b>Disclaimer</b></td></tr>
@@ -158,11 +162,11 @@ var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
       <tr><td class="sr-green-head"><b>Related Posts</b></td></tr>
       <tr>
         <td>
-          <ul class="sr-list">
+          <div class="sr-related-grid">
             <% relatedPosts.forEach(function(rp) { %>
-              <li><a href="/post/<%= rp.slug %>" class="sr-link"><%= rp.title %></a></li>
+              <a href="/post/<%= rp.slug %>" class="sr-link sr-related-item"><%= rp.title %></a>
             <% }) %>
-          </ul>
+          </div>
         </td>
       </tr>
     </table>

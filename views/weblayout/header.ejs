@@ -11,12 +11,12 @@
 .logo {
   height: 70px;
   width: auto;
-      margin-top: 115px;
+      margin-top: 70px;
     margin-bottom: 26px;
 
 }
 .header-content{
-      margin-top: 85px;
+      margin-top:40px;
 }
 .header-content h1 {
   margin: 0;
@@ -27,9 +27,9 @@
 }
  </style>
 <div class="header">
-  <% if (site_setting && site_setting.logo) { %>
+  <!-- <% if (site_setting && site_setting.logo) { %>
     <img src="/uploads/logo/<%= site_setting.logo %>" alt="Logo" class="logo">
-  <% } %>
+  <% } %> -->
 
   <div class="header-content">
     <h1><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h1>

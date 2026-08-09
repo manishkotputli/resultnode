@@ -60,11 +60,21 @@ async function destroy(req, res, next) {
 }
 
 async function runNow(req, res, next) {
+  const wantsJson = req.xhr || (req.headers.accept || '').includes('application/json');
   try {
     const result = await service.runNow(req.params.id);
-    req.flash('success', `Scrape finished: ${result.imported} new item(s) imported, ${result.skipped} duplicate(s) skipped.`);
+    if (wantsJson) {
+      return res.json({ ok: true, ...result });
+    }
+    const parts = [`${result.imported} new item(s) imported`];
+    if (result.published) parts.push(`${result.published} auto-published`);
+    parts.push(`${result.skipped} duplicate(s) skipped`);
+    req.flash('success', `Scrape finished: ${parts.join(', ')}.`);
     res.redirect('/admin/scraping/websites');
   } catch (err) {
+    if (wantsJson) {
+      return res.status(err.status || 500).json({ ok: false, error: err.message });
+    }
     if (err.status === 400 || err.status === 404) {
       req.flash('error', err.message);
       return res.redirect('/admin/scraping/websites');

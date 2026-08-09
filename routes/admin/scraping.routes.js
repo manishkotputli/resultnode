@@ -7,7 +7,7 @@ const contentController = require('../../controllers/admin/scrapedContent.contro
 const logsController = require('../../controllers/admin/scrapingLogs.controller');
 const { isAdminAuthenticated } = require('../../middlewares/adminAuth');
 
-router.use(isAdminAuthenticated);
+router.use('/scraping', isAdminAuthenticated);
 
 router.get('/scraping/dashboard', dashboardController.index);
 
