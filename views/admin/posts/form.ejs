@@ -268,71 +268,108 @@
 
 <%
 var pageScripts = `
-// ---- Important Links: add / remove rows ----
-document.getElementById('addLinkRowBtn').addEventListener('click', function () {
-  var tbody = document.getElementById('linksTableBody');
-  var tr = document.createElement('tr');
-  tr.innerHTML =
-    '<td class="py-2 pr-3"><input type="text" name="links_label" placeholder="e.g. Apply Online" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-    '<td class="py-2 pr-3"><input type="url" name="links_url" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-    '<td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>';
-  tbody.appendChild(tr);
-  document.getElementById('noLinksMsg').style.display = 'none';
-});
+(function() {
+    function initScripts() {
+        // ---- Important Links: Add Row ----
+        var addLinkBtn = document.getElementById('addLinkRowBtn');
+        if (addLinkBtn) {
+            addLinkBtn.onclick = function (e) {
+                e.preventDefault();
+                var tbody = document.getElementById('linksTableBody');
+                var noLinksMsg = document.getElementById('noLinksMsg');
+                if (!tbody) return;
 
-// ---- Dynamic Fields: "+ Add Field" modal -> appends a row to the table ----
-document.getElementById('modalAddFieldBtn').addEventListener('click', function () {
-  var label = document.getElementById('modalFieldLabel').value.trim();
-  if (!label) {
-    alert('Field Label is required.');
-    return;
-  }
-  var group = document.getElementById('modalFieldGroup').value.trim() || 'Details';
-  var type = document.getElementById('modalFieldType').value;
-  var value = document.getElementById('modalFieldValue').value;
+                var tr = document.createElement('tr');
+                tr.innerHTML = 
+                    '<td class="py-2 pr-3"><input type="text" name="links_label" placeholder="e.g. Apply Online" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
+                    '<td class="py-2 pr-3"><input type="url" name="links_url" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
+                    '<td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>';
 
-  var tbody = document.getElementById('fieldsTableBody');
-  var tr = document.createElement('tr');
+                tbody.appendChild(tr);
+                if (noLinksMsg) noLinksMsg.style.display = 'none';
+            };
+        }
 
-  var typeOptions = ['text','number','date','textarea','richtext','url'].map(function (t) {
-    return '<option value="' + t + '"' + (t === type ? ' selected' : '') + '>' + t + '</option>';
-  }).join('');
+        // ---- Dynamic Fields: Add Field Modal ----
+        var addFieldBtn = document.getElementById('modalAddFieldBtn');
+        if (addFieldBtn) {
+            addFieldBtn.onclick = function (e) {
+                e.preventDefault();
+                var labelInput = document.getElementById('modalFieldLabel');
+                var label = labelInput ? labelInput.value.trim() : '';
 
-  tr.innerHTML =
-    '<td class="py-2 pr-3"><input type="text" name="fields_group" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-    '<td class="py-2 pr-3"><input type="text" name="fields_label" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-    '<td class="py-2 pr-3"><select name="fields_type" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">' + typeOptions + '</select></td>' +
-    '<td class="py-2 pr-3"><input type="text" name="fields_value" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-    '<td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>';
+                if (!label) {
+                    alert('Field Label is required.');
+                    return;
+                }
 
-  tbody.appendChild(tr);
-  tr.querySelector('input[name="fields_group"]').value = group;
-  tr.querySelector('input[name="fields_label"]').value = label;
-  tr.querySelector('input[name="fields_value"]').value = value;
-  document.getElementById('noFieldsMsg').style.display = 'none';
+                var group = (document.getElementById('modalFieldGroup').value || '').trim() || 'Details';
+                var type = document.getElementById('modalFieldType').value;
+                var value = document.getElementById('modalFieldValue').value;
 
-  // reset + close modal
-  document.getElementById('modalFieldGroup').value = '';
-  document.getElementById('modalFieldLabel').value = '';
-  document.getElementById('modalFieldValue').value = '';
-  document.getElementById('modalFieldType').value = 'text';
-  if (window.HSOverlay) { window.HSOverlay.close(document.getElementById('addFieldModal')); }
-});
+                var tbody = document.getElementById('fieldsTableBody');
+                var noFieldsMsg = document.getElementById('noFieldsMsg');
+                var tr = document.createElement('tr');
 
-// ---- Remove row (delegated, works for both tables) ----
-document.addEventListener('click', function (e) {
-  var btn = e.target.closest('.removeRowBtn');
-  if (!btn) return;
-  var tr = btn.closest('tr');
-  var tbody = tr.parentElement;
-  tr.remove();
-  if (tbody.id === 'linksTableBody' && !tbody.children.length) {
-    document.getElementById('noLinksMsg').style.display = '';
-  }
-  if (tbody.id === 'fieldsTableBody' && !tbody.children.length) {
-    document.getElementById('noFieldsMsg').style.display = '';
-  }
-});
+                var typeOptions = ['text','number','date','textarea','richtext','url'].map(function (t) {
+                    return '<option value="' + t + '"' + (t === type ? ' selected' : '') + '>' + t + '</option>';
+                }).join('');
+
+                tr.innerHTML = 
+                    '<td class="py-2 pr-3"><input type="text" name="fields_group" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
+                    '<td class="py-2 pr-3"><input type="text" name="fields_label" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
+                    '<td class="py-2 pr-3"><select name="fields_type" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">' + typeOptions + '</select></td>' +
+                    '<td class="py-2 pr-3"><input type="text" name="fields_value" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
+                    '<td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>';
+
+                tbody.appendChild(tr);
+                tr.querySelector('input[name="fields_group"]').value = group;
+                tr.querySelector('input[name="fields_label"]').value = label;
+                tr.querySelector('input[name="fields_value"]').value = value;
+
+                if (noFieldsMsg) noFieldsMsg.style.display = 'none';
+
+                // Reset modal values
+                document.getElementById('modalFieldGroup').value = '';
+                document.getElementById('modalFieldLabel').value = '';
+                document.getElementById('modalFieldValue').value = '';
+                document.getElementById('modalFieldType').value = 'text';
+
+                if (window.HSOverlay) {
+                    window.HSOverlay.close(document.getElementById('addFieldModal'));
+                }
+            };
+        }
+
+        // ---- Remove Row (Delegated Event) ----
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('.removeRowBtn');
+            if (!btn) return;
+
+            var tr = btn.closest('tr');
+            var tbody = tr ? tr.parentElement : null;
+            if (!tr || !tbody) return;
+
+            tr.remove();
+
+            if (tbody.id === 'linksTableBody' && !tbody.children.length) {
+                var noLinks = document.getElementById('noLinksMsg');
+                if (noLinks) noLinks.style.display = 'block';
+            }
+
+            if (tbody.id === 'fieldsTableBody' && !tbody.children.length) {
+                var noFields = document.getElementById('noFieldsMsg');
+                if (noFields) noFields.style.display = 'block';
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScripts);
+    } else {
+        initScripts();
+    }
+})();
 `;
 %>
 
