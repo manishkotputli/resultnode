@@ -27,4 +27,6 @@ router.use(require('./contactMessage.routes'));
 router.use(require('./settings.routes'));
 router.use(require('./incomeexpense.routes'));
 router.use(require('./purchase.routes'));
+router.use(require('./scraping.routes'));
+router.use(require('./profile.routes'));
 module.exports = router;

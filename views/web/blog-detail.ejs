@@ -1,84 +1,184 @@
 <%
 var pageStyles = `
-.blog-detail-container{ max-width:1280px; margin:30px auto 60px; padding:0 15px; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-.breadcrumb-box{ font-size:14px; color:#666; margin-bottom:15px; }
-.breadcrumb-box a{ color:#0a58ca; text-decoration:none; }
-.blog-category-tag{ color:#0a58ca; font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase; }
-.blog-title-area h1{ font-size:32px; font-weight:800; margin:10px 0; color:#111; }
-.blog-title-area .sub{ color:#666; font-size:15px; margin-bottom:12px; }
-.blog-meta{ font-size:14px; color:#777; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.blog-meta img.avatar{ width:24px; height:24px; border-radius:50%; object-fit:cover; background:#ddd; vertical-align:middle; margin-right:4px; }
+:root{
+  --primary-navy:#0b1f5e;
+  --primary-navy-dark:#06123b;
+  --brand-red:#d90000;
+  --brand-red-hover:#b30000;
+  --accent-blue:#0a58ca;
+  --accent-blue-light:#eef1fd;
+  --bg-gray:#f5f7fb;
+  --card-white:#fff;
+  --text-dark:#172033;
+  --text-muted:#667085;
+  --border-color:#e6e9f0;
+  --radius-lg:16px;
+  --radius-md:10px;
+  --shadow-sm:0 2px 6px rgba(11,31,94,.05);
+  --shadow-md:0 6px 20px rgba(11,31,94,.10);
+}
+*{box-sizing:border-box;}
+.blog-detail-container{ max-width:1280px; margin:24px auto 60px; padding:0 16px; font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; color:var(--text-dark); }
 
-.blog-detail-grid{ display:grid; grid-template-columns:2.3fr 1fr; gap:30px; margin-top:20px; }
-.blog-image img{ width:100%; max-height:420px; object-fit:cover; border-radius:14px; margin-bottom:20px; background:#ddd; }
-.blog-quote{ background:#f3f4fb; padding:18px 22px; border-left:4px solid #0a58ca; font-size:16px; font-style:italic; color:#333; margin-bottom:22px; border-radius:0 8px 8px 0; }
+.breadcrumb-box{ font-size:13px; color:var(--text-muted); margin-bottom:14px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.breadcrumb-box a{ color:var(--accent-blue); text-decoration:none; }
+.breadcrumb-box a:hover{ text-decoration:underline; }
+
+.blog-title-area{ background:var(--card-white); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:20px; }
+.blog-category-tag{ display:inline-block; color:var(--accent-blue); background:var(--accent-blue-light); font-weight:700; font-size:11px; letter-spacing:.5px; text-transform:uppercase; padding:4px 10px; border-radius:6px; margin-bottom:10px; }
+.blog-title-area h1{ font-size:clamp(22px,4vw,34px); font-weight:800; line-height:1.28; margin:6px 0 10px; color:var(--primary-navy); }
+.blog-title-area .sub{ color:var(--text-muted); font-size:15px; margin-bottom:14px; }
+.blog-meta{ font-size:13.5px; color:var(--text-muted); display:flex; gap:6px; align-items:center; flex-wrap:wrap; border-top:1px dashed var(--border-color); padding-top:12px; }
+.blog-meta img.avatar{ width:24px; height:24px; border-radius:50%; object-fit:cover; background:#e2e8f0; vertical-align:middle; margin-right:4px; }
+
+.blog-detail-grid{ display:grid; grid-template-columns:2.3fr 1fr; gap:24px; align-items:start; }
+
+/* ---------- Lazy Image Wrapper (skeleton shimmer + fade-in) ---------- */
+.lazy-img-wrap{ position:relative; width:100%; overflow:hidden; background:#e9edf5; border-radius:var(--radius-lg); }
+.lazy-img-wrap.rounded-md{ border-radius:var(--radius-md); }
+.lazy-img-wrap::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,#e9edf5 25%,#f3f5fa 37%,#e9edf5 63%);
+  background-size:400% 100%;
+  animation:shimmer 1.4s ease infinite;
+}
+.lazy-img-wrap.loaded::before{ display:none; }
+.lazy-img-wrap img{
+  display:block; width:100%; height:100%; object-fit:cover;
+  opacity:0; transition:opacity .45s ease, transform .35s ease;
+  position:relative; z-index:1;
+}
+.lazy-img-wrap img.loaded-img{ opacity:1; }
+@keyframes shimmer{ 0%{background-position:100% 0;} 100%{background-position:-100% 0;} }
+
+.blog-image{ margin-bottom:20px; cursor:zoom-in; }
+.blog-image .lazy-img-wrap{ aspect-ratio:16/8; }
+.blog-image .lazy-img-wrap:hover img{ transform:scale(1.02); }
+
+.blog-quote{ background:#f3f4fb; padding:18px 22px; border-left:4px solid var(--accent-blue); font-size:16px; font-style:italic; color:#333; margin-bottom:22px; border-radius:0 8px 8px 0; }
 .blog-quote span{ display:block; margin-top:8px; font-style:normal; font-size:13px; color:#888; }
 .blog-short-desc{ font-size:16px; color:#555; margin-bottom:20px; }
-.blog-content{ font-size:16px; line-height:1.85; color:#333; }
-.blog-content h2, .blog-content h3{ margin-top:28px; margin-bottom:10px; font-weight:700; color:#111; }
-.blog-content img{ max-width:100%; border-radius:10px; margin:15px 0; }
-.blog-content table{ width:100%; border-collapse:collapse; margin:15px 0; }
+
+.blog-content{ font-size:16px; line-height:1.85; color:#333; background:var(--card-white); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-sm); }
+.blog-content h2, .blog-content h3{ margin-top:28px; margin-bottom:10px; font-weight:700; color:var(--primary-navy); }
+.blog-content table{ width:100%; border-collapse:collapse; margin:15px 0; display:block; overflow-x:auto; }
 .blog-content table th, .blog-content table td{ border:1px solid #eee; padding:10px 12px; text-align:left; font-size:14px; }
 .blog-content table th{ background:#f6f7fb; }
+/* content-embedded images become lazy + clickable via JS */
+.blog-content .lazy-img-wrap{ margin:16px 0; cursor:zoom-in; aspect-ratio:16/9; }
 
-.tags-row{ margin:25px 0 10px; }
+.tags-row{ margin:22px 0 4px; padding:0 24px; }
 .tags-row .label{ font-weight:600; margin-right:10px; color:#333; }
-.tags-row .tag-pill{ display:inline-block; background:#eef1fd; color:#0a58ca; font-size:13px; padding:5px 14px; border-radius:20px; margin:4px 4px 4px 0; text-decoration:none; }
+.tags-row .tag-pill{ display:inline-block; background:var(--accent-blue-light); color:var(--accent-blue); font-size:13px; padding:5px 14px; border-radius:20px; margin:4px 4px 4px 0; text-decoration:none; }
+.tags-row .tag-pill:hover{ background:var(--primary-navy); color:#fff; }
 
-.blog-share{ display:flex; align-items:center; gap:10px; margin:15px 0 25px; }
-.blog-share .label{ font-weight:600; color:#333; margin-right:5px; }
-.blog-share a{ width:34px; height:34px; border-radius:50%; background:#f1f2f6; display:flex; align-items:center; justify-content:center; text-decoration:none; color:#0a58ca; font-weight:700; }
-.like-btn{ border:1px solid #0a58ca; background:#fff; color:#0a58ca; padding:8px 20px; border-radius:20px; font-weight:600; cursor:pointer; font-size:14px; }
-.like-btn.liked{ background:#0a58ca; color:#fff; }
+.blog-share{ display:flex; align-items:center; gap:10px; margin:18px 0; padding:0 24px; flex-wrap:wrap; }
+.blog-share .label{ font-weight:600; color:#333; margin-right:5px; font-size:14px; }
+.blog-share a{ width:34px; height:34px; border-radius:50%; background:#f1f2f6; display:flex; align-items:center; justify-content:center; text-decoration:none; color:var(--accent-blue); font-weight:700; transition:.2s; }
+.blog-share a:hover{ background:var(--accent-blue); color:#fff; }
+.like-btn{ border:1px solid var(--accent-blue); background:#fff; color:var(--accent-blue); padding:8px 20px; border-radius:20px; font-weight:600; cursor:pointer; font-size:14px; margin:0 24px 20px; }
+.like-btn.liked{ background:var(--accent-blue); color:#fff; }
 
-.author-box{ display:flex; gap:15px; align-items:flex-start; background:#fafafa; border-radius:14px; padding:20px; margin:25px 0; }
-.author-box img{ width:60px; height:60px; border-radius:50%; object-fit:cover; background:#ddd; }
-.author-box h4{ font-size:16px; margin-bottom:4px; }
+.author-box{ display:flex; gap:15px; align-items:flex-start; background:#fafbfc; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin:20px; }
+.author-box .lazy-img-wrap{ width:60px; height:60px; border-radius:50%; flex-shrink:0; }
+.author-box h4{ font-size:16px; margin-bottom:4px; color:var(--primary-navy); }
 .author-box p{ font-size:13px; color:#666; }
 
-.comments-section{ margin-top:35px; }
+.comments-section{ margin-top:24px; padding:0 24px 20px; }
 .comments-section h3{ font-size:20px; color:#111; margin-bottom:15px; }
-.comment-form textarea{ width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size:14px; }
-.comment-form button{ margin-top:10px; background:#0a58ca; color:#fff; border:none; padding:9px 20px; border-radius:20px; font-weight:600; cursor:pointer; }
+.comment-form textarea{ width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size:14px; resize:vertical; }
+.comment-form button{ margin-top:10px; background:var(--accent-blue); color:#fff; border:none; padding:9px 20px; border-radius:20px; font-weight:600; cursor:pointer; }
 .comment-item{ display:flex; gap:12px; padding:16px 0; border-bottom:1px solid #eee; }
-.comment-item img{ width:38px; height:38px; border-radius:50%; object-fit:cover; background:#ddd; }
+.comment-item .lazy-img-wrap{ width:38px; height:38px; border-radius:50%; flex-shrink:0; }
 .comment-item b{ color:#111; font-size:14px; }
 .comment-item .comment-date{ font-size:12px; color:#888; margin-left:6px; }
 .comment-item p{ font-size:14px; color:#444; margin-top:4px; }
 
-.related-posts{ margin-top:35px; }
-.related-posts h3{ font-size:20px; margin-bottom:15px; }
+.related-posts{ margin-top:24px; }
+.related-posts h3{ font-size:20px; margin-bottom:15px; color:var(--primary-navy); }
 .related-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-.related-card{ text-decoration:none; color:inherit; border-radius:12px; overflow:hidden; border:1px solid #eee; }
-.related-card img{ width:100%; height:130px; object-fit:cover; background:#ddd; }
+.related-card{ text-decoration:none; color:inherit; border-radius:12px; overflow:hidden; border:1px solid var(--border-color); background:#fff; box-shadow:var(--shadow-sm); transition:transform .2s; }
+.related-card:hover{ transform:translateY(-3px); }
+.related-card .lazy-img-wrap{ aspect-ratio:16/9; border-radius:0; }
 .related-card .rc-body{ padding:12px; }
-.related-card .rc-cat{ font-size:11px; color:#0a58ca; font-weight:700; text-transform:uppercase; }
-.related-card h4{ font-size:14px; margin:6px 0; }
+.related-card .rc-cat{ font-size:11px; color:var(--accent-blue); font-weight:700; text-transform:uppercase; }
+.related-card h4{ font-size:14px; margin:6px 0; color:var(--text-dark); }
 .related-card span{ font-size:12px; color:#888; }
 
-.sidebar-box{ background:#fafafa; border-radius:16px; padding:20px; margin-bottom:20px; }
-.sidebar-box h3{ font-size:18px; margin-bottom:15px; color:#111; }
+.sidebar-box{ background:#fafbfc; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:20px; box-shadow:var(--shadow-sm); }
+.sidebar-box h3{ font-size:17px; margin-bottom:15px; color:var(--primary-navy); }
 .search-box{ display:flex; }
-.search-box input{ flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px 0 0 8px; font-size:14px; }
-.search-box button{ background:#0a58ca; border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
+.search-box input{ flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px 0 0 8px; font-size:14px; min-width:0; }
+.search-box button{ background:var(--accent-blue); border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
 .author-sidebar{ text-align:center; }
-.author-sidebar img{ width:70px; height:70px; border-radius:50%; object-fit:cover; margin-bottom:10px; background:#ddd; }
+.author-sidebar .lazy-img-wrap{ width:72px; height:72px; border-radius:50%; margin:0 auto 10px; }
 .author-sidebar .stats{ display:flex; justify-content:space-around; margin:14px 0; }
 .author-sidebar .stats div{ font-size:18px; font-weight:700; color:#111; }
 .author-sidebar .stats span{ display:block; font-size:12px; color:#888; font-weight:400; }
-.author-sidebar a.btn{ display:block; border:1px solid #0a58ca; color:#0a58ca; padding:8px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px; }
-.toc-list{ list-style:none; padding:0; margin:0; border-left:2px solid #eef1fd; }
-.toc-list li{ padding:6px 0 6px 14px; font-size:14px; }
-.toc-list a{ color:#333; text-decoration:none; }
+.author-sidebar a.btn{ display:block; border:1px solid var(--accent-blue); color:var(--accent-blue); padding:8px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px; }
 .cat-list a{ display:flex; justify-content:space-between; padding:8px 0; color:#333; text-decoration:none; font-size:14px; border-bottom:1px solid #eee; }
-.cat-list span.count{ background:#eef1fd; color:#0a58ca; font-size:12px; padding:2px 8px; border-radius:10px; }
+.cat-list span.count{ background:var(--accent-blue-light); color:var(--accent-blue); font-size:12px; padding:2px 8px; border-radius:10px; }
 .popular-item{ display:flex; gap:10px; margin-bottom:14px; text-decoration:none; color:inherit; }
-.popular-item img{ width:64px; height:56px; object-fit:cover; border-radius:8px; background:#ddd; }
-.popular-item h4{ font-size:14px; font-weight:600; margin-bottom:4px; }
+.popular-item .lazy-img-wrap{ width:64px; height:56px; flex-shrink:0; border-radius:8px; }
+.popular-item h4{ font-size:14px; font-weight:600; margin-bottom:4px; color:var(--text-dark); }
 .popular-item span{ font-size:12px; color:#888; }
-@media(max-width:991px){ .blog-detail-grid{ grid-template-columns:1fr; } .related-grid{ grid-template-columns:1fr; } }
+
+/* ---------- Lightbox ---------- */
+.lightbox-overlay{
+  display:none; position:fixed; inset:0; background:rgba(6,18,59,.88);
+  z-index:2000; align-items:center; justify-content:center; padding:20px;
+  opacity:0; transition:opacity .25s ease;
+}
+.lightbox-overlay.active{ display:flex; opacity:1; }
+.lightbox-overlay img{
+  max-width:92vw; max-height:88vh; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,.5);
+  transform:scale(.94); transition:transform .25s ease;
+}
+.lightbox-overlay.active img{ transform:scale(1); }
+.lightbox-close{
+  position:absolute; top:18px; right:22px; width:40px; height:40px; border-radius:50%;
+  background:rgba(255,255,255,.12); color:#fff; border:none; font-size:22px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.lightbox-close:hover{ background:rgba(255,255,255,.25); }
+
+@media(max-width:991px){
+  .blog-detail-grid{ grid-template-columns:1fr; }
+  .related-grid{ grid-template-columns:1fr 1fr; }
+}
+@media(max-width:576px){
+  .related-grid{ grid-template-columns:1fr; }
+  .blog-title-area, .blog-content{ padding:16px; }
+  .tags-row, .blog-share, .like-btn, .comments-section{ padding-left:16px; padding-right:16px; margin-left:0; margin-right:0; }
+  .author-box{ margin:16px; flex-direction:column; align-items:center; text-align:center; }
+}
 `;
+
+/* ---------------- helpers ---------------- */
+function thumb(b) { return b.thumbnail ? '' + b.thumbnail : '/images/placeholder.svg'; }
+function avatarSrc(u) { return u && u.profile_photo ? '/uploads/users/' + u.profile_photo : '/images/avatar-placeholder.png'; }
+
+var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.slug;
+
+/*
+  Turn any raw <img> tags inside the rich-text blog.content into
+  our lazy-loading wrapper markup so they lazy-load + open in the lightbox too.
+  We keep this simple/regex based since blog.content is trusted admin HTML.
+*/
+function wrapContentImages(html) {
+  if (!html) return html;
+  return html.replace(/<img\s+([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi, function (match, before, src, after) {
+    var altMatch = (before + after).match(/alt=["']([^"']*)["']/i);
+    var alt = altMatch ? altMatch[1] : '';
+    return '<span class="lazy-img-wrap rounded-md js-lightbox-img" data-full="' + src + '">' +
+             '<img data-src="' + src + '" alt="' + alt + '" loading="lazy" class="js-lazy">' +
+           '</span>';
+  });
+}
+var wrappedContent = wrapContentImages(blog.content);
+
 var pageScripts = `
+/* ---------- Like button ---------- */
 var likeBtn = document.getElementById('likeBtn');
 if (likeBtn) {
   likeBtn.addEventListener('click', function () {
@@ -95,9 +195,79 @@ if (likeBtn) {
       });
   });
 }
+
+/* ---------- Lazy loading via IntersectionObserver ---------- */
+(function () {
+  var lazyImgs = document.querySelectorAll('img.js-lazy');
+
+  function loadImg(img) {
+    var wrap = img.closest('.lazy-img-wrap');
+    var src = img.getAttribute('data-src');
+    if (!src) return;
+    var temp = new Image();
+    temp.onload = function () {
+      img.src = src;
+      img.classList.add('loaded-img');
+      if (wrap) wrap.classList.add('loaded');
+    };
+    temp.onerror = function () {
+      img.src = '/images/placeholder.svg';
+      img.classList.add('loaded-img');
+      if (wrap) wrap.classList.add('loaded');
+    };
+    temp.src = src;
+    img.removeAttribute('data-src');
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          loadImg(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '150px 0px', threshold: 0.01 });
+
+    lazyImgs.forEach(function (img) { observer.observe(img); });
+  } else {
+    lazyImgs.forEach(function (img) { loadImg(img); });
+  }
+})();
+
+/* ---------- Lightbox (click any wrapped image to open) ---------- */
+(function () {
+  var overlay = document.getElementById('lightboxOverlay');
+  var overlayImg = document.getElementById('lightboxImg');
+  var closeBtn = document.getElementById('lightboxClose');
+  if (!overlay || !overlayImg) return;
+
+  function openLightbox(src, alt) {
+    if (!src) return;
+    overlayImg.src = src;
+    overlayImg.alt = alt || '';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    setTimeout(function () { overlayImg.src = ''; }, 200);
+  }
+
+  document.querySelectorAll('.js-lightbox-img').forEach(function (wrap) {
+    wrap.addEventListener('click', function () {
+      var full = wrap.getAttribute('data-full');
+      var img = wrap.querySelector('img');
+      openLightbox(full, img ? img.alt : '');
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeLightbox(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
+})();
 `;
-function thumb(b) { return b.thumbnail ? '' + b.thumbnail : '/images/placeholder.svg'; }
-var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.slug;
 %>
 <%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
 
@@ -114,7 +284,7 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
     <% if (blog.short_description) { %><p class="sub"><%= blog.short_description %></p><% } %>
     <div class="blog-meta">
       <% if (blog.author) { %>
-        <img class="avatar" src="<%= blog.author.profile_photo ? '/uploads/users/' + blog.author.profile_photo : '/images/avatar-placeholder.png' %>">
+        <img class="avatar" src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" loading="lazy" width="24" height="24">
         By <%= blog.author.name %> &#8226;
       <% } %>
       <span>&#128197; <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span> &#8226;
@@ -126,11 +296,16 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
 
   <div class="blog-detail-grid">
     <div class="blog-main">
+
       <% if (blog.thumbnail) { %>
-        <div class="blog-image"><img src="<%= thumb(blog) %>" alt="<%= blog.title %>"></div>
+        <div class="blog-image">
+          <span class="lazy-img-wrap js-lightbox-img" data-full="<%= thumb(blog) %>">
+            <img data-src="<%= thumb(blog) %>" alt="<%= blog.title %>" class="js-lazy" loading="lazy">
+          </span>
+        </div>
       <% } %>
 
-      <div class="blog-content"><%- blog.content %></div>
+      <div class="blog-content"><%- wrappedContent %></div>
 
       <% if (blog.tags) { %>
         <div class="tags-row">
@@ -143,10 +318,10 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
 
       <div class="blog-share">
         <span class="label">Share this article:</span>
-        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(pageUrl) %>" title="Facebook">f</a>
-        <a target="_blank" href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(pageUrl) %>&text=<%= encodeURIComponent(blog.title) %>" title="Twitter">t</a>
-        <a target="_blank" href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(pageUrl) %>" title="LinkedIn">in</a>
-        <a target="_blank" href="https://api.whatsapp.com/send?text=<%= encodeURIComponent(blog.title + ' ' + pageUrl) %>" title="WhatsApp">w</a>
+        <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(pageUrl) %>" title="Facebook">f</a>
+        <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(pageUrl) %>&text=<%= encodeURIComponent(blog.title) %>" title="Twitter">t</a>
+        <a target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(pageUrl) %>" title="LinkedIn">in</a>
+        <a target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=<%= encodeURIComponent(blog.title + ' ' + pageUrl) %>" title="WhatsApp">w</a>
       </div>
 
       <button id="likeBtn" class="like-btn <%= liked ? 'liked' : '' %>" data-url="/blog/<%= blog.slug %>/like">
@@ -155,7 +330,9 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
 
       <% if (blog.author) { %>
         <div class="author-box">
-          <img src="<%= blog.author.profile_photo ? '/uploads/users/' + blog.author.profile_photo : '/images/avatar-placeholder.png' %>">
+          <span class="lazy-img-wrap">
+            <img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy">
+          </span>
           <div>
             <h4><%= blog.author.name %></h4>
             <p><%= blog.author.bio || 'Content writer & contributor at ' + (typeof siteName !== 'undefined' ? siteName : 'our blog') %>.</p>
@@ -177,7 +354,9 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
 
         <% (comments || []).forEach(function(c) { %>
           <div class="comment-item">
-            <img src="<%= c.User && c.User.profile_photo ? '/uploads/users/' + c.User.profile_photo : '/images/avatar-placeholder.png' %>">
+            <span class="lazy-img-wrap">
+              <img data-src="<%= avatarSrc(c.User) %>" alt="<%= c.User ? c.User.name : 'User' %>" class="js-lazy" loading="lazy">
+            </span>
             <div>
               <b><%= c.User ? c.User.name : 'User' %></b>
               <span class="comment-date"><%= timeAgo(c.created_at || c.createdAt) %></span>
@@ -193,7 +372,9 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
           <div class="related-grid">
             <% relatedBlogs.forEach(function(rb) { %>
               <a href="/blog/<%= rb.slug %>" class="related-card">
-                <img src="<%= thumb(rb) %>" alt="<%= rb.title %>">
+                <span class="lazy-img-wrap">
+                  <img data-src="<%= thumb(rb) %>" alt="<%= rb.title %>" class="js-lazy" loading="lazy">
+                </span>
                 <div class="rc-body">
                   <div class="rc-cat"><%= rb.BlogCategory ? rb.BlogCategory.name : '' %></div>
                   <h4><%= rb.title %></h4>
@@ -218,7 +399,9 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
       <% if (blog.author) { %>
         <div class="sidebar-box author-sidebar">
           <h3>About the Author</h3>
-          <img src="<%= blog.author.profile_photo ? '/uploads/users/' + blog.author.profile_photo : '/images/avatar-placeholder.png' %>">
+          <span class="lazy-img-wrap">
+            <img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy">
+          </span>
           <h4><%= blog.author.name %></h4>
           <p style="font-size:13px;color:#666;"><%= blog.author.bio || 'Content Writer' %></p>
           <div class="stats">
@@ -242,7 +425,9 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
         <h3>Popular Posts</h3>
         <% (popularBlogs || []).forEach(function(pb) { %>
           <a href="/blog/<%= pb.slug %>" class="popular-item">
-            <img src="<%= thumb(pb) %>" alt="<%= pb.title %>">
+            <span class="lazy-img-wrap">
+              <img data-src="<%= thumb(pb) %>" alt="<%= pb.title %>" class="js-lazy" loading="lazy">
+            </span>
             <div>
               <h4><%= pb.title %></h4>
               <span><%= pb.published_at ? formatDate(pb.published_at, 'DD MMM YYYY') : '' %></span>
@@ -252,6 +437,12 @@ var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.
       </div>
     </aside>
   </div>
+</div>
+
+<!-- Lightbox overlay (single shared instance) -->
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" src="" alt="">
 </div>
 
 <%- include('../weblayout/layout-bottom', { pageScripts: pageScripts }) %>

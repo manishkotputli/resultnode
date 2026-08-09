@@ -18,6 +18,21 @@ async function createPurchase({ userId, type, id, amount }) {
   return purchase;
 }
 
+// Scoped to user_id in the query itself, so one user can never fetch
+// another user's receipt by guessing an id.
+async function getPurchaseById(userId, purchaseId) {
+  const purchase = await db.Purchase.findOne({ where: { id: purchaseId, user_id: userId } });
+  if (!purchase) return null;
+  const isCourse = purchase.purchasable_type === 'course';
+  const item = isCourse
+    ? await db.Course.findByPk(purchase.purchasable_id)
+    : await db.TestSeries.findByPk(purchase.purchasable_id);
+  return {
+    ...purchase.toJSON(),
+    title: item ? item.title : `${isCourse ? 'Course' : 'Test Series'} #${purchase.purchasable_id}`,
+  };
+}
+
 async function getPurchases(userId) {
   return db.Purchase.findAll({ where: { user_id: userId }, order: [['created_at', 'DESC']] });
 }
@@ -86,5 +101,5 @@ async function getEntryTotals(userId) {
 
 module.exports = {
   createPurchase, getPurchases, getPurchasesWithTitles, getBanks, createBank,
-  getCategories, createCategory, getEntries, createEntry, getEntryTotals,
+  getCategories, createCategory, getEntries, createEntry, getEntryTotals,getPurchaseById
 };

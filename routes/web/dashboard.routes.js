@@ -12,5 +12,5 @@ router.post('/dashboard/finance-settings/bank', dashboardController.addBank);
 router.post('/dashboard/finance-settings/category', dashboardController.addCategory);
 router.get('/dashboard/income-expense', dashboardController.incomeExpense);
 router.post('/dashboard/income-expense', dashboardController.addEntry);
-
+router.get('/dashboard/purchases/:id/receipt', dashboardController.receipt);
 module.exports = router;

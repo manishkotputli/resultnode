@@ -67,4 +67,17 @@ async function addEntry(req, res, next) {
   }
 }
 
-module.exports = { index, purchases, financeSettings, addBank, addCategory, incomeExpense, addEntry };
+async function receipt(req, res, next) {
+  try {
+    const purchase = await dashboardService.getReceipt(req.session.user.id, req.params.id);
+    res.render('web/dashboard/receipt', { title: `Receipt - ${purchase.order_id || purchase.id}`, purchase });
+  } catch (err) {
+    if (err.status === 404) {
+      req.flash('error', 'Receipt not found.');
+      return res.redirect('/dashboard/purchases');
+    }
+    next(err);
+  }
+}
+
+module.exports = { index, purchases, financeSettings, addBank, addCategory, incomeExpense, addEntry, receipt };

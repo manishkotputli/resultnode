@@ -1,0 +1,298 @@
+<%- include('../../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">Scraping Websites</h1>
+    <button data-hs-overlay="#addWebsiteModal" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition hover:text-white">
+        <i class="icon-plus"></i> Add Website
+    </button>
+</div>
+
+<div class="grid grid-cols-1">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[1000px]">
+                <thead>
+                    <tr class="border-b border-border-color bg-gray-50/50">
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Website</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Schedule</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Last Run</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Items</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-start text-[13px] font-semibold uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 bg-white text-gray-900 text-end text-[13px] font-semibold uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <% if (websites && websites.length) { %>
+                        <% websites.forEach(function(w) { %>
+                        <tr>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <p class="text-sm font-semibold text-gray-900 mb-0"><%= w.name %></p>
+                                <p class="text-[13px] text-gray-500 mb-0 truncate max-w-[260px]"><%= w.base_url %></p>
+                                <% if (w.last_error) { %><p class="text-[12px] text-danger mb-0">⚠ <%= w.last_error.slice(0, 80) %></p><% } %>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= w.schedule_type === 'manual' ? 'Manual only' : w.schedule_type %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= w.last_scraped_at ? formatDate(w.last_scraped_at) : 'Never' %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white"><span class="text-sm text-gray-600"><%= w.get('itemCount') %></span></td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white">
+                                <span class="inline-flex items-center text-xs font-bold rounded-lg px-2.5 py-1 border <%= !w.is_active ? 'text-gray-500 border-gray-300' : (w.last_status === 'failed' ? 'text-danger border-danger' : (w.last_status === 'running' ? 'text-orange border-orange' : 'text-success border-success')) %>">
+                                    <%= !w.is_active ? 'Inactive' : (w.last_status || 'idle') %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 border-b border-border-color bg-white text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    <form method="POST" action="/admin/scraping/websites/<%= w.id %>/run">
+                                        <button type="submit" class="size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors cursor-pointer" title="Run Now"><i class="icon-play text-sm"></i></button>
+                                    </form>
+                                    <button type="button"
+                                        class="editWebsiteBtn size-9 rounded-full hover:bg-gray-100 text-gray-900 flex items-center justify-center transition-colors"
+                                        data-hs-overlay="#editWebsiteModal"
+                                        data-id="<%= w.id %>" data-name="<%= w.name %>" data-url="<%= w.base_url %>"
+                                        data-categories='<%- JSON.stringify(w.categories || []) %>'
+                                        data-scraper-type="<%= w.scraper_type %>" data-schedule-type="<%= w.schedule_type %>"
+                                        data-cron="<%= w.cron_expression || '' %>"
+                                        data-list-selector="<%= (w.selectors && w.selectors.list_selector) || '' %>"
+                                        data-title-selector="<%= (w.selectors && w.selectors.title_selector) || '' %>"
+                                        data-link-selector="<%= (w.selectors && w.selectors.link_selector) || '' %>"
+                                        data-date-selector="<%= (w.selectors && w.selectors.date_selector) || '' %>"
+                                        data-detail-selector="<%= (w.selectors && w.selectors.detail_content_selector) || '' %>"
+                                        data-active="<%= w.is_active %>">
+                                        <i class="icon-pencil-line text-sm"></i>
+                                    </button>
+                                    <form method="POST" action="/admin/scraping/websites/<%= w.id %>/delete" onsubmit="return confirm('Delete this website and all its scraped items?');">
+                                        <button type="submit" class="size-9 rounded-full hover:bg-gray-100 text-gray-900 hover:text-danger flex items-center justify-center transition-colors cursor-pointer"><i class="icon-trash-2 text-sm"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="6" class="px-6 py-10 text-center text-gray-500 bg-white">No websites configured yet. Click "Add Website" to set one up.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%
+function websiteModalFields(prefix) { return ''; }
+%>
+
+<!-- Add Website Modal -->
+<div id="addWebsiteModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-2xl sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" action="/admin/scraping/websites">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Add Website</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200" data-hs-overlay="#addWebsiteModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Website Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" required placeholder="e.g. Sarkari Result" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Listing URL <span class="text-danger">*</span></label>
+                                <input type="url" name="base_url" required placeholder="https://example.com/jobs" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Map scraped items to Categories</label>
+                            <div class="flex flex-wrap gap-3">
+                                <% categories.forEach(function(cat) { %>
+                                <label class="flex items-center gap-1.5 text-sm text-gray-700"><input type="checkbox" name="categories" value="<%= cat.slug %>" class="w-4 h-4 text-primary rounded focus:ring-0 cursor-pointer"><%= cat.name %></label>
+                                <% }) %>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Scraper Type</label>
+                                <select name="scraper_type" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                                    <option value="puppeteer">Puppeteer (JS-rendered sites)</option>
+                                    <option value="cheerio">Cheerio (static HTML, faster)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Status</label>
+                                <select name="is_active" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                                    <option value="on">Active</option>
+                                    <option value="off">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Schedule</label>
+                            <select name="schedule_type" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary schedule-select">
+                                <option value="manual">Manual only (Run Now button)</option>
+                                <option value="every_1m">Every 1 Minute</option>
+                                <option value="every_5m">Every 5 Minutes</option>
+                                <option value="every_10m">Every 10 Minutes</option>
+                                <option value="every_30m">Every 30 Minutes</option>
+                                <option value="hourly">Every Hour</option>
+                                <option value="every_2h">Every 2 Hours</option>
+                                <option value="every_6h">Every 6 Hours</option>
+                                <option value="every_12h">Every 12 Hours</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="custom">Custom Cron Expression</option>
+                            </select>
+                            <input type="text" name="cron_expression" placeholder="e.g. */30 * * * *" class="cron-input mt-2 hidden form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+
+                        <div class="border-t border-border-color pt-4">
+                            <p class="text-sm font-semibold text-gray-900 mb-2">CSS Selectors <span class="text-gray-400 font-normal">(view the listing page's HTML source to find these)</span></p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">List item selector <span class="text-danger">*</span></label><input type="text" name="list_selector" required placeholder="table tr, ul.jobs li" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">Title selector <span class="text-danger">*</span></label><input type="text" name="title_selector" required placeholder="a, .title" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">Link selector</label><input type="text" name="link_selector" placeholder="a (optional if item itself is a link)" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">Date selector</label><input type="text" name="date_selector" placeholder=".date (optional)" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div class="sm:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Detail page content selector <span class="text-gray-400 font-normal">(optional — fetches full description from each item's page)</span></label><input type="text" name="detail_content_selector" placeholder=".entry-content, #post-body" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#addWebsiteModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Add Website</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Website Modal (shared, populated via JS) -->
+<div id="editWebsiteModal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] bg-gray-900/50 overflow-x-hidden overflow-y-auto">
+    <div>
+        <div class="p-3 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-2xl sm:w-full sm:mx-auto min-h-screen flex items-center justify-center">
+            <div class="bg-white border border-border-color rounded-lg shadow-sm w-full focus:outline-none">
+                <form method="POST" id="editWebsiteForm" action="">
+                    <div class="flex items-center justify-between p-4 border-b border-border-color">
+                        <h3 class="text-lg font-bold text-gray-900">Edit Website</h3>
+                        <button type="button" class="size-8 inline-flex justify-center items-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200" data-hs-overlay="#editWebsiteModal"><i class="icon-x"></i></button>
+                    </div>
+                    <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Website Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" id="editWName" required class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Listing URL <span class="text-danger">*</span></label>
+                                <input type="url" name="base_url" id="editWUrl" required class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Map scraped items to Categories</label>
+                            <div class="flex flex-wrap gap-3" id="editWCategories">
+                                <% categories.forEach(function(cat) { %>
+                                <label class="flex items-center gap-1.5 text-sm text-gray-700"><input type="checkbox" name="categories" value="<%= cat.slug %>" class="w-4 h-4 text-primary rounded focus:ring-0 cursor-pointer"><%= cat.name %></label>
+                                <% }) %>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Scraper Type</label>
+                                <select name="scraper_type" id="editWScraperType" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                                    <option value="puppeteer">Puppeteer (JS-rendered sites)</option>
+                                    <option value="cheerio">Cheerio (static HTML, faster)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-2">Status</label>
+                                <select name="is_active" id="editWActive" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                                    <option value="on">Active</option>
+                                    <option value="off">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-2">Schedule</label>
+                            <select name="schedule_type" id="editWScheduleType" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary schedule-select">
+                                <option value="manual">Manual only (Run Now button)</option>
+                                <option value="every_1m">Every 1 Minute</option>
+                                <option value="every_5m">Every 5 Minutes</option>
+                                <option value="every_10m">Every 10 Minutes</option>
+                                <option value="every_30m">Every 30 Minutes</option>
+                                <option value="hourly">Every Hour</option>
+                                <option value="every_2h">Every 2 Hours</option>
+                                <option value="every_6h">Every 6 Hours</option>
+                                <option value="every_12h">Every 12 Hours</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="custom">Custom Cron Expression</option>
+                            </select>
+                            <input type="text" name="cron_expression" id="editWCron" placeholder="e.g. */30 * * * *" class="cron-input mt-2 hidden form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        </div>
+
+                        <div class="border-t border-border-color pt-4">
+                            <p class="text-sm font-semibold text-gray-900 mb-2">CSS Selectors</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">List item selector <span class="text-danger">*</span></label><input type="text" name="list_selector" id="editWList" required class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">Title selector <span class="text-danger">*</span></label><input type="text" name="title_selector" id="editWTitle" required class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">Link selector</label><input type="text" name="link_selector" id="editWLink" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div><label class="block text-xs font-medium text-gray-600 mb-1">Date selector</label><input type="text" name="date_selector" id="editWDate" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                                <div class="sm:col-span-2"><label class="block text-xs font-medium text-gray-600 mb-1">Detail page content selector</label><input type="text" name="detail_content_selector" id="editWDetail" class="form-input w-full bg-white border border-border-color text-xs font-mono rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 p-4 border-t border-border-color">
+                        <button type="button" class="py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-border-color rounded-lg hover:bg-gray-50 cursor-pointer" data-hs-overlay="#editWebsiteModal">Cancel</button>
+                        <button type="submit" class="py-2 px-4 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary-hover cursor-pointer">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%
+pageScripts = `
+function toggleCronInput(root) {
+  var sel = root.querySelector('.schedule-select');
+  var cronInput = root.querySelector('.cron-input');
+  function sync() { cronInput.classList.toggle('hidden', sel.value !== 'custom'); }
+  sel.addEventListener('change', sync);
+  sync();
+}
+document.querySelectorAll('#addWebsiteModal, #editWebsiteModal').forEach(toggleCronInput);
+
+document.querySelectorAll('.editWebsiteBtn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.getElementById('editWebsiteForm').action = '/admin/scraping/websites/' + btn.dataset.id + '/update';
+    document.getElementById('editWName').value = btn.dataset.name || '';
+    document.getElementById('editWUrl').value = btn.dataset.url || '';
+    document.getElementById('editWScraperType').value = btn.dataset.scraperType || 'puppeteer';
+    document.getElementById('editWActive').value = btn.dataset.active === 'true' ? 'on' : 'off';
+    document.getElementById('editWScheduleType').value = btn.dataset.scheduleType || 'manual';
+    document.getElementById('editWCron').value = btn.dataset.cron || '';
+    document.getElementById('editWList').value = btn.dataset.listSelector || '';
+    document.getElementById('editWTitle').value = btn.dataset.titleSelector || '';
+    document.getElementById('editWLink').value = btn.dataset.linkSelector || '';
+    document.getElementById('editWDate').value = btn.dataset.dateSelector || '';
+    document.getElementById('editWDetail').value = btn.dataset.detailSelector || '';
+
+    var selectedCats = [];
+    try { selectedCats = JSON.parse(btn.dataset.categories || '[]'); } catch (e) {}
+    document.querySelectorAll('#editWCategories input[type=checkbox]').forEach(function (cb) {
+      cb.checked = selectedCats.indexOf(cb.value) !== -1;
+    });
+
+    var cronInput = document.getElementById('editWCron');
+    cronInput.classList.toggle('hidden', document.getElementById('editWScheduleType').value !== 'custom');
+  });
+});
+`;
+%>
+
+<%- include('../../../adminlayout/admin-layout-bottom') %>

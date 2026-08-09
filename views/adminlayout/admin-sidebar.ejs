@@ -188,7 +188,7 @@
     <span>Scraping</span>
 </li>
 
-<li class="submenu <%= ['scraping-dashboard','scraping-websites','scraping-logs'].includes(active) ? 'active' : '' %>">
+<li class="submenu <%= ['scraping-dashboard','scraping-websites','scraping-content','scraping-logs'].includes(active) ? 'active' : '' %>">
 
     <a href="javascript:void(0);">
         <i class="icon-database-import"></i>
@@ -209,6 +209,13 @@
             <a href="/admin/scraping/websites"
                class="<%= active==='scraping-websites' ? 'active' : '' %>">
                 Websites
+            </a>
+        </li>
+
+        <li>
+            <a href="/admin/scraping/content"
+               class="<%= active==='scraping-content' ? 'active' : '' %>">
+                Scraped Content
             </a>
         </li>
 

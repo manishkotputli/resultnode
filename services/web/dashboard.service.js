@@ -61,6 +61,16 @@ async function addEntry(userId, data) {
   });
 }
 
+
+async function getReceipt(userId, purchaseId) {
+  const purchase = await dashboardRepo.getPurchaseById(userId, purchaseId);
+  if (!purchase) {
+    const err = new Error('Receipt not found');
+    err.status = 404;
+    throw err;
+  }
+  return purchase;
+}
 module.exports = {
-  getOverview, getPurchases, getFinanceSettings, addBank, addCategory, getIncomeExpense, addEntry,
+  getOverview, getReceipt, getPurchases, getFinanceSettings, addBank, addCategory, getIncomeExpense, addEntry,
 };

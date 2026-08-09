@@ -1,0 +1,80 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold">My Profile</h1>
+</div>
+
+<div class="grid grid-cols-12 gap-4 lg:gap-6">
+
+    <!-- Profile Info -->
+    <div class="col-span-12 lg:col-span-7">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Profile Information</h2>
+            <form method="POST" action="/admin/profile" enctype="multipart/form-data">
+                <div class="flex items-center gap-4 mb-5">
+                    <img src="<%= profileUser.profile_photo || '/admin-assets/avatar-default.jpg' %>" class="size-16 rounded-full object-cover border border-border-color" alt="<%= profileUser.name %>">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Profile Photo</label>
+                        <input type="file" name="profile_photo" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" required value="<%= profileUser.name %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-2">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" required value="<%= profileUser.email %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Phone</label>
+                    <input type="text" name="phone" value="<%= profileUser.phone || '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Address</label>
+                    <textarea name="address" rows="2" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= profileUser.address || '' %></textarea>
+                </div>
+
+                <button type="submit" class="py-2.5 px-6 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar Info + Password -->
+    <div class="col-span-12 lg:col-span-5 space-y-4 lg:space-y-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-3">Account Info</h2>
+            <div class="text-sm text-gray-600 space-y-2">
+                <p class="mb-0">User Code: <span class="font-medium text-gray-900"><%= profileUser.user_code || '-' %></span></p>
+                <p class="mb-0">Role: <span class="font-medium text-gray-900"><%= profileUser.Role ? profileUser.Role.name : '-' %></span></p>
+                <p class="mb-0">Joined: <%= formatDate(profileUser.created_at) %></p>
+            </div>
+        </div>
+
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Change Password</h2>
+            <form method="POST" action="/admin/profile/change-password">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Current Password <span class="text-danger">*</span></label>
+                    <input type="password" name="current_password" required class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">New Password <span class="text-danger">*</span></label>
+                    <input type="password" name="new_password" required minlength="6" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Confirm New Password <span class="text-danger">*</span></label>
+                    <input type="password" name="confirm_password" required minlength="6" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                </div>
+                <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">Update Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>
