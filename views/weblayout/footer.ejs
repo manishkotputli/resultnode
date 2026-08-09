@@ -1,25 +1,171 @@
 <!-- FOOTER -->
- <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const navToggleBtn = document.getElementById('navToggleBtn');
-    const navMenu = document.getElementById('navMenu');
+<style>
+  .footer {
+    background-color: #06123b;
+    color: #cbd5e1;
+    padding-top: 40px;
+    padding-bottom: 20px;
+    margin-top: 40px;
+    border-top: 4px solid #d90000;
+    font-size: 0.9rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+  .footer-col h4 {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    position: relative;
+    padding-bottom: 6px;
+  }
+  .footer-col h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 2px;
+    background-color: #d90000;
+  }
+  .footer-brand-title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .footer-tagline {
+    color: #ffc400;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .footer-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #94a3b8;
+    max-width: 320px;
+  }
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .footer-links a:hover {
+    color: #ffc400;
+    text-decoration: none;
+  }
+  .footer-bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+  .back-to-top-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background-color: #d90000;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(11,31,94,.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s ease;
+    z-index: 800;
+  }
+  .back-to-top-btn.visible { opacity: 1; visibility: visible; }
+  .back-to-top-btn:hover { background-color: #0b1f5e; transform: translateY(-3px); }
 
-    if (navToggleBtn && navMenu) {
-      navToggleBtn.addEventListener('click', function() {
-        navMenu.classList.toggle('show');
+  @media (max-width: 992px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 576px) {
+    .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  }
+</style>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <span class="footer-brand-title"><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></span>
+        <span class="footer-tagline"><%= (site_setting && site_setting.tagline) || "India's No.1 Sarkari Result Website" %></span>
+        <p class="footer-desc">
+          <%- (site_setting && site_setting.footer_about) || 'Providing real-time updates for government job notifications, admit cards, exam results, answer keys, and preparation resources for millions of aspirants across India.' %>
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Important Policy</h4>
+        <ul class="footer-links">
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+          <li><a href="/faqs">FAQ</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p><%- (site_setting && site_setting.footer_text) || ('&copy; ' + new Date().getFullYear() + ' Sarkari Result - All Rights Reserved') %></p>
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top-btn" id="backToTopBtn" aria-label="Scroll Back to Top">
+  <i class="ti ti-arrow-up"></i>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var backToTopBtn = document.getElementById('backToTopBtn');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', function () {
+        backToTopBtn.classList.toggle('visible', window.scrollY > 500);
+      });
+      backToTopBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
   });
 </script>
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-left">
-      <p><%- (site_setting && site_setting.footer_text) || '&copy; 2026 Sarkari Result - All Rights Reserved' %></p>
-    </div>
-    <div class="footer-links">
-      <a href="/contact">Contact Us</a>
-      <a href="/privacy-policy">Privacy Policy</a>
-      <a href="/disclaimer">Disclaimer</a>
-    </div>
-  </div>
-</footer>

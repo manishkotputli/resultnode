@@ -6,8 +6,23 @@ function staticPage(view, title) {
   return (req, res) => res.render(`web/${view}`, { title });
 }
 
-async function contactForm(req, res) {
-  res.render('web/contact', { title: 'Contact Us' });
+async function renderContactPage(req, res) {
+  try {
+    const { site_setting, team_members } = await pagesService.getContactPageData();
+
+    res.render('web/contact', {
+      title: 'Contact Us & Our Team',
+      site_setting,
+      team_members
+    });
+  } catch (error) {
+    console.error('Error loading contact page:', error);
+    res.render('web/contact', {
+      title: 'Contact Us',
+      site_setting: null,
+      team_members: []
+    });
+  }
 }
 
 async function contactSubmit(req, res, next) {
@@ -39,7 +54,7 @@ module.exports = {
   terms: staticPage('terms', 'Terms & Conditions'),
   privacyPolicy: staticPage('privacy-policy', 'Privacy Policy'),
   disclaimer: staticPage('disclaimer', 'Disclaimer'),
-  contactForm,
+  renderContactPage,
   contactSubmit,
   faqsPage,
 };

@@ -9,7 +9,7 @@ router.get('/terms', pagesController.terms);
 router.get('/privacy-policy', pagesController.privacyPolicy);
 router.get('/disclaimer', pagesController.disclaimer);
 router.get('/faqs', pagesController.faqsPage);
-router.get('/contact', pagesController.contactForm);
+router.get('/contact', pagesController.renderContactPage);
 router.post('/contact/send', contactValidator, pagesController.contactSubmit);
 
 module.exports = router;

@@ -2,114 +2,108 @@
 var pageStyles = `
 :root{
   --primary-navy:#0b1f5e;
-  --primary-red:#d90000;
-  --blue:#0a58ca;
-  --blue-light:#eef1fd;
-  --yellow:#ffc400;
-  --bg-color:#f5f7fb;
-  --white:#fff;
-  --text:#172033;
-  --muted:#667085;
-  --border:#e5e7eb;
+  --primary-navy-dark:#06123b;
+  --sarkari-red:#d90000;
+  --sarkari-red-hover:#b30000;
+  --accent-blue:#1456d9;
+  --accent-blue-light:#eef4ff;
+  --yellow-accent:#ffc400;
+  --bg-gray:#f5f7fb;
+  --card-white:#fff;
+  --text-dark:#172033;
+  --text-muted:#667085;
+  --border-color:#e2e8f0;
+  --radius-lg:16px;
+  --radius-md:10px;
   --radius-sm:6px;
-  --radius-md:12px;
-  --radius-lg:18px;
-  --shadow-sm:0 2px 4px rgba(11,31,94,.04);
-  --shadow-md:0 4px 12px rgba(11,31,94,.08);
-  --transition:all .25s ease;
+  --shadow-sm:0 2px 6px rgba(11,31,94,.04);
+  --shadow-md:0 4px 16px rgba(11,31,94,.08);
 }
-*{box-sizing:border-box;}
-.blog-page{ max-width:1280px; margin:0 auto 60px; padding:0 16px; font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; color:var(--text); }
+.blog-page{ max-width:1200px; margin:0 auto 50px; padding:0 16px; font-family:'Inter',system-ui,-apple-system,sans-serif; color:var(--text-dark); }
 
-/* ---------- HERO ---------- */
-.blog-hero{ background:linear-gradient(135deg,#0b1f5e 0%,#1456d9 100%); color:#fff; border-radius:var(--radius-lg); padding:40px 36px; margin:24px 0; position:relative; overflow:hidden; }
-.blog-hero .tag{ display:inline-block; background:var(--primary-red); color:#fff; font-weight:700; font-size:11px; letter-spacing:.5px; padding:3px 10px; border-radius:4px; text-transform:uppercase; margin-bottom:12px; }
-.blog-hero h1{ font-size:clamp(24px,4vw,36px); font-weight:800; margin:6px 0 10px; line-height:1.25; max-width:760px; }
-.blog-hero p{ color:rgba(255,255,255,.9); max-width:600px; font-size:14.5px; margin-bottom:22px; }
-.hero-search{ max-width:620px; }
-.hero-search-wrap{ position:relative; display:flex; align-items:center; }
-.hero-search input{ width:100%; padding:13px 46px 13px 16px; font-size:15px; border:2px solid transparent; border-radius:var(--radius-md); outline:none; box-shadow:var(--shadow-md); }
-.hero-search input:focus{ border-color:var(--yellow); }
-.hero-search button{ position:absolute; right:12px; background:none; border:none; color:var(--muted); cursor:pointer; display:flex; }
+/* HERO */
+.blog-hero-section{ background:linear-gradient(135deg,var(--primary-navy-dark),var(--primary-navy)); color:#fff; border-radius:var(--radius-lg); padding:36px 30px; margin:24px 0; }
+.blog-hero-section .tag{ display:inline-block; background:var(--sarkari-red); color:#fff; font-weight:700; font-size:11px; letter-spacing:.5px; padding:3px 10px; border-radius:4px; text-transform:uppercase; margin-bottom:10px; }
+.blog-hero-section h1{ font-size:clamp(22px,4vw,32px); font-weight:800; margin:4px 0 10px; line-height:1.25; max-width:720px; }
+.blog-hero-section p{ color:rgba(255,255,255,.85); font-size:14px; max-width:600px; margin-bottom:20px; }
+.hero-search-wrap{ position:relative; display:flex; align-items:center; max-width:600px; }
+.hero-search-wrap input{ width:100%; padding:12px 46px 12px 16px; font-size:14px; border:2px solid transparent; border-radius:var(--radius-md); outline:none; box-shadow:var(--shadow-md); }
+.hero-search-wrap input:focus{ border-color:var(--yellow-accent); }
+.hero-search-wrap button{ position:absolute; right:10px; background:none; border:none; color:var(--text-muted); cursor:pointer; display:flex; font-size:1.1rem; }
 
-/* ---------- TOOLBAR ---------- */
-.blog-toolbar{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:20px; }
-.filter-tabs{ display:flex; gap:8px; flex-wrap:wrap; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding-bottom:2px; }
+/* TOOLBAR */
+.filter-toolbar{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:20px; }
+.filter-tabs{ display:flex; gap:8px; flex-wrap:wrap; overflow-x:auto; scrollbar-width:none; }
 .filter-tabs::-webkit-scrollbar{ display:none; }
-.filter-tabs a{ white-space:nowrap; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:600; color:var(--text); text-decoration:none; background:var(--white); border:1px solid var(--border); transition:var(--transition); }
-.filter-tabs a.active, .filter-tabs a:hover{ background:var(--primary-navy); color:#fff; border-color:var(--primary-navy); }
-.sort-box select{ padding:8px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); font-size:13px; background:#fff; cursor:pointer; }
+.filter-tabs a{ white-space:nowrap; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:600; color:var(--text-dark); background:var(--card-white); border:1px solid var(--border-color); text-decoration:none; transition:.2s; }
+.filter-tabs a.active, .filter-tabs a:hover{ background:var(--primary-navy); color:#fff; border-color:var(--primary-navy); text-decoration:none; }
+.sort-box select{ padding:8px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-color); font-size:13px; background:#fff; cursor:pointer; }
 
-/* ---------- LAYOUT ---------- */
-.blog-layout{ display:grid; grid-template-columns:2.3fr 1fr; gap:28px; align-items:start; }
+/* LAYOUT */
+.blog-layout-grid{ display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:28px; align-items:start; }
 
-/* ---------- lazy image wrapper (shimmer + fade) ---------- */
+/* LAZY IMG */
 .lazy-img-wrap{ position:relative; width:100%; height:100%; overflow:hidden; background:#e9edf5; }
-.lazy-img-wrap::before{
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(90deg,#e9edf5 25%,#f3f5fa 37%,#e9edf5 63%);
-  background-size:400% 100%; animation:shimmer 1.4s ease infinite;
-}
+.lazy-img-wrap::before{ content:''; position:absolute; inset:0; background:linear-gradient(90deg,#e9edf5 25%,#f3f5fa 37%,#e9edf5 63%); background-size:400% 100%; animation:blogShimmer 1.4s ease infinite; }
 .lazy-img-wrap.loaded::before{ display:none; }
 .lazy-img-wrap img{ display:block; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .45s ease, transform .35s ease; position:relative; z-index:1; }
 .lazy-img-wrap img.loaded-img{ opacity:1; }
-@keyframes shimmer{ 0%{background-position:100% 0;} 100%{background-position:-100% 0;} }
+@keyframes blogShimmer{ 0%{background-position:100% 0;} 100%{background-position:-100% 0;} }
 
-/* ---------- Blog Card (list item) ---------- */
-.blog-card{ display:grid; grid-template-columns:280px 1fr; gap:0; background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px; text-decoration:none; color:inherit; box-shadow:var(--shadow-sm); transition:var(--transition); }
-.blog-card:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px); }
+/* BLOG CARD */
+.blog-card{ display:grid; grid-template-columns:260px 1fr; background:var(--card-white); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:18px; text-decoration:none; color:inherit; box-shadow:var(--shadow-sm); transition:.2s; }
+.blog-card:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px); text-decoration:none; }
 .blog-card .thumb{ position:relative; aspect-ratio:4/3; }
 .blog-card .thumb .lazy-img-wrap{ aspect-ratio:4/3; }
 .blog-card:hover .thumb img{ transform:scale(1.04); }
-.blog-card .cat-badge{ position:absolute; top:12px; left:12px; z-index:2; background:var(--primary-red); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:.3px; }
+.blog-card .cat-badge{ position:absolute; top:12px; left:12px; z-index:2; background:var(--sarkari-red); color:#fff; font-size:10.5px; font-weight:700; padding:4px 12px; border-radius:20px; text-transform:uppercase; }
 .blog-card .body{ padding:20px 22px; display:flex; flex-direction:column; justify-content:center; }
-.blog-card h2{ font-size:19px; font-weight:800; margin-bottom:8px; color:var(--primary-navy); line-height:1.35; }
-.blog-card:hover h2{ color:var(--blue); }
-.blog-card p{ color:var(--muted); font-size:13.5px; line-height:1.6; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.blog-card .meta{ font-size:12.5px; color:var(--muted); display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding-top:10px; border-top:1px dashed var(--border); }
-.blog-card .read-more{ color:var(--blue); font-weight:700; font-size:13.5px; margin-top:12px; display:inline-flex; align-items:center; gap:4px; }
+.blog-card h2{ font-size:18px; font-weight:800; margin-bottom:8px; color:var(--primary-navy); line-height:1.35; }
+.blog-card:hover h2{ color:var(--accent-blue); }
+.blog-card p{ color:var(--text-muted); font-size:13.5px; line-height:1.6; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.blog-card .meta-row{ font-size:12.5px; color:var(--text-muted); display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding-top:10px; border-top:1px dashed var(--border-color); }
+.blog-card .read-more{ color:var(--accent-blue); font-weight:700; font-size:13.5px; margin-top:12px; display:inline-flex; }
 
 @media(max-width:767px){
   .blog-card{ grid-template-columns:1fr; }
-  .blog-card .thumb{ aspect-ratio:16/9; }
-  .blog-card .thumb .lazy-img-wrap{ aspect-ratio:16/9; }
+  .blog-card .thumb, .blog-card .thumb .lazy-img-wrap{ aspect-ratio:16/9; }
   .blog-card .body{ padding:16px; }
 }
 
-/* ---------- Pagination ---------- */
-.pagination{ display:flex; justify-content:center; flex-wrap:wrap; gap:6px; margin-top:26px; }
-.pagination a, .pagination span{ min-width:36px; height:36px; padding:0 10px; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-sm); border:1px solid var(--border); color:var(--text); text-decoration:none; font-size:13px; font-weight:600; background:#fff; transition:var(--transition); }
-.pagination a:hover{ border-color:var(--primary-navy); color:var(--primary-navy); }
-.pagination .active{ background:var(--primary-navy); color:#fff; border-color:var(--primary-navy); }
+/* PAGINATION */
+.pagination-list{ display:flex; justify-content:center; flex-wrap:wrap; gap:6px; margin-top:24px; }
+.pagination-list a, .pagination-list span{ min-width:36px; height:36px; padding:0 10px; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-sm); border:1px solid var(--border-color); color:var(--text-dark); text-decoration:none; font-size:13px; font-weight:600; background:#fff; }
+.pagination-list a:hover{ border-color:var(--primary-navy); color:var(--primary-navy); text-decoration:none; }
+.pagination-list .active{ background:var(--primary-navy); color:#fff; border-color:var(--primary-navy); }
 
-/* ---------- Sidebar ---------- */
-.sidebar-box{ background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:20px; margin-bottom:20px; box-shadow:var(--shadow-sm); }
-.sidebar-box h3{ font-size:16px; font-weight:800; margin-bottom:16px; color:var(--primary-navy); padding-bottom:8px; border-bottom:2px solid var(--border); position:relative; }
-.sidebar-box h3::after{ content:''; position:absolute; bottom:-2px; left:0; width:34px; height:2px; background:var(--primary-red); }
-.search-box{ display:flex; }
-.search-box input{ flex:1; padding:10px 12px; border:1px solid var(--border); border-radius:8px 0 0 8px; font-size:14px; min-width:0; }
-.search-box button{ background:var(--blue); border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
-.cat-list a{ display:flex; justify-content:space-between; padding:9px 0; color:var(--text); text-decoration:none; font-size:13.5px; font-weight:600; border-bottom:1px solid #eee; transition:var(--transition); }
-.cat-list a:last-child{ border-bottom:none; }
-.cat-list a:hover, .cat-list a.active{ color:var(--blue); padding-left:4px; }
-.cat-list span.count{ background:var(--blue-light); color:var(--blue); font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700; }
-.popular-item{ display:flex; gap:10px; margin-bottom:14px; text-decoration:none; color:inherit; }
-.popular-item .lazy-img-wrap{ width:64px; height:56px; flex-shrink:0; border-radius:8px; }
-.popular-item h4{ font-size:13.5px; font-weight:700; margin-bottom:4px; color:var(--text); line-height:1.35; }
-.popular-item span{ font-size:11.5px; color:var(--muted); }
-.newsletter-box{ background:linear-gradient(135deg,#0b1f5e 0%,#1456d9 100%); color:#fff; border:none; }
-.newsletter-box h3{ color:#fff; border-bottom-color:rgba(255,255,255,.2); }
-.newsletter-box h3::after{ background:var(--yellow); }
-.newsletter-box p{ font-size:13px; opacity:.9; margin-bottom:12px; }
-.newsletter-box input{ width:100%; padding:10px 12px; border-radius:8px; border:none; margin-bottom:10px; font-size:13px; outline:none; }
-.newsletter-box button{ width:100%; padding:10px; border-radius:8px; border:none; background:var(--primary-red); color:#fff; font-weight:700; cursor:pointer; transition:var(--transition); }
-.newsletter-box button:hover{ background:#b80000; }
+/* SIDEBAR */
+.blog-sidebar{ display:flex; flex-direction:column; gap:22px; }
+.sidebar-widget{ background:var(--card-white); border-radius:var(--radius-lg); padding:20px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm); }
+.widget-header{ font-size:1.05rem; font-weight:800; color:var(--primary-navy); margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid var(--sarkari-red); }
+.search-box-side{ display:flex; }
+.search-box-side input{ flex:1; padding:10px 12px; border:1px solid var(--border-color); border-radius:8px 0 0 8px; font-size:14px; min-width:0; }
+.search-box-side button{ background:var(--accent-blue); border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
+.categories-list{ list-style:none; display:flex; flex-direction:column; gap:8px; margin:0; padding:0; }
+.category-item-link{ display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#fafbfc; border-radius:var(--radius-sm); color:var(--text-dark); font-weight:600; font-size:13.5px; border:1px solid var(--border-color); text-decoration:none; transition:.2s; }
+.category-item-link:hover, .category-item-link.active{ background:var(--primary-navy); color:#fff; text-decoration:none; }
+.trending-posts-list{ display:flex; flex-direction:column; gap:14px; }
+.trending-item{ display:flex; gap:12px; align-items:flex-start; text-decoration:none; }
+.trending-item .lazy-img-wrap{ width:60px; height:48px; border-radius:8px; flex-shrink:0; }
+.trending-title{ font-size:13.5px; font-weight:700; color:var(--text-dark); line-height:1.35; }
+.trending-title:hover{ color:var(--sarkari-red); }
+.trending-date{ font-size:11.5px; color:var(--text-muted); margin-top:4px; display:block; }
+.newsletter-widget{ background:linear-gradient(135deg,var(--primary-navy-dark),var(--primary-navy)); color:#fff; border:none; }
+.newsletter-widget .widget-header{ color:#fff; border-bottom-color:rgba(255,255,255,.2); }
+.newsletter-widget p{ font-size:13px; opacity:.9; margin-bottom:14px; }
+.newsletter-widget input{ width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:none; margin-bottom:10px; font-size:13px; outline:none; }
+.newsletter-widget button{ width:100%; padding:10px; border-radius:var(--radius-sm); border:none; background:var(--sarkari-red); color:#fff; font-weight:700; cursor:pointer; }
+.newsletter-widget button:hover{ background:var(--sarkari-red-hover); }
 
-.no-results{ padding:48px 20px; text-align:center; color:var(--muted); background:#fff; border:1px dashed var(--border); border-radius:var(--radius-md); }
-.no-results .empty-icon{ font-size:36px; margin-bottom:10px; }
+.empty-state{ text-align:center; padding:44px 20px; background:var(--card-white); border-radius:var(--radius-md); border:1px dashed var(--border-color); }
+.empty-state .empty-icon{ font-size:2rem; margin-bottom:8px; }
 
-@media(max-width:991px){ .blog-layout{ grid-template-columns:1fr; } }
-@media(max-width:576px){ .blog-hero{ padding:26px 20px; } }
+@media(min-width:993px){ .blog-sidebar{ position:sticky; top:90px; } }
+@media(max-width:991px){ .blog-layout-grid{ grid-template-columns:1fr; } }
 `;
 
 function thumb(b) { return b.thumbnail ? '' + b.thumbnail : '/images/placeholder.svg'; }
@@ -121,42 +115,25 @@ function qs(params) {
 }
 
 var pageScripts = `
-/* ---------- Lazy loading via IntersectionObserver ---------- */
 (function () {
   var lazyImgs = document.querySelectorAll('img.js-lazy');
-
   function loadImg(img) {
     var wrap = img.closest('.lazy-img-wrap');
     var src = img.getAttribute('data-src');
     if (!src) return;
     var temp = new Image();
-    temp.onload = function () {
-      img.src = src;
-      img.classList.add('loaded-img');
-      if (wrap) wrap.classList.add('loaded');
-    };
-    temp.onerror = function () {
-      img.src = '/images/placeholder.svg';
-      img.classList.add('loaded-img');
-      if (wrap) wrap.classList.add('loaded');
-    };
+    temp.onload = function () { img.src = src; img.classList.add('loaded-img'); if (wrap) wrap.classList.add('loaded'); };
+    temp.onerror = function () { img.src = '/images/placeholder.svg'; img.classList.add('loaded-img'); if (wrap) wrap.classList.add('loaded'); };
     temp.src = src;
     img.removeAttribute('data-src');
   }
-
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          loadImg(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
+      entries.forEach(function (entry) { if (entry.isIntersecting) { loadImg(entry.target); obs.unobserve(entry.target); } });
     }, { rootMargin: '200px 0px', threshold: 0.01 });
-
     lazyImgs.forEach(function (img) { observer.observe(img); });
   } else {
-    lazyImgs.forEach(function (img) { loadImg(img); });
+    lazyImgs.forEach(loadImg);
   }
 })();
 `;
@@ -165,43 +142,39 @@ var pageScripts = `
 
 <div class="blog-page">
 
-  <!-- HERO -->
-  <div class="blog-hero">
-    <div class="tag">BLOG</div>
-    <h1>Our Latest Articles</h1>
-    <p>Explore our latest insights, tips and trends on education, learning strategies, and personal growth.</p>
-    <div class="hero-search">
-      <form method="GET" action="/blog">
-        <div class="hero-search-wrap">
-          <input type="text" name="q" placeholder="Search articles..." value="<%= search || '' %>">
-          <button type="submit" aria-label="Search">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          </button>
-        </div>
+  <section class="blog-hero-section">
+    <span class="tag">Blog</span>
+    <h1>Latest Government Jobs &amp; Exam Updates</h1>
+    <p>Get the latest government job updates, admit cards, results, answer keys, exam dates and preparation tips.</p>
+    <form method="GET" action="/blog">
+      <div class="hero-search-wrap">
+        <input type="text" name="q" placeholder="Search articles, exams, jobs, admit cards..." value="<%= search || '' %>">
+        <button type="submit" aria-label="Search"><i class="ti ti-search"></i></button>
+      </div>
+    </form>
+  </section>
+
+  <div class="filter-toolbar">
+    <div class="filter-tabs">
+      <a href="/blog<%= qs({ sort: sort, q: search }) %>" class="<%= !activeCategory ? 'active' : '' %>">All Posts</a>
+      <% categories.forEach(function(c) { %>
+        <a href="/blog<%= qs({ category: c.slug, sort: sort, q: search }) %>" class="<%= activeCategory === c.slug ? 'active' : '' %>"><%= c.name %></a>
+      <% }) %>
+    </div>
+    <div class="sort-box">
+      <form method="GET" action="/blog" id="sortForm">
+        <% if (activeCategory) { %><input type="hidden" name="category" value="<%= activeCategory %>"><% } %>
+        <% if (search) { %><input type="hidden" name="q" value="<%= search %>"><% } %>
+        <select name="sort" onchange="document.getElementById('sortForm').submit()">
+          <option value="latest" <%= sort === 'latest' ? 'selected' : '' %>>Sort By: Latest</option>
+          <option value="popular" <%= sort === 'popular' ? 'selected' : '' %>>Sort By: Most Popular</option>
+        </select>
       </form>
     </div>
   </div>
 
-  <div class="blog-layout">
+  <div class="blog-layout-grid">
     <div class="blog-main">
-      <div class="blog-toolbar">
-        <div class="filter-tabs">
-          <a href="/blog<%= qs({ sort: sort, q: search }) %>" class="<%= !activeCategory ? 'active' : '' %>">All Posts</a>
-          <% categories.forEach(function(c) { %>
-            <a href="/blog<%= qs({ category: c.slug, sort: sort, q: search }) %>" class="<%= activeCategory === c.slug ? 'active' : '' %>"><%= c.name %></a>
-          <% }) %>
-        </div>
-        <div class="sort-box">
-          <form method="GET" action="/blog" id="sortForm">
-            <% if (activeCategory) { %><input type="hidden" name="category" value="<%= activeCategory %>"><% } %>
-            <% if (search) { %><input type="hidden" name="q" value="<%= search %>"><% } %>
-            <select name="sort" onchange="document.getElementById('sortForm').submit()">
-              <option value="latest" <%= sort === 'latest' ? 'selected' : '' %>>Sort By: Latest</option>
-              <option value="popular" <%= sort === 'popular' ? 'selected' : '' %>>Sort By: Most Popular</option>
-            </select>
-          </form>
-        </div>
-      </div>
 
       <% if (blogs && blogs.length) { %>
         <% blogs.forEach(function(blog) { %>
@@ -215,12 +188,12 @@ var pageScripts = `
             <div class="body">
               <h2><%= blog.title %></h2>
               <p><%= blog.short_description %></p>
-              <div class="meta">
-                <span>&#128197; <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span>
+              <div class="meta-row">
+                <span><i class="ti ti-calendar"></i> <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span>
                 <span>&#8226;</span>
-                <span>&#128340; <%= blog.read_time || 1 %> min read</span>
+                <span><i class="ti ti-clock"></i> <%= blog.read_time || 1 %> min read</span>
                 <span>&#8226;</span>
-                <span>&#128172; <%= blog.comments_count || 0 %> Comments</span>
+                <span><i class="ti ti-message-circle"></i> <%= blog.comments_count || 0 %> Comments</span>
               </div>
               <span class="read-more">Read Full Article &rarr;</span>
             </div>
@@ -228,7 +201,7 @@ var pageScripts = `
         <% }) %>
 
         <% if (totalPages > 1) { %>
-          <div class="pagination">
+          <div class="pagination-list">
             <a href="/blog<%= qs({ category: activeCategory, sort: sort, q: search, page: Math.max(1, currentPage - 1) }) %>">&lsaquo; Prev</a>
             <% for (var p = 1; p <= totalPages; p++) { %>
               <a href="/blog<%= qs({ category: activeCategory, sort: sort, q: search, page: p }) %>" class="<%= p === currentPage ? 'active' : '' %>"><%= p %></a>
@@ -237,55 +210,55 @@ var pageScripts = `
           </div>
         <% } %>
       <% } else { %>
-        <div class="no-results">
+        <div class="empty-state">
           <div class="empty-icon">&#128269;</div>
-          <h3 style="margin-bottom:6px;color:var(--text);">No articles found</h3>
-          <p>Try a different search term or category.</p>
+          <h3 style="margin-bottom:6px;">No articles found</h3>
+          <p style="color:var(--text-muted);font-size:14px;">Try a different search term or category.</p>
         </div>
       <% } %>
     </div>
 
     <aside class="blog-sidebar">
-      <div class="sidebar-box">
-        <h3>Search Articles</h3>
-        <form class="search-box" method="GET" action="/blog">
+      <div class="sidebar-widget">
+        <div class="widget-header">Search Articles</div>
+        <form class="search-box-side" method="GET" action="/blog">
           <input type="text" name="q" placeholder="Search articles..." value="<%= search || '' %>">
-          <button type="submit">&#128269;</button>
+          <button type="submit"><i class="ti ti-search"></i></button>
         </form>
       </div>
 
-      <div class="sidebar-box">
-        <h3>Categories</h3>
-        <div class="cat-list">
+      <div class="sidebar-widget">
+        <div class="widget-header">Categories</div>
+        <ul class="categories-list">
           <% categories.forEach(function(c) { %>
-            <a href="/blog?category=<%= c.slug %>" class="<%= activeCategory === c.slug ? 'active' : '' %>">
-              <%= c.name %> <span class="count"><%= c.count %></span>
+            <li><a href="/blog?category=<%= c.slug %>" class="category-item-link <%= activeCategory === c.slug ? 'active' : '' %>"><span><%= c.name %></span><span>(<%= c.count %>)</span></a></li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <% if (popularBlogs && popularBlogs.length) { %>
+      <div class="sidebar-widget">
+        <div class="widget-header">Popular Posts</div>
+        <div class="trending-posts-list">
+          <% popularBlogs.forEach(function(pb) { %>
+            <a href="/blog/<%= pb.slug %>" class="trending-item">
+              <span class="lazy-img-wrap"><img data-src="<%= thumb(pb) %>" alt="<%= pb.title %>" class="js-lazy" loading="lazy"></span>
+              <span>
+                <span class="trending-title"><%= pb.title %></span>
+                <span class="trending-date"><%= pb.published_at ? formatDate(pb.published_at, 'DD MMM YYYY') : '' %></span>
+              </span>
             </a>
           <% }) %>
         </div>
       </div>
+      <% } %>
 
-      <div class="sidebar-box">
-        <h3>Popular Posts</h3>
-        <% (popularBlogs || []).forEach(function(pb) { %>
-          <a href="/blog/<%= pb.slug %>" class="popular-item">
-            <span class="lazy-img-wrap">
-              <img data-src="<%= thumb(pb) %>" alt="<%= pb.title %>" class="js-lazy" loading="lazy">
-            </span>
-            <div>
-              <h4><%= pb.title %></h4>
-              <span><%= pb.published_at ? formatDate(pb.published_at, 'DD MMM YYYY') : '' %></span>
-            </div>
-          </a>
-        <% }) %>
-      </div>
-
-      <div class="sidebar-box newsletter-box">
-        <h3>Newsletter</h3>
-        <p>Get the latest updates and articles straight to your inbox.</p>
+      <div class="sidebar-widget newsletter-widget">
+        <div class="widget-header">Get Latest Exam Updates</div>
+        <p>Get important government job, admit card and result updates directly in your inbox.</p>
         <form method="POST" action="/newsletter/subscribe">
           <input type="email" name="email" placeholder="Enter your email" required>
-          <button type="submit">Subscribe</button>
+          <button type="submit">Subscribe Now</button>
         </form>
       </div>
     </aside>

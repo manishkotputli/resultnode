@@ -1,251 +1,227 @@
 <%
-var pageStyles = `
-:root{
-  --primary-navy:#0b1f5e;
-  --primary-navy-dark:#06123b;
-  --brand-red:#d90000;
-  --brand-red-hover:#b30000;
-  --accent-blue:#0a58ca;
-  --accent-blue-light:#eef1fd;
-  --bg-gray:#f5f7fb;
-  --card-white:#fff;
-  --text-dark:#172033;
-  --text-muted:#667085;
-  --border-color:#e6e9f0;
-  --radius-lg:16px;
-  --radius-md:10px;
-  --shadow-sm:0 2px 6px rgba(11,31,94,.05);
-  --shadow-md:0 6px 20px rgba(11,31,94,.10);
-}
-*{box-sizing:border-box;}
-.blog-detail-container{ max-width:1280px; margin:24px auto 60px; padding:0 16px; font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; color:var(--text-dark); }
-
-.breadcrumb-box{ font-size:13px; color:var(--text-muted); margin-bottom:14px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
-.breadcrumb-box a{ color:var(--accent-blue); text-decoration:none; }
-.breadcrumb-box a:hover{ text-decoration:underline; }
-
-.blog-title-area{ background:var(--card-white); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-sm); margin-bottom:20px; }
-.blog-category-tag{ display:inline-block; color:var(--accent-blue); background:var(--accent-blue-light); font-weight:700; font-size:11px; letter-spacing:.5px; text-transform:uppercase; padding:4px 10px; border-radius:6px; margin-bottom:10px; }
-.blog-title-area h1{ font-size:clamp(22px,4vw,34px); font-weight:800; line-height:1.28; margin:6px 0 10px; color:var(--primary-navy); }
-.blog-title-area .sub{ color:var(--text-muted); font-size:15px; margin-bottom:14px; }
-.blog-meta{ font-size:13.5px; color:var(--text-muted); display:flex; gap:6px; align-items:center; flex-wrap:wrap; border-top:1px dashed var(--border-color); padding-top:12px; }
-.blog-meta img.avatar{ width:24px; height:24px; border-radius:50%; object-fit:cover; background:#e2e8f0; vertical-align:middle; margin-right:4px; }
-
-.blog-detail-grid{ display:grid; grid-template-columns:2.3fr 1fr; gap:24px; align-items:start; }
-
-/* ---------- Lazy Image Wrapper (skeleton shimmer + fade-in) ---------- */
-.lazy-img-wrap{ position:relative; width:100%; overflow:hidden; background:#e9edf5; border-radius:var(--radius-lg); }
-.lazy-img-wrap.rounded-md{ border-radius:var(--radius-md); }
-.lazy-img-wrap::before{
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(90deg,#e9edf5 25%,#f3f5fa 37%,#e9edf5 63%);
-  background-size:400% 100%;
-  animation:shimmer 1.4s ease infinite;
-}
-.lazy-img-wrap.loaded::before{ display:none; }
-.lazy-img-wrap img{
-  display:block; width:100%; height:100%; object-fit:cover;
-  opacity:0; transition:opacity .45s ease, transform .35s ease;
-  position:relative; z-index:1;
-}
-.lazy-img-wrap img.loaded-img{ opacity:1; }
-@keyframes shimmer{ 0%{background-position:100% 0;} 100%{background-position:-100% 0;} }
-
-.blog-image{ margin-bottom:20px; cursor:zoom-in; }
-.blog-image .lazy-img-wrap{ aspect-ratio:16/8; }
-.blog-image .lazy-img-wrap:hover img{ transform:scale(1.02); }
-
-.blog-quote{ background:#f3f4fb; padding:18px 22px; border-left:4px solid var(--accent-blue); font-size:16px; font-style:italic; color:#333; margin-bottom:22px; border-radius:0 8px 8px 0; }
-.blog-quote span{ display:block; margin-top:8px; font-style:normal; font-size:13px; color:#888; }
-.blog-short-desc{ font-size:16px; color:#555; margin-bottom:20px; }
-
-.blog-content{ font-size:16px; line-height:1.85; color:#333; background:var(--card-white); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-sm); }
-.blog-content h2, .blog-content h3{ margin-top:28px; margin-bottom:10px; font-weight:700; color:var(--primary-navy); }
-.blog-content table{ width:100%; border-collapse:collapse; margin:15px 0; display:block; overflow-x:auto; }
-.blog-content table th, .blog-content table td{ border:1px solid #eee; padding:10px 12px; text-align:left; font-size:14px; }
-.blog-content table th{ background:#f6f7fb; }
-/* content-embedded images become lazy + clickable via JS */
-.blog-content .lazy-img-wrap{ margin:16px 0; cursor:zoom-in; aspect-ratio:16/9; }
-
-.tags-row{ margin:22px 0 4px; padding:0 24px; }
-.tags-row .label{ font-weight:600; margin-right:10px; color:#333; }
-.tags-row .tag-pill{ display:inline-block; background:var(--accent-blue-light); color:var(--accent-blue); font-size:13px; padding:5px 14px; border-radius:20px; margin:4px 4px 4px 0; text-decoration:none; }
-.tags-row .tag-pill:hover{ background:var(--primary-navy); color:#fff; }
-
-.blog-share{ display:flex; align-items:center; gap:10px; margin:18px 0; padding:0 24px; flex-wrap:wrap; }
-.blog-share .label{ font-weight:600; color:#333; margin-right:5px; font-size:14px; }
-.blog-share a{ width:34px; height:34px; border-radius:50%; background:#f1f2f6; display:flex; align-items:center; justify-content:center; text-decoration:none; color:var(--accent-blue); font-weight:700; transition:.2s; }
-.blog-share a:hover{ background:var(--accent-blue); color:#fff; }
-.like-btn{ border:1px solid var(--accent-blue); background:#fff; color:var(--accent-blue); padding:8px 20px; border-radius:20px; font-weight:600; cursor:pointer; font-size:14px; margin:0 24px 20px; }
-.like-btn.liked{ background:var(--accent-blue); color:#fff; }
-
-.author-box{ display:flex; gap:15px; align-items:flex-start; background:#fafbfc; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin:20px; }
-.author-box .lazy-img-wrap{ width:60px; height:60px; border-radius:50%; flex-shrink:0; }
-.author-box h4{ font-size:16px; margin-bottom:4px; color:var(--primary-navy); }
-.author-box p{ font-size:13px; color:#666; }
-
-.comments-section{ margin-top:24px; padding:0 24px 20px; }
-.comments-section h3{ font-size:20px; color:#111; margin-bottom:15px; }
-.comment-form textarea{ width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size:14px; resize:vertical; }
-.comment-form button{ margin-top:10px; background:var(--accent-blue); color:#fff; border:none; padding:9px 20px; border-radius:20px; font-weight:600; cursor:pointer; }
-.comment-item{ display:flex; gap:12px; padding:16px 0; border-bottom:1px solid #eee; }
-.comment-item .lazy-img-wrap{ width:38px; height:38px; border-radius:50%; flex-shrink:0; }
-.comment-item b{ color:#111; font-size:14px; }
-.comment-item .comment-date{ font-size:12px; color:#888; margin-left:6px; }
-.comment-item p{ font-size:14px; color:#444; margin-top:4px; }
-
-.related-posts{ margin-top:24px; }
-.related-posts h3{ font-size:20px; margin-bottom:15px; color:var(--primary-navy); }
-.related-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-.related-card{ text-decoration:none; color:inherit; border-radius:12px; overflow:hidden; border:1px solid var(--border-color); background:#fff; box-shadow:var(--shadow-sm); transition:transform .2s; }
-.related-card:hover{ transform:translateY(-3px); }
-.related-card .lazy-img-wrap{ aspect-ratio:16/9; border-radius:0; }
-.related-card .rc-body{ padding:12px; }
-.related-card .rc-cat{ font-size:11px; color:var(--accent-blue); font-weight:700; text-transform:uppercase; }
-.related-card h4{ font-size:14px; margin:6px 0; color:var(--text-dark); }
-.related-card span{ font-size:12px; color:#888; }
-
-.sidebar-box{ background:#fafbfc; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:20px; box-shadow:var(--shadow-sm); }
-.sidebar-box h3{ font-size:17px; margin-bottom:15px; color:var(--primary-navy); }
-.search-box{ display:flex; }
-.search-box input{ flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px 0 0 8px; font-size:14px; min-width:0; }
-.search-box button{ background:var(--accent-blue); border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
-.author-sidebar{ text-align:center; }
-.author-sidebar .lazy-img-wrap{ width:72px; height:72px; border-radius:50%; margin:0 auto 10px; }
-.author-sidebar .stats{ display:flex; justify-content:space-around; margin:14px 0; }
-.author-sidebar .stats div{ font-size:18px; font-weight:700; color:#111; }
-.author-sidebar .stats span{ display:block; font-size:12px; color:#888; font-weight:400; }
-.author-sidebar a.btn{ display:block; border:1px solid var(--accent-blue); color:var(--accent-blue); padding:8px; border-radius:8px; text-decoration:none; font-weight:600; font-size:14px; }
-.cat-list a{ display:flex; justify-content:space-between; padding:8px 0; color:#333; text-decoration:none; font-size:14px; border-bottom:1px solid #eee; }
-.cat-list span.count{ background:var(--accent-blue-light); color:var(--accent-blue); font-size:12px; padding:2px 8px; border-radius:10px; }
-.popular-item{ display:flex; gap:10px; margin-bottom:14px; text-decoration:none; color:inherit; }
-.popular-item .lazy-img-wrap{ width:64px; height:56px; flex-shrink:0; border-radius:8px; }
-.popular-item h4{ font-size:14px; font-weight:600; margin-bottom:4px; color:var(--text-dark); }
-.popular-item span{ font-size:12px; color:#888; }
-
-/* ---------- Lightbox ---------- */
-.lightbox-overlay{
-  display:none; position:fixed; inset:0; background:rgba(6,18,59,.88);
-  z-index:2000; align-items:center; justify-content:center; padding:20px;
-  opacity:0; transition:opacity .25s ease;
-}
-.lightbox-overlay.active{ display:flex; opacity:1; }
-.lightbox-overlay img{
-  max-width:92vw; max-height:88vh; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,.5);
-  transform:scale(.94); transition:transform .25s ease;
-}
-.lightbox-overlay.active img{ transform:scale(1); }
-.lightbox-close{
-  position:absolute; top:18px; right:22px; width:40px; height:40px; border-radius:50%;
-  background:rgba(255,255,255,.12); color:#fff; border:none; font-size:22px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-}
-.lightbox-close:hover{ background:rgba(255,255,255,.25); }
-
-@media(max-width:991px){
-  .blog-detail-grid{ grid-template-columns:1fr; }
-  .related-grid{ grid-template-columns:1fr 1fr; }
-}
-@media(max-width:576px){
-  .related-grid{ grid-template-columns:1fr; }
-  .blog-title-area, .blog-content{ padding:16px; }
-  .tags-row, .blog-share, .like-btn, .comments-section{ padding-left:16px; padding-right:16px; margin-left:0; margin-right:0; }
-  .author-box{ margin:16px; flex-direction:column; align-items:center; text-align:center; }
-}
-`;
-
-/* ---------------- helpers ---------------- */
 function thumb(b) { return b.thumbnail ? '' + b.thumbnail : '/images/placeholder.svg'; }
 function avatarSrc(u) { return u && u.profile_photo ? '/uploads/users/' + u.profile_photo : '/images/avatar-placeholder.png'; }
-
 var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.slug;
 
-/*
-  Turn any raw <img> tags inside the rich-text blog.content into
-  our lazy-loading wrapper markup so they lazy-load + open in the lightbox too.
-  We keep this simple/regex based since blog.content is trusted admin HTML.
-*/
 function wrapContentImages(html) {
   if (!html) return html;
   return html.replace(/<img\s+([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi, function (match, before, src, after) {
     var altMatch = (before + after).match(/alt=["']([^"']*)["']/i);
     var alt = altMatch ? altMatch[1] : '';
-    return '<span class="lazy-img-wrap rounded-md js-lightbox-img" data-full="' + src + '">' +
+    return '<span class="content-img-wrap js-lightbox-img" data-full="' + src + '">' +
              '<img data-src="' + src + '" alt="' + alt + '" loading="lazy" class="js-lazy">' +
            '</span>';
   });
 }
 var wrappedContent = wrapContentImages(blog.content);
 
-var pageScripts = `
-/* ---------- Like button ---------- */
-var likeBtn = document.getElementById('likeBtn');
-if (likeBtn) {
-  likeBtn.addEventListener('click', function () {
-    fetch(likeBtn.dataset.url, { method: 'POST', headers: { 'Accept': 'application/json' } })
-      .then(function (r) { if (r.status === 401) { window.location.href = '/login'; return null; } return r.json(); })
-      .then(function (data) {
-        if (!data) return;
-        var countEl = document.getElementById('likeCount');
-        var current = parseInt(countEl.dataset.count, 10) || 0;
-        var next = data.liked ? current + 1 : current - 1;
-        countEl.dataset.count = next;
-        likeBtn.classList.toggle('liked', data.liked);
-        likeBtn.innerHTML = (data.liked ? '\u2665 Liked' : '\u2661 Like') + ' (' + next + ')';
-      });
-  });
+var pageStyles = `
+:root{
+  --primary-navy:#0b1f5e;
+  --primary-navy-dark:#06123b;
+  --sarkari-red:#d90000;
+  --sarkari-red-hover:#b30000;
+  --accent-blue:#1456d9;
+  --accent-blue-light:#eef4ff;
+  --yellow-accent:#ffc400;
+  --bg-gray:#f5f7fb;
+  --card-white:#fff;
+  --text-dark:#172033;
+  --text-muted:#667085;
+  --border-color:#e2e8f0;
+  --radius-lg:16px;
+  --radius-md:10px;
+  --radius-sm:6px;
+  --shadow-sm:0 2px 6px rgba(11,31,94,.04);
+  --shadow-md:0 4px 16px rgba(11,31,94,.08);
+  --shadow-lg:0 8px 24px rgba(11,31,94,.12);
 }
+.reading-progress-container{ position:fixed; top:0; left:0; width:100%; height:4px; z-index:1000; }
+.reading-progress-bar{ height:100%; background:linear-gradient(90deg,var(--sarkari-red),var(--yellow-accent),var(--accent-blue)); width:0%; transition:width .1s ease-out; }
 
-/* ---------- Lazy loading via IntersectionObserver ---------- */
-(function () {
+.blog-detail-page{ max-width:1200px; margin:24px auto 40px; padding:0 16px; font-family:'Inter',system-ui,-apple-system,sans-serif; color:var(--text-dark); }
+
+.breadcrumb-wrapper{ font-size:.85rem; color:var(--text-muted); margin-bottom:14px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.breadcrumb-wrapper a{ color:var(--text-muted); text-decoration:none; }
+.breadcrumb-wrapper a:hover{ color:var(--accent-blue); }
+.breadcrumb-wrapper .sep{ color:#cbd5e1; }
+.breadcrumb-wrapper .active{ color:var(--primary-navy); font-weight:600; }
+
+.layout-grid{ display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:30px; align-items:start; }
+.article-column{ min-width:0; }
+
+.article-header-card{ background:var(--card-white); border-radius:var(--radius-lg); padding:28px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm); margin-bottom:24px; }
+.category-badge{ display:inline-flex; align-items:center; gap:6px; background:var(--accent-blue-light); color:var(--accent-blue); font-weight:700; font-size:.775rem; padding:4px 10px; border-radius:4px; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; }
+.article-title{ font-size:clamp(22px,4vw,2.25rem); font-weight:800; line-height:1.28; color:var(--primary-navy); margin-bottom:16px; }
+.article-meta-row{ display:flex; align-items:center; flex-wrap:wrap; gap:16px; padding-top:14px; border-top:1px dashed var(--border-color); color:var(--text-muted); font-size:.85rem; }
+.meta-item{ display:flex; align-items:center; gap:6px; }
+.meta-item i{ opacity:.7; }
+.meta-item img.avatar{ width:22px; height:22px; border-radius:50%; object-fit:cover; background:#e2e8f0; }
+
+.social-share-bar{ display:flex; align-items:center; gap:8px; margin-top:16px; padding-top:16px; border-top:1px solid var(--border-color); flex-wrap:wrap; }
+.share-label{ font-size:.85rem; font-weight:700; margin-right:4px; }
+.share-btn{ display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-size:.8rem; font-weight:600; color:#fff !important; border:none; cursor:pointer; text-decoration:none !important; transition:.15s; }
+.share-btn:hover{ opacity:.9; transform:translateY(-1px); }
+.share-whatsapp{ background:#25D366; }
+.share-facebook{ background:#1877F2; }
+.share-twitter{ background:#000; }
+.share-linkedin{ background:#0A66C2; }
+.share-copy{ background:var(--primary-navy); }
+
+.lazy-img-wrap{ position:relative; width:100%; overflow:hidden; background:#e9edf5; }
+.lazy-img-wrap::before{ content:''; position:absolute; inset:0; background:linear-gradient(90deg,#e9edf5 25%,#f3f5fa 37%,#e9edf5 63%); background-size:400% 100%; animation:blogDetailShimmer 1.4s ease infinite; }
+.lazy-img-wrap.loaded::before{ display:none; }
+.lazy-img-wrap img{ display:block; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .45s ease, transform .35s ease; position:relative; z-index:1; }
+.lazy-img-wrap img.loaded-img{ opacity:1; }
+@keyframes blogDetailShimmer{ 0%{background-position:100% 0;} 100%{background-position:-100% 0;} }
+
+.featured-image-card{ background:var(--card-white); border-radius:var(--radius-lg); border:1px solid var(--border-color); overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:24px; }
+.featured-image-wrapper{ width:100%; aspect-ratio:16/8; cursor:zoom-in; }
+.featured-image-wrapper:hover img{ transform:scale(1.02); }
+.image-caption{ padding:10px 16px; font-size:.8rem; color:var(--text-muted); text-align:center; background:#fafbfc; border-top:1px solid var(--border-color); }
+
+.article-content-card{ background:var(--card-white); border-radius:var(--radius-lg); padding:32px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm); margin-bottom:24px; }
+.content-body{ font-size:1.05rem; line-height:1.8; }
+.content-body p{ margin-bottom:18px; }
+.content-body h2{ font-size:1.5rem; font-weight:700; color:var(--primary-navy); margin:32px 0 16px; padding-bottom:8px; border-bottom:2px solid var(--sarkari-red); }
+.content-body h3{ font-size:1.2rem; font-weight:700; color:var(--accent-blue); margin:24px 0 12px; }
+.content-body ul, .content-body ol{ margin:0 0 18px 20px; }
+.content-body table{ width:100%; border-collapse:collapse; margin:15px 0; }
+.content-body table th, .content-body table td{ border:1px solid #eee; padding:10px 12px; text-align:left; font-size:.95rem; }
+.content-body table th{ background:#f6f7fb; }
+.content-img-wrap{ display:block; margin:20px 0; border-radius:var(--radius-md); cursor:zoom-in; aspect-ratio:16/9; }
+
+.article-tags-wrapper{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:28px; padding-top:20px; border-top:1px solid var(--border-color); }
+.tag-pill{ background:var(--bg-gray); color:var(--text-muted); font-size:.8rem; padding:4px 12px; border-radius:20px; border:1px solid var(--border-color); text-decoration:none; transition:.2s; }
+.tag-pill:hover{ background:var(--primary-navy); color:#fff; text-decoration:none; }
+
+.author-box-card{ background:#fafbfc; border:1px solid var(--border-color); border-radius:var(--radius-md); padding:20px; display:flex; gap:16px; align-items:center; margin:28px 0; }
+.author-box-card .lazy-img-wrap{ width:56px; height:56px; border-radius:50%; flex-shrink:0; }
+.author-info h4{ font-size:1rem; font-weight:700; color:var(--primary-navy); }
+.author-info p{ font-size:.85rem; color:var(--text-muted); margin-top:2px; }
+
+.like-btn{ border:1px solid var(--accent-blue); background:#fff; color:var(--accent-blue); padding:8px 20px; border-radius:20px; font-weight:600; cursor:pointer; font-size:.85rem; margin-top:16px; }
+.like-btn.liked{ background:var(--accent-blue); color:#fff; }
+
+.comments-section h2{ font-size:1.3rem; font-weight:800; color:var(--primary-navy); margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid var(--sarkari-red); }
+.comment-form textarea{ width:100%; padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border-color); font-family:inherit; font-size:.9rem; resize:vertical; }
+.comment-form button{ margin-top:10px; background:var(--accent-blue); color:#fff; border:none; padding:9px 20px; border-radius:20px; font-weight:600; cursor:pointer; }
+.comment-item{ display:flex; gap:12px; padding:16px 0; border-bottom:1px solid var(--border-color); }
+.comment-item .lazy-img-wrap{ width:38px; height:38px; border-radius:50%; flex-shrink:0; }
+.comment-item b{ font-size:.9rem; }
+.comment-date{ font-size:.75rem; color:var(--text-muted); margin-left:6px; }
+.comment-item p{ font-size:.9rem; margin-top:4px; }
+
+.related-posts-section{ margin-top:32px; }
+.related-posts-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; }
+.related-card{ background:var(--card-white); border:1px solid var(--border-color); border-radius:var(--radius-md); overflow:hidden; text-decoration:none; color:inherit; transition:.2s; display:block; }
+.related-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-sm); text-decoration:none; }
+.related-card .lazy-img-wrap{ aspect-ratio:16/9; }
+.related-card .rc-body{ padding:14px; }
+.related-title{ font-size:.9rem; font-weight:700; color:var(--primary-navy); line-height:1.4; display:block; margin-bottom:8px; }
+.related-meta{ font-size:.75rem; color:var(--text-muted); }
+
+.disclaimer-card{ background:#fffbe6; border:1px solid #ffe58f; border-radius:var(--radius-md); padding:16px; margin-top:32px; font-size:.825rem; color:#8c6b00; line-height:1.5; }
+
+.sidebar{ display:flex; flex-direction:column; gap:24px; }
+.sidebar-widget{ background:var(--card-white); border-radius:var(--radius-lg); padding:20px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm); }
+.widget-header{ font-size:1.05rem; font-weight:800; color:var(--primary-navy); margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid var(--sarkari-red); }
+.search-box-side{ display:flex; }
+.search-box-side input{ flex:1; padding:10px 12px; border:1px solid var(--border-color); border-radius:8px 0 0 8px; font-size:.9rem; min-width:0; }
+.search-box-side button{ background:var(--accent-blue); border:none; color:#fff; padding:0 16px; border-radius:0 8px 8px 0; cursor:pointer; }
+.categories-list{ list-style:none; display:flex; flex-direction:column; gap:8px; margin:0; padding:0; }
+.category-item-link{ display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#fafbfc; border-radius:var(--radius-sm); color:var(--text-dark); font-weight:600; font-size:.875rem; border:1px solid var(--border-color); text-decoration:none; transition:.2s; }
+.category-item-link:hover{ background:var(--primary-navy); color:#fff; text-decoration:none; }
+.trending-posts-list{ display:flex; flex-direction:column; gap:14px; }
+.trending-item{ display:flex; gap:12px; align-items:flex-start; text-decoration:none; }
+.trending-item .lazy-img-wrap{ width:60px; height:48px; border-radius:8px; flex-shrink:0; }
+.trending-title{ font-size:.875rem; font-weight:700; color:var(--text-dark); line-height:1.35; }
+.trending-title:hover{ color:var(--sarkari-red); }
+.trending-date{ font-size:.75rem; color:var(--text-muted); margin-top:4px; display:block; }
+.author-sidebar-widget{ text-align:center; }
+.author-sidebar-widget .lazy-img-wrap{ width:72px; height:72px; border-radius:50%; margin:0 auto 10px; }
+.author-sidebar-widget .stats{ display:flex; justify-content:space-around; margin:14px 0; }
+.author-sidebar-widget .stats div{ font-size:18px; font-weight:700; }
+.author-sidebar-widget .stats span{ display:block; font-size:12px; color:#888; font-weight:400; }
+.author-sidebar-widget a.btn{ display:block; border:1px solid var(--accent-blue); color:var(--accent-blue); padding:8px; border-radius:8px; font-weight:600; font-size:14px; text-decoration:none; }
+
+@media(min-width:993px){ .sidebar{ position:sticky; top:90px; } }
+
+.toast-message{ position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px); background:var(--primary-navy); color:#fff; padding:10px 20px; border-radius:20px; font-size:.85rem; font-weight:600; box-shadow:var(--shadow-lg); transition:transform .3s ease; z-index:1000; }
+.toast-message.show{ transform:translateX(-50%) translateY(0); }
+
+.lightbox-overlay{ display:none; position:fixed; inset:0; background:rgba(6,18,59,.9); z-index:2000; align-items:center; justify-content:center; padding:20px; opacity:0; transition:opacity .25s ease; }
+.lightbox-overlay.active{ display:flex; opacity:1; }
+.lightbox-overlay img{ max-width:92vw; max-height:88vh; border-radius:10px; box-shadow:0 10px 40px rgba(0,0,0,.5); transform:scale(.94); transition:transform .25s ease; }
+.lightbox-overlay.active img{ transform:scale(1); }
+.lightbox-close{ position:absolute; top:18px; right:22px; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.12); color:#fff; border:none; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lightbox-close:hover{ background:rgba(255,255,255,.25); }
+
+@media(max-width:992px){
+  .layout-grid{ grid-template-columns:1fr; }
+  .related-posts-grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:768px){
+  .article-header-card, .article-content-card{ padding:18px; }
+  .related-posts-grid{ grid-template-columns:1fr; }
+  .author-box-card{ flex-direction:column; text-align:center; }
+}
+`;
+
+var pageScripts = `
+document.addEventListener('DOMContentLoaded', function () {
+
+  var progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    window.addEventListener('scroll', function () {
+      var totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) progressBar.style.width = (window.scrollY / totalHeight) * 100 + '%';
+    });
+  }
+
+  var likeBtn = document.getElementById('likeBtn');
+  if (likeBtn) {
+    likeBtn.addEventListener('click', function () {
+      fetch(likeBtn.dataset.url, { method: 'POST', headers: { 'Accept': 'application/json' } })
+        .then(function (r) { if (r.status === 401) { window.location.href = '/login'; return null; } return r.json(); })
+        .then(function (data) {
+          if (!data) return;
+          var countEl = document.getElementById('likeCount');
+          var current = parseInt(countEl.dataset.count, 10) || 0;
+          var next = data.liked ? current + 1 : current - 1;
+          countEl.dataset.count = next;
+          likeBtn.classList.toggle('liked', data.liked);
+          likeBtn.innerHTML = (data.liked ? '\u2665 Liked' : '\u2661 Like') + ' (' + next + ')';
+        });
+    });
+  }
+
   var lazyImgs = document.querySelectorAll('img.js-lazy');
-
   function loadImg(img) {
     var wrap = img.closest('.lazy-img-wrap');
     var src = img.getAttribute('data-src');
     if (!src) return;
     var temp = new Image();
-    temp.onload = function () {
-      img.src = src;
-      img.classList.add('loaded-img');
-      if (wrap) wrap.classList.add('loaded');
-    };
-    temp.onerror = function () {
-      img.src = '/images/placeholder.svg';
-      img.classList.add('loaded-img');
-      if (wrap) wrap.classList.add('loaded');
-    };
+    temp.onload = function () { img.src = src; img.classList.add('loaded-img'); if (wrap) wrap.classList.add('loaded'); };
+    temp.onerror = function () { img.src = '/images/placeholder.svg'; img.classList.add('loaded-img'); if (wrap) wrap.classList.add('loaded'); };
     temp.src = src;
     img.removeAttribute('data-src');
   }
-
   if ('IntersectionObserver' in window) {
     var observer = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          loadImg(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
+      entries.forEach(function (entry) { if (entry.isIntersecting) { loadImg(entry.target); obs.unobserve(entry.target); } });
     }, { rootMargin: '150px 0px', threshold: 0.01 });
-
     lazyImgs.forEach(function (img) { observer.observe(img); });
   } else {
-    lazyImgs.forEach(function (img) { loadImg(img); });
+    lazyImgs.forEach(loadImg);
   }
-})();
 
-/* ---------- Lightbox (click any wrapped image to open) ---------- */
-(function () {
   var overlay = document.getElementById('lightboxOverlay');
   var overlayImg = document.getElementById('lightboxImg');
   var closeBtn = document.getElementById('lightboxClose');
-  if (!overlay || !overlayImg) return;
-
   function openLightbox(src, alt) {
-    if (!src) return;
-    overlayImg.src = src;
-    overlayImg.alt = alt || '';
+    if (!src || !overlay) return;
+    overlayImg.src = src; overlayImg.alt = alt || '';
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -254,7 +230,6 @@ if (likeBtn) {
     document.body.style.overflow = '';
     setTimeout(function () { overlayImg.src = ''; }, 200);
   }
-
   document.querySelectorAll('.js-lightbox-img').forEach(function (wrap) {
     wrap.addEventListener('click', function () {
       var full = wrap.getAttribute('data-full');
@@ -262,86 +237,112 @@ if (likeBtn) {
       openLightbox(full, img ? img.alt : '');
     });
   });
-
-  closeBtn.addEventListener('click', closeLightbox);
-  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeLightbox(); });
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeLightbox(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
-})();
+});
+
+function showToast(message) {
+  var toast = document.getElementById('toastMsg');
+  toast.innerText = message;
+  toast.classList.add('show');
+  setTimeout(function () { toast.classList.remove('show'); }, 3000);
+}
+function copyArticleLink() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(function () { showToast('Link copied to clipboard!'); })
+    .catch(function () { showToast('Failed to copy link.'); });
+}
 `;
 %>
-<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+<%- include('../weblayout/layout-top', { title: blog.meta_title || blog.title, metaDescription: blog.meta_description || blog.short_description, metaKeywords: blog.meta_keywords, pageStyles: pageStyles }) %>
 
-<div class="blog-detail-container">
-  <div class="breadcrumb-box">
-    <a href="/">Home</a> &rsaquo;
-    <a href="/blog?category=<%= blog.BlogCategory ? blog.BlogCategory.slug : '' %>"><%= blog.BlogCategory ? blog.BlogCategory.name : 'Blog' %></a> &rsaquo;
-    <span><%= blog.title %></span>
+<div class="reading-progress-container"><div class="reading-progress-bar" id="progressBar"></div></div>
+
+<div class="blog-detail-page">
+
+  <div class="breadcrumb-wrapper">
+    <a href="/">Home</a> <span class="sep">/</span>
+    <a href="/blog">Blog</a>
+    <% if (blog.BlogCategory) { %>
+      <span class="sep">/</span>
+      <a href="/category/<%= blog.BlogCategory.slug %>"><%= blog.BlogCategory.name %></a>
+    <% } %>
+    <span class="sep">/</span>
+    <span class="active"><%= blog.title %></span>
   </div>
 
-  <div class="blog-title-area">
-    <div class="blog-category-tag"><%= blog.BlogCategory ? blog.BlogCategory.name : 'General' %></div>
-    <h1><%= blog.title %></h1>
-    <% if (blog.short_description) { %><p class="sub"><%= blog.short_description %></p><% } %>
-    <div class="blog-meta">
-      <% if (blog.author) { %>
-        <img class="avatar" src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" loading="lazy" width="24" height="24">
-        By <%= blog.author.name %> &#8226;
-      <% } %>
-      <span>&#128197; <%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></span> &#8226;
-      <span>&#128340; <%= blog.read_time || 1 %> min read</span> &#8226;
-      <span>&#128065; <%= blog.views || 0 %> Views</span> &#8226;
-      <span>&#128172; <%= blog.comments_count || (comments ? comments.length : 0) %> Comments</span>
-    </div>
-  </div>
+  <div class="layout-grid">
 
-  <div class="blog-detail-grid">
-    <div class="blog-main">
+    <main class="article-column">
+
+      <header class="article-header-card">
+        <% if (blog.BlogCategory) { %>
+          <span class="category-badge"><i class="ti ti-news"></i> <%= blog.BlogCategory.name %></span>
+        <% } %>
+
+        <h1 class="article-title"><%= blog.title %></h1>
+
+        <div class="article-meta-row">
+          <div class="meta-item"><i class="ti ti-calendar"></i><span>Published: <strong><%= blog.published_at ? formatDate(blog.published_at, 'DD MMM YYYY') : '' %></strong></span></div>
+          <% if (blog.author) { %>
+          <div class="meta-item">
+            <img class="avatar" src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" loading="lazy">
+            <span>Author: <strong><%= blog.author.name %></strong></span>
+          </div>
+          <% } %>
+          <div class="meta-item"><i class="ti ti-clock"></i><span>Reading Time: <strong><%= blog.read_time || 1 %> min</strong></span></div>
+          <div class="meta-item"><i class="ti ti-eye"></i><span><strong><%= blog.views || 0 %></strong> Views</span></div>
+        </div>
+
+        <div class="social-share-bar">
+          <span class="share-label">Share Post:</span>
+          <a href="https://api.whatsapp.com/send?text=<%= encodeURIComponent(blog.title + ' ' + pageUrl) %>" target="_blank" rel="noopener" class="share-btn share-whatsapp"><i class="ti ti-brand-whatsapp"></i> WhatsApp</a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(pageUrl) %>" target="_blank" rel="noopener" class="share-btn share-facebook"><i class="ti ti-brand-facebook"></i> Facebook</a>
+          <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(pageUrl) %>&text=<%= encodeURIComponent(blog.title) %>" target="_blank" rel="noopener" class="share-btn share-twitter"><i class="ti ti-brand-x"></i> Twitter</a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(pageUrl) %>" target="_blank" rel="noopener" class="share-btn share-linkedin"><i class="ti ti-brand-linkedin"></i> LinkedIn</a>
+          <button class="share-btn share-copy" onclick="copyArticleLink()"><i class="ti ti-link"></i> Copy Link</button>
+        </div>
+      </header>
 
       <% if (blog.thumbnail) { %>
-        <div class="blog-image">
-          <span class="lazy-img-wrap js-lightbox-img" data-full="<%= thumb(blog) %>">
-            <img data-src="<%= thumb(blog) %>" alt="<%= blog.title %>" class="js-lazy" loading="lazy">
-          </span>
-        </div>
+      <div class="featured-image-card">
+        <span class="featured-image-wrapper lazy-img-wrap js-lightbox-img" data-full="<%= thumb(blog) %>">
+          <img data-src="<%= thumb(blog) %>" alt="<%= blog.title %>" class="js-lazy" loading="lazy">
+        </span>
+        <div class="image-caption"><%= blog.title %></div>
+      </div>
       <% } %>
 
-      <div class="blog-content"><%- wrappedContent %></div>
+      <article class="article-content-card">
+        <div class="content-body"><%- wrappedContent %></div>
 
-      <% if (blog.tags) { %>
-        <div class="tags-row">
-          <span class="label">Tags:</span>
+        <% if (blog.tags) { %>
+        <div class="article-tags-wrapper">
+          <span style="font-weight:700;font-size:.85rem;">Tags:</span>
           <% blog.tags.split(',').forEach(function(t) { %>
-            <a class="tag-pill" href="/blog?q=<%= t.trim() %>"><%= t.trim() %></a>
+            <a href="/blog?q=<%= encodeURIComponent(t.trim()) %>" class="tag-pill"><%= t.trim() %></a>
           <% }) %>
         </div>
-      <% } %>
+        <% } %>
 
-      <div class="blog-share">
-        <span class="label">Share this article:</span>
-        <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(pageUrl) %>" title="Facebook">f</a>
-        <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(pageUrl) %>&text=<%= encodeURIComponent(blog.title) %>" title="Twitter">t</a>
-        <a target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(pageUrl) %>" title="LinkedIn">in</a>
-        <a target="_blank" rel="noopener" href="https://api.whatsapp.com/send?text=<%= encodeURIComponent(blog.title + ' ' + pageUrl) %>" title="WhatsApp">w</a>
-      </div>
+        <button id="likeBtn" class="like-btn <%= liked ? 'liked' : '' %>" data-url="/blog/<%= blog.slug %>/like">
+          <span id="likeCount" data-count="<%= blog.likes_count || 0 %>"><%= liked ? '\u2665 Liked' : '\u2661 Like' %> (<%= blog.likes_count || 0 %>)</span>
+        </button>
 
-      <button id="likeBtn" class="like-btn <%= liked ? 'liked' : '' %>" data-url="/blog/<%= blog.slug %>/like">
-        <span id="likeCount" data-count="<%= blog.likes_count || 0 %>"><%= liked ? '\u2665 Liked' : '\u2661 Like' %> (<%= blog.likes_count || 0 %>)</span>
-      </button>
-
-      <% if (blog.author) { %>
-        <div class="author-box">
-          <span class="lazy-img-wrap">
-            <img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy">
-          </span>
-          <div>
+        <% if (blog.author) { %>
+        <div class="author-box-card">
+          <span class="lazy-img-wrap"><img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy"></span>
+          <div class="author-info">
             <h4><%= blog.author.name %></h4>
-            <p><%= blog.author.bio || 'Content writer & contributor at ' + (typeof siteName !== 'undefined' ? siteName : 'our blog') %>.</p>
+            <p><%= blog.author.bio || ('Content writer & contributor at ' + ((site_setting && site_setting.site_title) || 'our blog')) %></p>
           </div>
         </div>
-      <% } %>
+        <% } %>
+      </article>
 
-      <div class="comments-section" id="comments">
-        <h3>Comments (<%= comments ? comments.length : 0 %>)</h3>
+      <div class="article-content-card comments-section" id="comments">
+        <h2>Comments (<%= comments ? comments.length : 0 %>)</h2>
 
         <% if (currentUser) { %>
           <form class="comment-form" method="POST" action="/blog/<%= blog.slug %>/comment">
@@ -354,9 +355,7 @@ if (likeBtn) {
 
         <% (comments || []).forEach(function(c) { %>
           <div class="comment-item">
-            <span class="lazy-img-wrap">
-              <img data-src="<%= avatarSrc(c.User) %>" alt="<%= c.User ? c.User.name : 'User' %>" class="js-lazy" loading="lazy">
-            </span>
+            <span class="lazy-img-wrap"><img data-src="<%= avatarSrc(c.User) %>" alt="<%= c.User ? c.User.name : 'User' %>" class="js-lazy" loading="lazy"></span>
             <div>
               <b><%= c.User ? c.User.name : 'User' %></b>
               <span class="comment-date"><%= timeAgo(c.created_at || c.createdAt) %></span>
@@ -367,79 +366,83 @@ if (likeBtn) {
       </div>
 
       <% if (relatedBlogs && relatedBlogs.length) { %>
-        <div class="related-posts">
-          <h3>Related Posts</h3>
-          <div class="related-grid">
-            <% relatedBlogs.forEach(function(rb) { %>
-              <a href="/blog/<%= rb.slug %>" class="related-card">
-                <span class="lazy-img-wrap">
-                  <img data-src="<%= thumb(rb) %>" alt="<%= rb.title %>" class="js-lazy" loading="lazy">
-                </span>
-                <div class="rc-body">
-                  <div class="rc-cat"><%= rb.BlogCategory ? rb.BlogCategory.name : '' %></div>
-                  <h4><%= rb.title %></h4>
-                  <span><%= rb.published_at ? formatDate(rb.published_at, 'DD MMM YYYY') : '' %></span>
-                </div>
-              </a>
-            <% }) %>
-          </div>
+      <section class="related-posts-section">
+        <h3 style="font-size:1.1rem;font-weight:800;color:var(--primary-navy);">Related Articles</h3>
+        <div class="related-posts-grid">
+          <% relatedBlogs.forEach(function(rb) { %>
+            <a href="/blog/<%= rb.slug %>" class="related-card">
+              <span class="lazy-img-wrap"><img data-src="<%= thumb(rb) %>" alt="<%= rb.title %>" class="js-lazy" loading="lazy"></span>
+              <div class="rc-body">
+                <span class="related-title"><%= rb.title %></span>
+                <span class="related-meta"><%= rb.published_at ? formatDate(rb.published_at, 'DD MMM YYYY') : '' %></span>
+              </div>
+            </a>
+          <% }) %>
         </div>
+      </section>
       <% } %>
-    </div>
 
-    <aside class="blog-sidebar">
-      <div class="sidebar-box">
-        <h3>Search Articles</h3>
-        <form class="search-box" method="GET" action="/blog">
+      <div class="disclaimer-card">
+        <strong>Disclaimer:</strong> This article is published for the convenience of readers. In case of any changes or discrepancies, please refer to the official notification of the concerned board/department, which shall be treated as final.
+      </div>
+
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-widget">
+        <div class="widget-header">Search Articles</div>
+        <form class="search-box-side" method="GET" action="/blog">
           <input type="text" name="q" placeholder="Search articles...">
-          <button type="submit">&#128269;</button>
+          <button type="submit"><i class="ti ti-search"></i></button>
         </form>
       </div>
 
-      <% if (blog.author) { %>
-        <div class="sidebar-box author-sidebar">
-          <h3>About the Author</h3>
-          <span class="lazy-img-wrap">
-            <img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy">
-          </span>
-          <h4><%= blog.author.name %></h4>
-          <p style="font-size:13px;color:#666;"><%= blog.author.bio || 'Content Writer' %></p>
-          <div class="stats">
-            <div><%= blog.author.articles_count || 0 %><span>Articles</span></div>
-            <div><%= blog.author.followers_count || 0 %><span>Followers</span></div>
-          </div>
-          <a class="btn" href="/blog?author=<%= blog.author.id %>">View All Articles</a>
-        </div>
-      <% } %>
-
-      <div class="sidebar-box">
-        <h3>Categories</h3>
-        <div class="cat-list">
-          <% categories.forEach(function(c) { %>
-            <a href="/blog?category=<%= c.slug %>"><%= c.name %> <span class="count"><%= c.count %></span></a>
+      <% if (popularBlogs && popularBlogs.length) { %>
+      <div class="sidebar-widget">
+        <div class="widget-header">Trending Updates</div>
+        <div class="trending-posts-list">
+          <% popularBlogs.forEach(function(pb) { %>
+            <a href="/blog/<%= pb.slug %>" class="trending-item">
+              <span class="lazy-img-wrap"><img data-src="<%= thumb(pb) %>" alt="<%= pb.title %>" class="js-lazy" loading="lazy"></span>
+              <span>
+                <span class="trending-title"><%= pb.title %></span>
+                <span class="trending-date"><%= pb.published_at ? formatDate(pb.published_at, 'DD MMM YYYY') : '' %></span>
+              </span>
+            </a>
           <% }) %>
         </div>
       </div>
+      <% } %>
 
-      <div class="sidebar-box">
-        <h3>Popular Posts</h3>
-        <% (popularBlogs || []).forEach(function(pb) { %>
-          <a href="/blog/<%= pb.slug %>" class="popular-item">
-            <span class="lazy-img-wrap">
-              <img data-src="<%= thumb(pb) %>" alt="<%= pb.title %>" class="js-lazy" loading="lazy">
-            </span>
-            <div>
-              <h4><%= pb.title %></h4>
-              <span><%= pb.published_at ? formatDate(pb.published_at, 'DD MMM YYYY') : '' %></span>
-            </div>
-          </a>
-        <% }) %>
+      <% if (blog.author) { %>
+      <div class="sidebar-widget author-sidebar-widget">
+        <div class="widget-header">About the Author</div>
+        <span class="lazy-img-wrap"><img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy"></span>
+        <h4 style="color:var(--primary-navy);"><%= blog.author.name %></h4>
+        <p style="font-size:13px;color:#666;"><%= blog.author.bio || 'Content Writer' %></p>
+        <div class="stats">
+          <div><%= blog.author.articles_count || 0 %><span>Articles</span></div>
+          <div><%= blog.author.followers_count || 0 %><span>Followers</span></div>
+        </div>
+        <a class="btn" href="/blog?author=<%= blog.author.id %>">View All Articles</a>
+      </div>
+      <% } %>
+
+      <div class="sidebar-widget">
+        <div class="widget-header">Categories</div>
+        <ul class="categories-list">
+          <% (categories || []).forEach(function(c) { %>
+            <li><a href="/blog?category=<%= c.slug %>" class="category-item-link"><span><%= c.name %></span><span>(<%= c.count %>)</span></a></li>
+          <% }) %>
+        </ul>
       </div>
     </aside>
+
   </div>
 </div>
 
-<!-- Lightbox overlay (single shared instance) -->
+<div class="toast-message" id="toastMsg">Link copied to clipboard!</div>
+
 <div class="lightbox-overlay" id="lightboxOverlay">
   <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
   <img id="lightboxImg" src="" alt="">

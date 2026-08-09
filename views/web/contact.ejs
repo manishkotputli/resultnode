@@ -1,88 +1,759 @@
 <%
 var pageStyles = `
-.page-header { text-align: center; margin: 40px 0 20px; }
-.page-header h1 { font-size: 34px; color: #c00; font-weight: 800; }
-.page-header .subtitle { color: #555; font-size: 16px; }
-.contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; max-width: 950px; margin: 0 auto 50px; padding: 0 10px; }
-.contact-info, .contact-form { background: #fff; padding: 25px; border: 1px solid #eee; border-radius: 12px; box-shadow: 0px 3px 12px rgba(0,0,0,0.05); }
-.section-title { color: #c00; margin-bottom: 18px; font-size: 22px; font-weight: 700; }
-.info-line { margin-bottom: 12px; font-size: 15px; color: #333; }
-.social-links a { display: block; margin: 7px 0; font-size: 15px; color: #0077cc; }
-.form-box input, .form-box textarea { width: 94%; border: 1px solid #ccc; border-radius: 8px; padding: 12px; font-size: 15px; margin-bottom: 15px; background: #fafafa; }
-.btn-submit { width: 100%; background: #c00; color: #fff; padding: 12px; border: none; border-radius: 8px; font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.2s ease; }
-.btn-submit:hover { background: #900; }
-.faq-wrapper { max-width: 900px; margin: 20px auto 50px; }
-.faq-title { text-align: center; font-size: 28px; font-weight: 700; color: #c00; margin-bottom: 20px; }
-.faq-box { background: #fff; border: 1px solid #ddd; padding: 18px 20px; margin-bottom: 12px; border-radius: 10px; max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: 0px 2px 6px rgba(0,0,0,0.05); }
-.faq-box h4 { margin-bottom: 8px; color: #222; }
-.map-section { max-width: 950px; margin: 40px auto; text-align: center; }
-.map-title { font-size: 26px; margin-bottom: 15px; color: #c00; }
-@media(max-width: 768px){ .contact-wrapper { grid-template-columns: 1fr; } }
+/* -------------------------------------------------------------------------- */
+/* 1. CSS VARIABLES & CORE CONTAINER SETUP                                     */
+/* -------------------------------------------------------------------------- */
+:root {
+  --sr-red: #b91c1c;
+  --sr-red-hover: #991b1b;
+  --sr-red-light: #fef2f2;
+  --sr-navy: #0f172a;
+  --sr-navy-muted: #334155;
+  --sr-bg-page: #f8fafc;
+  --sr-card-bg: #ffffff;
+  --sr-border: #e2e8f0;
+  --sr-text: #0f172a;
+  --sr-text-muted: #64748b;
+  --sr-green-check: #16a34a;
+  --sr-radius: 16px;
+  --sr-radius-sm: 8px;
+  --sr-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --sr-shadow-md: 0 4px 14px rgba(15, 23, 42, 0.06);
+  --sr-shadow-hover: 0 10px 22px rgba(15, 23, 42, 0.1);
+  --sr-transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sr-contact-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 992px) {
+  .sr-contact-container { padding: 0 20px; }
+}
+
+@media (max-width: 576px) {
+  .sr-contact-container { padding: 0 14px; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. PAGE HEADER                                                             */
+/* -------------------------------------------------------------------------- */
+.sr-page-header {
+  text-align: center;
+  padding: 36px 0 28px;
+}
+
+.sr-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sr-red-light);
+  color: var(--sr-red);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 50px;
+  border: 1px solid #fecaca;
+  margin-bottom: 12px;
+}
+
+.sr-page-header h1 {
+  font-size: 38px;
+  color: var(--sr-navy);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.sr-page-header .sr-subtitle {
+  color: var(--sr-text-muted);
+  font-size: 16px;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+@media (max-width: 992px) {
+  .sr-page-header h1 { font-size: 32px; }
+}
+@media (max-width: 576px) {
+  .sr-page-header { padding: 24px 0 20px; }
+  .sr-page-header h1 { font-size: 26px; }
+  .sr-page-header .sr-subtitle { font-size: 14px; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. CONTACT WRAPPER (INFO + FORM)                                           */
+/* -------------------------------------------------------------------------- */
+.sr-contact-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 28px;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 850px) {
+  .sr-contact-wrapper { grid-template-columns: 1fr; }
+}
+
+.sr-info-card, .sr-form-card {
+  background: var(--sr-card-bg);
+  padding: 30px;
+  border: 1px solid var(--sr-border);
+  border-radius: var(--sr-radius);
+  box-shadow: var(--sr-shadow-md);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sr-section-title {
+  color: var(--sr-navy);
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--sr-red-light);
+  padding-bottom: 10px;
+}
+
+.sr-section-title span.icon {
+  color: var(--sr-red);
+}
+
+.sr-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sr-info-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--sr-red-light);
+  color: var(--sr-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.sr-info-text label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.sr-info-text p {
+  font-size: 15px;
+  color: var(--sr-text);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.sr-social-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.sr-social-links a {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--sr-bg-page);
+  border: 1px solid var(--sr-border);
+  border-radius: var(--sr-radius-sm);
+  font-size: 13px;
+  color: var(--sr-navy-muted);
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--sr-transition);
+}
+
+.sr-social-links a:hover {
+  background: var(--sr-red);
+  color: #ffffff;
+  border-color: var(--sr-red);
+}
+
+/* Form Elements */
+.sr-form-group {
+  margin-bottom: 18px;
+}
+
+.sr-form-group label {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--sr-navy);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.sr-form-group input, 
+.sr-form-group textarea {
+  width: 100%;
+  border: 1px solid var(--sr-border);
+  border-radius: var(--sr-radius-sm);
+  padding: 0 14px;
+  font-size: 14px;
+  background: #ffffff;
+  color: var(--sr-text);
+  box-sizing: border-box;
+  transition: var(--sr-transition);
+  font-family: inherit;
+}
+
+.sr-form-group input {
+  height: 46px;
+}
+
+.sr-form-group textarea {
+  height: 130px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  resize: vertical;
+}
+
+.sr-form-group input:focus, 
+.sr-form-group textarea:focus {
+  border-color: var(--sr-red);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.12);
+}
+
+.sr-btn-submit {
+  width: 100%;
+  height: 48px;
+  background: var(--sr-red);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--sr-radius-sm);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--sr-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sr-btn-submit:hover {
+  background: var(--sr-red-hover);
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. EDITORIAL TEAM SECTION (CENTERED FLEX LAYOUT)                          */
+/* -------------------------------------------------------------------------- */
+.sr-team-section {
+  width: 100%;
+  margin: 54px 0;
+}
+
+.sr-team-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.sr-team-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--sr-navy);
+  margin: 0 0 8px 0;
+}
+
+.sr-team-header p {
+  color: var(--sr-text-muted);
+  font-size: 15px;
+  margin: 0 auto;
+  max-width: 680px;
+  line-height: 1.5;
+}
+
+/* REQUIRED CENTERING FLEX CONTAINER */
+.sr-team-grid {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.sr-team-card {
+  width: 240px;
+  max-width: 240px;
+  flex: 0 1 240px;
+  min-height: 260px;
+  background: var(--sr-card-bg);
+  border: 1px solid var(--sr-border);
+  border-radius: var(--sr-radius);
+  padding: 24px 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: var(--sr-transition);
+  position: relative;
+}
+
+.sr-team-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sr-shadow-hover);
+  border-color: #cbd5e1;
+}
+
+.sr-avatar-wrapper {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.sr-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+  background: var(--sr-bg-page);
+}
+
+.sr-verified-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: var(--sr-green-check);
+  color: #ffffff;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  border: 2px solid #ffffff;
+}
+
+.sr-team-name {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--sr-navy);
+  margin-bottom: 6px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.sr-team-role {
+  display: inline-block;
+  background: var(--sr-red-light);
+  color: var(--sr-red);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+
+.sr-team-email {
+  font-size: 13px;
+  color: var(--sr-text-muted);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  margin-top: auto;
+  font-weight: 500;
+  transition: var(--sr-transition);
+}
+
+.sr-team-email:hover {
+  color: var(--sr-red);
+}
+
+@media (max-width: 576px) {
+  .sr-team-grid {
+    gap: 16px;
+  }
+  .sr-team-card {
+    width: min(100%, 320px);
+    max-width: min(100%, 320px);
+    flex: 0 1 min(100%, 320px);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5. FAQ ACCORDION SECTION                                                   */
+/* -------------------------------------------------------------------------- */
+.sr-faq-section {
+  width: 100%;
+  margin: 54px 0;
+}
+
+.sr-faq-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--sr-navy);
+  margin-bottom: 28px;
+}
+
+.sr-faq-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sr-faq-item {
+  background: var(--sr-card-bg);
+  border: 1px solid var(--sr-border);
+  border-radius: var(--sr-radius-sm);
+  box-shadow: var(--sr-shadow-sm);
+  overflow: hidden;
+}
+
+.sr-faq-question {
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--sr-navy);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.sr-faq-icon {
+  font-size: 18px;
+  color: var(--sr-red);
+  transition: transform 0.2s ease;
+}
+
+.sr-faq-item.active .sr-faq-icon {
+  transform: rotate(45deg);
+}
+
+.sr-faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+  background: #fafafa;
+  border-top: 1px solid transparent;
+}
+
+.sr-faq-item.active .sr-faq-answer {
+  max-height: 300px;
+  border-top-color: var(--sr-border);
+}
+
+.sr-faq-answer p {
+  padding: 16px 20px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--sr-text-muted);
+  line-height: 1.6;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 6. MAP SECTION                                                             */
+/* -------------------------------------------------------------------------- */
+.sr-map-section {
+  width: 100%;
+  margin: 48px 0 24px;
+  text-align: center;
+}
+
+.sr-map-title {
+  font-size: 22px;
+  margin-bottom: 18px;
+  color: var(--sr-navy);
+  font-weight: 800;
+}
+
+.sr-map-frame-wrapper {
+  border-radius: var(--sr-radius);
+  overflow: hidden;
+  border: 1px solid var(--sr-border);
+  box-shadow: var(--sr-shadow-md);
+  height: 350px;
+  width: 100%;
+}
+
+.sr-map-frame-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 576px) {
+  .sr-map-frame-wrapper { height: 260px; }
+}
+
+/* Disclaimer Notice */
+.sr-disclaimer-notice {
+  text-align: center;
+  font-size: 13px;
+  color: var(--sr-text-muted);
+  margin: 32px 0 10px;
+  padding: 12px;
+  background: var(--sr-red-light);
+  border: 1px dashed #fecaca;
+  border-radius: var(--sr-radius-sm);
+}
 `;
 %>
+
 <%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
 
-<div class="page-header">
-  <h1>Contact Us</h1>
-  <p class="subtitle">We are here to help you anytime - Get in touch!</p>
-</div>
+<div class="sr-contact-container">
 
-<div class="contact-wrapper">
-  <div class="contact-info">
-    <h3 class="section-title">&#128222; Get in Touch</h3>
-    <p class="info-line"><strong>Email:</strong> <%= (site_setting && site_setting.contact_email) || 'Not Available' %></p>
-    <p class="info-line"><strong>Phone:</strong> <%= (site_setting && site_setting.contact_phone) || 'Not Available' %></p>
-    <p class="info-line"><strong>Office Hours:</strong> <%= (site_setting && site_setting.contact_hours) || 'Mon-Sat (10AM-6PM)' %></p>
-    <hr>
-    <h3 class="section-title">&#127760; Our Office</h3>
-    <p class="info-line"><%- ((site_setting && site_setting.contact_address) || 'Address not available.').replace(/\n/g, '<br>') %></p>
-    <hr>
-    <h3 class="section-title">&#128279; Follow Us</h3>
-    <div class="social-links">
-      <% if (site_setting && site_setting.facebook_url) { %><a href="<%= site_setting.facebook_url %>" target="_blank">Facebook</a><% } %>
-      <% if (site_setting && site_setting.instagram_url) { %><a href="<%= site_setting.instagram_url %>" target="_blank">Instagram</a><% } %>
-      <% if (site_setting && site_setting.twitter_url) { %><a href="<%= site_setting.twitter_url %>" target="_blank">Twitter</a><% } %>
-      <% if (site_setting && site_setting.youtube_url) { %><a href="<%= site_setting.youtube_url %>" target="_blank">YouTube</a><% } %>
+  <!-- PAGE HEADER -->
+  <header class="sr-page-header">
+    <div class="sr-header-badge">✓ Help & Support Center</div>
+    <h1>Contact Our Team</h1>
+    <p class="sr-subtitle">Have questions regarding Sarkari results, job notifications, admit cards, answer keys or government recruitment updates? Get in touch with our team.</p>
+  </header>
+
+  <!-- CONTACT INFO & FORM SECTION -->
+  <div class="sr-contact-wrapper">
+    
+    <!-- LEFT: Contact Information Card -->
+    <div class="sr-info-card">
+      <h2 class="sr-section-title"><span class="icon">&#128222;</span> Get in Touch</h2>
+      
+      <div class="sr-info-item">
+        <div class="sr-info-icon">&#9993;</div>
+        <div class="sr-info-text">
+          <label>Email Support</label>
+          <p><%= (site_setting && site_setting.contact_email) || 'Not Available' %></p>
+        </div>
+      </div>
+
+      <div class="sr-info-item">
+        <div class="sr-info-icon">&#128222;</div>
+        <div class="sr-info-text">
+          <label>Phone Line</label>
+          <p><%= (site_setting && site_setting.contact_phone) || 'Not Available' %></p>
+        </div>
+      </div>
+
+      <div class="sr-info-item">
+        <div class="sr-info-icon">&#128336;</div>
+        <div class="sr-info-text">
+          <label>Working Hours</label>
+          <p><%= (site_setting && site_setting.contact_hours) || 'Mon - Sat (10:00 AM - 6:00 PM)' %></p>
+        </div>
+      </div>
+
+      <h2 class="sr-section-title" style="margin-top: 24px;"><span class="icon">&#127760;</span> Office Address</h2>
+      <div class="sr-info-item">
+        <div class="sr-info-icon">&#128205;</div>
+        <div class="sr-info-text">
+          <label>Location</label>
+          <p><%- ((site_setting && site_setting.contact_address) || 'Address not available.').replace(/\n/g, '<br>') %></p>
+        </div>
+      </div>
+
+      <% if (site_setting && (site_setting.facebook_url || site_setting.instagram_url || site_setting.twitter_url || site_setting.youtube_url || site_setting.telegram_url)) { %>
+        <h2 class="sr-section-title" style="margin-top: 24px;"><span class="icon">&#128279;</span> Official Handles</h2>
+        <div class="sr-social-links">
+          <% if (site_setting.facebook_url) { %><a href="<%= site_setting.facebook_url %>" target="_blank" rel="noopener">Facebook</a><% } %>
+          <% if (site_setting.instagram_url) { %><a href="<%= site_setting.instagram_url %>" target="_blank" rel="noopener">Instagram</a><% } %>
+          <% if (site_setting.twitter_url) { %><a href="<%= site_setting.twitter_url %>" target="_blank" rel="noopener">Twitter</a><% } %>
+          <% if (site_setting.youtube_url) { %><a href="<%= site_setting.youtube_url %>" target="_blank" rel="noopener">YouTube</a><% } %>
+          <% if (site_setting.telegram_url) { %><a href="<%= site_setting.telegram_url %>" target="_blank" rel="noopener">Telegram</a><% } %>
+        </div>
+      <% } %>
     </div>
+
+    <!-- RIGHT: Send Us A Message Form -->
+    <div class="sr-form-card">
+      <h2 class="sr-section-title"><span class="icon">&#128231;</span> Send Us a Message</h2>
+      <form action="/contact/send" method="POST">
+        <div class="sr-form-group">
+          <label for="input-name">Your Name</label>
+          <input type="text" id="input-name" name="name" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="sr-form-group">
+          <label for="input-email">Your Email</label>
+          <input type="email" id="input-email" name="email" placeholder="Enter your email address" required>
+        </div>
+        
+        <div class="sr-form-group">
+          <label for="input-subject">Subject</label>
+          <input type="text" id="input-subject" name="subject" placeholder="What is this regarding?">
+        </div>
+        
+        <div class="sr-form-group">
+          <label for="input-message">Your Message</label>
+          <textarea id="input-message" name="message" placeholder="Write your message here..." required></textarea>
+        </div>
+        
+        <button type="submit" class="sr-btn-submit">
+          <span>Send Message</span> &#10148;
+        </button>
+      </form>
+    </div>
+
   </div>
 
-  <div class="contact-form">
-    <h3 class="section-title">&#128231; Send Us a Message</h3>
-    <form action="/contact/send" method="POST" class="form-box">
-      <label>Your Name</label>
-      <input type="text" name="name" class="form-control" required>
-      <label>Your Email</label>
-      <input type="email" name="email" class="form-control" required>
-      <label>Subject</label>
-      <input type="text" name="subject" class="form-control">
-      <label>Your Message</label>
-      <textarea name="message" class="form-control" rows="5" required></textarea>
-      <button type="submit" class="btn-submit">Send Message</button>
-    </form>
+  <!-- EDITORIAL TEAM SECTION -->
+  <% if (team_members && team_members.length > 0) { %>
+    <section class="sr-team-section">
+      <div class="sr-team-header">
+        <h2>Meet Our Editorial Board</h2>
+        <p>Our editorial team works behind the scenes to verify exam results, admit cards, answer keys, recruitment notifications and important government updates.</p>
+      </div>
+
+      <!-- CENTERED FLEX GRID -->
+     <div class="sr-team-grid">
+  <% team_members.forEach(function(member) { %>
+    <div class="sr-team-card">
+      <div class="sr-avatar-wrapper">
+        <% 
+          var avatarSrc = member.profile_photo 
+            ? '/uploads/users/' + member.profile_photo 
+            : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=b91c1c&color=fff&bold=true';
+        %>
+        <img src="<%= avatarSrc %>" alt="<%= member.name %>" class="sr-avatar-img" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0f172a&color=fff'">
+        <span class="sr-verified-badge" title="Verified Author">✓</span>
+      </div>
+      
+      <div class="sr-team-name"><%= member.name %></div>
+      <div class="sr-team-role">
+  <% 
+    var roleId = Number(member.role_id);
+    var roleName = member.role_name || (member.Role ? member.Role.name : '');
+
+    if (roleId === 2 || roleId === 3) {
+      roleName = 'Owner';
+    } else if (roleId === 4) {
+      roleName = 'Developer';
+    } else if (!roleName) {
+      roleName = 'Editorial Member';
+    }
+  %>
+  <%= roleName %>
+</div>
+      
+      <% if (member.bio || member.description) { %>
+        <p style="font-size: 12px; color: var(--sr-text-muted); margin: 0 0 10px 0; line-height: 1.4;"><%= member.bio || member.description %></p>
+      <% } %>
+
+      <a href="mailto:<%= member.email %>" class="sr-team-email">&#9993; <%= member.email %></a>
+    </div>
+  <% }) %>
+</div>
+    </section>
+  <% } %>
+
+  <!-- FAQ SECTION -->
+  <section class="sr-faq-section">
+    <h2 class="sr-faq-title">Frequently Asked Questions</h2>
+    <div class="sr-faq-container">
+      
+      <div class="sr-faq-item">
+        <button class="sr-faq-question" type="button">
+          <span>📌 How can I check my exam results?</span>
+          <span class="sr-faq-icon">+</span>
+        </button>
+        <div class="sr-faq-answer">
+          <p>You can check all government exam results directly from the "Result" section on our homepage.</p>
+        </div>
+      </div>
+
+      <div class="sr-faq-item">
+        <button class="sr-faq-question" type="button">
+          <span>📌 How do I apply for government jobs?</span>
+          <span class="sr-faq-icon">+</span>
+        </button>
+        <div class="sr-faq-answer">
+          <p>Visit the "Latest Jobs" section to find active vacancies along with official application links.</p>
+        </div>
+      </div>
+
+      <div class="sr-faq-item">
+        <button class="sr-faq-question" type="button">
+          <span>📌 How can I download my admit card?</span>
+          <span class="sr-faq-icon">+</span>
+        </button>
+        <div class="sr-faq-answer">
+          <p>Navigate to the "Admit Card" tab where verified hall tickets are updated daily.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GOOGLE MAP SECTION -->
+  <% if (site_setting && site_setting.google_map_embed) { %>
+    <section class="sr-map-section">
+      <h2 class="sr-map-title">&#128205; Find Us on Google Maps</h2>
+      <div class="sr-map-frame-wrapper">
+        <iframe src="<%= site_setting.google_map_embed %>" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- DISCLAIMER -->
+  <div class="sr-disclaimer-notice">
+    <strong>Disclaimer:</strong> This is an informational portal. Please verify all details on the official website before applying.
   </div>
+
 </div>
 
-<div class="faq-wrapper">
-  <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
-  <div class="faq-box">
-    <h4>&#128204; How can I check my exam results?</h4>
-    <p>You can check all government exam results from the "Result" section of our website.</p>
-  </div>
-  <div class="faq-box">
-    <h4>&#128204; How do I apply for government jobs?</h4>
-    <p>Visit the "Latest Jobs" section to find all active job openings with eligibility and apply links.</p>
-  </div>
-  <div class="faq-box">
-    <h4>&#128204; How can I download my admit card?</h4>
-    <p>Go to the "Admit Card" page where all admit card links are updated daily.</p>
-  </div>
-</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var faqQuestions = document.querySelectorAll('.sr-faq-question');
+    faqQuestions.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = this.parentElement;
+        var isActive = item.classList.contains('active');
+        
+        // Close all faq items
+        document.querySelectorAll('.sr-faq-item').forEach(function(el) {
+          el.classList.remove('active');
+        });
 
-<% if (site_setting && site_setting.google_map_embed) { %>
-  <div class="map-section">
-    <h2 class="map-title">&#128205; Find Us on Google Maps</h2>
-    <iframe src="<%= site_setting.google_map_embed %>" width="100%" height="350" style="border:0;" allowfullscreen loading="lazy"></iframe>
-  </div>
-<% } %>
+        // Toggle clicked item
+        if (!isActive) {
+          item.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
 
 <%- include('../weblayout/layout-bottom') %>

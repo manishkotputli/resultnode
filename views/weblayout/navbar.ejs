@@ -65,6 +65,49 @@
     display: block;
   }
 
+  /* =========================================================
+     LOGIN / DASHBOARD BUTTON (added — only this is new)
+     ========================================================= */
+  .nav-menu li.nav-auth-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-menu li.nav-auth-item a {
+    background-color: #d90000 !important;
+    color: #ffffff !important;
+    padding: 8px 18px !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: background-color 0.2s, transform 0.15s;
+  }
+
+  .nav-menu li.nav-auth-item a:hover {
+    background-color: #b30000 !important;
+    transform: translateY(-1px);
+  }
+
+  @media (min-width: 769px) {
+    .nav-menu li.nav-auth-item {
+      margin-left: 8px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu li.nav-auth-item {
+      padding: 10px 25px 4px;
+    }
+    .nav-menu li.nav-auth-item a {
+      display: inline-flex;
+      padding: 10px 20px !important;
+    }
+  }
+
   /* ==========================================
      DESKTOP STYLES (min-width: 769px)
      ========================================== */
@@ -217,9 +260,9 @@
     </li>
 
     <% if (currentUser) { %>
-      <li><a href="/dashboard"><%= currentUser.name %></a></li>
+      <li class="nav-auth-item"><a href="/dashboard"><i class="ti ti-user-circle"></i> <%= currentUser.name %></a></li>
     <% } else { %>
-      <li><a href="/login">Login</a></li>
+      <li class="nav-auth-item"><a href="/login"><i class="ti ti-login"></i> Login</a></li>
     <% } %>
 
     <!-- Search icon for Desktop layout -->
