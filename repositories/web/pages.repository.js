@@ -25,7 +25,8 @@ async function getActiveTeamMembers() {
       u.id, 
       u.name, 
       u.email, 
-      u.phone, 
+      u.phone,
+      u.bio, 
       u.profile_photo, 
       u.role_id, 
       r.name AS role_name

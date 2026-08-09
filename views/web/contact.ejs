@@ -263,23 +263,41 @@ var pageStyles = `
 }
 
 /* -------------------------------------------------------------------------- */
-/* 4. EDITORIAL TEAM SECTION (CENTERED FLEX LAYOUT)                          */
+/* 4. EDITORIAL TEAM SECTION — PREMIUM REDESIGN                               */
 /* -------------------------------------------------------------------------- */
 .sr-team-section {
   width: 100%;
-  margin: 54px 0;
+  margin: 60px 0;
+  position: relative;
 }
 
 .sr-team-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
+}
+
+.sr-team-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #fef2f2, #fff1f1);
+  color: var(--sr-red);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 50px;
+  border: 1px solid #fecaca;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
 }
 
 .sr-team-header h2 {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
   color: var(--sr-navy);
   margin: 0 0 8px 0;
+  letter-spacing: -0.01em;
 }
 
 .sr-team-header p {
@@ -287,29 +305,30 @@ var pageStyles = `
   font-size: 15px;
   margin: 0 auto;
   max-width: 680px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* REQUIRED CENTERING FLEX CONTAINER */
+/* CENTERING FLEX GRID */
 .sr-team-grid {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
-  gap: 24px;
+  gap: 26px;
 }
 
+/* PREMIUM CARD */
 .sr-team-card {
-  width: 240px;
-  max-width: 240px;
-  flex: 0 1 240px;
-  min-height: 260px;
+  width: 260px;
+  max-width: 260px;
+  flex: 0 1 260px;
+  min-height: 300px;
   background: var(--sr-card-bg);
   border: 1px solid var(--sr-border);
-  border-radius: var(--sr-radius);
-  padding: 24px 18px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  border-radius: 20px;
+  padding: 30px 20px 24px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -317,20 +336,51 @@ var pageStyles = `
   text-align: center;
   transition: var(--sr-transition);
   position: relative;
+  overflow: hidden;
+}
+
+/* Top gradient accent bar */
+.sr-team-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--sr-red), #f97373, var(--sr-navy));
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .sr-team-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--sr-shadow-hover);
-  border-color: #cbd5e1;
+  transform: translateY(-8px);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.14);
+  border-color: transparent;
 }
 
+.sr-team-card:hover::before {
+  opacity: 1;
+}
+
+/* Avatar with glow ring — fully circular (50% radius) */
 .sr-avatar-wrapper {
   position: relative;
-  width: 88px;
-  height: 88px;
-  margin-bottom: 14px;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 16px;
   flex-shrink: 0;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, var(--sr-red), #fca5a5, var(--sr-navy));
+}
+
+.sr-avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #ffffff;
+  display: block;
 }
 
 .sr-avatar-img {
@@ -338,8 +388,7 @@ var pageStyles = `
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+  display: block;
   background: var(--sr-bg-page);
 }
 
@@ -349,15 +398,16 @@ var pageStyles = `
   right: 2px;
   background: var(--sr-green-check);
   color: #ffffff;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   font-weight: 800;
-  border: 2px solid #ffffff;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.4);
 }
 
 .sr-team-name {
@@ -375,26 +425,66 @@ var pageStyles = `
   color: var(--sr-red);
   font-size: 11px;
   font-weight: 800;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   margin-bottom: 12px;
 }
 
-.sr-team-email {
-  font-size: 13px;
+.sr-team-bio {
+  font-size: 12.5px;
   color: var(--sr-text-muted);
-  text-decoration: none;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+/* PREMIUM SOCIAL ICON ROW — Email / Mobile / Instagram */
+.sr-team-social-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-top: auto;
-  font-weight: 500;
+  padding-top: 14px;
+  border-top: 1px dashed var(--sr-border);
+  width: 100%;
+}
+
+.sr-team-social-row a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  text-decoration: none;
+  background: var(--sr-bg-page);
+  border: 1px solid var(--sr-border);
+  color: var(--sr-navy-muted);
   transition: var(--sr-transition);
 }
 
-.sr-team-email:hover {
-  color: var(--sr-red);
+.sr-team-social-row a.icon-email:hover {
+  background: var(--sr-red);
+  border-color: var(--sr-red);
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+.sr-team-social-row a.icon-mobile:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+.sr-team-social-row a.icon-instagram:hover {
+  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  border-color: transparent;
+  color: #ffffff;
+  transform: translateY(-3px);
 }
 
 @media (max-width: 576px) {
@@ -629,53 +719,72 @@ var pageStyles = `
 
   </div>
 
-  <!-- EDITORIAL TEAM SECTION -->
+  <!-- EDITORIAL TEAM SECTION — PREMIUM -->
   <% if (team_members && team_members.length > 0) { %>
     <section class="sr-team-section">
       <div class="sr-team-header">
+        <span class="sr-team-badge">&#11088; Verified Editorial Staff</span>
         <h2>Meet Our Editorial Board</h2>
         <p>Our editorial team works behind the scenes to verify exam results, admit cards, answer keys, recruitment notifications and important government updates.</p>
       </div>
 
       <!-- CENTERED FLEX GRID -->
-     <div class="sr-team-grid">
-  <% team_members.forEach(function(member) { %>
-    <div class="sr-team-card">
-      <div class="sr-avatar-wrapper">
-        <% 
-          var avatarSrc = member.profile_photo 
-            ? '/uploads/users/' + member.profile_photo 
-            : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=b91c1c&color=fff&bold=true';
-        %>
-        <img src="<%= avatarSrc %>" alt="<%= member.name %>" class="sr-avatar-img" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0f172a&color=fff'">
-        <span class="sr-verified-badge" title="Verified Author">✓</span>
+      <div class="sr-team-grid">
+        <% team_members.forEach(function(member) { %>
+          <div class="sr-team-card">
+            <div class="sr-avatar-wrapper">
+              <span class="sr-avatar-inner">
+                <%
+                  var avatarSrc = member.profile_photo
+                    ? '/uploads/users/' + member.profile_photo
+                    : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=b91c1c&color=fff&bold=true';
+                %>
+                <img src="<%= avatarSrc %>" alt="<%= member.name %>" class="sr-avatar-img" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0f172a&color=fff'">
+              </span>
+              <span class="sr-verified-badge" title="Verified Author"><i class="ti ti-check"></i></span>
+            </div>
+
+            <div class="sr-team-name"><%= member.name %></div>
+            <div class="sr-team-role">
+              <%
+                var roleId = Number(member.role_id);
+                var roleName = member.role_name || (member.Role ? member.Role.name : '');
+
+                if (roleId === 2 || roleId === 3) {
+                  roleName = 'Owner';
+                } else if (roleId === 4) {
+                  roleName = 'Developer';
+                } else if (!roleName) {
+                  roleName = 'Editorial Member';
+                }
+              %>
+              <%= roleName %>
+            </div>
+
+            <% if (member.bio || member.description) { %>
+              <p class="sr-team-bio"><%= member.bio || member.description %></p>
+            <% } %>
+
+            <div class="sr-team-social-row">
+              <% if (member.email) { %>
+                <a href="mailto:<%= member.email %>" class="icon-email" title="Email <%= member.name %>" aria-label="Email">
+                  <i class="ti ti-mail"></i>
+                </a>
+              <% } %>
+              <% if (member.phone || member.mobile) { %>
+                <a href="tel:<%= member.phone || member.mobile %>" class="icon-mobile" title="Call <%= member.name %>" aria-label="Call">
+                  <i class="ti ti-phone"></i>
+                </a>
+              <% } %>
+              <% if (member.instagram_url) { %>
+                <a href="<%= member.instagram_url %>" target="_blank" rel="noopener" class="icon-instagram" title="Instagram" aria-label="Instagram">
+                  <i class="ti ti-brand-instagram"></i>
+                </a>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
       </div>
-      
-      <div class="sr-team-name"><%= member.name %></div>
-      <div class="sr-team-role">
-  <% 
-    var roleId = Number(member.role_id);
-    var roleName = member.role_name || (member.Role ? member.Role.name : '');
-
-    if (roleId === 2 || roleId === 3) {
-      roleName = 'Owner';
-    } else if (roleId === 4) {
-      roleName = 'Developer';
-    } else if (!roleName) {
-      roleName = 'Editorial Member';
-    }
-  %>
-  <%= roleName %>
-</div>
-      
-      <% if (member.bio || member.description) { %>
-        <p style="font-size: 12px; color: var(--sr-text-muted); margin: 0 0 10px 0; line-height: 1.4;"><%= member.bio || member.description %></p>
-      <% } %>
-
-      <a href="mailto:<%= member.email %>" class="sr-team-email">&#9993; <%= member.email %></a>
-    </div>
-  <% }) %>
-</div>
     </section>
   <% } %>
 
