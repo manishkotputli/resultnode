@@ -268,8 +268,13 @@
 
 <script>
 (function () {
+
+    // ==========================================
+    // ADD LINK ROW
+    // ==========================================
     function addLinkRow() {
         const tbody = document.getElementById('linksTableBody');
+
         if (!tbody) return;
 
         const tr = document.createElement('tr');
@@ -306,31 +311,214 @@
         tbody.appendChild(tr);
 
         const noLinksMsg = document.getElementById('noLinksMsg');
+
         if (noLinksMsg) {
             noLinksMsg.style.display = 'none';
         }
 
-        const input = tr.querySelector('input[name="links_label[]"]');
-        if (input) {
-            input.focus();
+        const labelInput = tr.querySelector('input[name="links_label[]"]');
+
+        if (labelInput) {
+            labelInput.focus();
         }
     }
 
-    document.addEventListener('click', function (e) {
 
-        // Add Link
-        const addLinkBtn = e.target.closest('#addLinkRowBtn');
+    // ==========================================
+    // ADD DYNAMIC FIELD
+    // ==========================================
+    function addFieldRow() {
 
-        if (addLinkBtn) {
-            e.preventDefault();
-            addLinkRow();
+        const groupEl = document.getElementById('modalFieldGroup');
+        const labelEl = document.getElementById('modalFieldLabel');
+        const typeEl = document.getElementById('modalFieldType');
+        const valueEl = document.getElementById('modalFieldValue');
+        const tbody = document.getElementById('fieldsTableBody');
+
+        if (!tbody || !labelEl) {
+            console.error('Dynamic field elements not found');
             return;
         }
 
-        // Remove Link / Field
+        const label = labelEl.value.trim();
+
+        if (!label) {
+            alert('Field Label is required.');
+            labelEl.focus();
+            return;
+        }
+
+        const group = groupEl && groupEl.value.trim()
+            ? groupEl.value.trim()
+            : 'Details';
+
+        const type = typeEl
+            ? typeEl.value
+            : 'text';
+
+        const value = valueEl
+            ? valueEl.value.trim()
+            : '';
+
+
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td class="py-2 pr-3">
+                <input
+                    type="text"
+                    name="fields_group[]"
+                    value="${escapeHtml(group)}"
+                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
+                >
+            </td>
+
+            <td class="py-2 pr-3">
+                <input
+                    type="text"
+                    name="fields_label[]"
+                    value="${escapeHtml(label)}"
+                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
+                >
+            </td>
+
+            <td class="py-2 pr-3">
+                <select
+                    name="fields_type[]"
+                    class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
+                >
+                    <option value="text" ${type === 'text' ? 'selected' : ''}>Text</option>
+                    <option value="number" ${type === 'number' ? 'selected' : ''}>Number</option>
+                    <option value="date" ${type === 'date' ? 'selected' : ''}>Date</option>
+                    <option value="textarea" ${type === 'textarea' ? 'selected' : ''}>Textarea</option>
+                    <option value="richtext" ${type === 'richtext' ? 'selected' : ''}>Rich Text</option>
+                    <option value="url" ${type === 'url' ? 'selected' : ''}>URL</option>
+                </select>
+            </td>
+
+            <td class="py-2 pr-3">
+                <input
+                    type="text"
+                    name="fields_value[]"
+                    value="${escapeHtml(value)}"
+                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
+                >
+            </td>
+
+            <td class="py-2 pl-3 text-center">
+                <button
+                    type="button"
+                    class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"
+                >
+                    <i class="icon-trash-2"></i>
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+
+
+        // Hide "No dynamic fields" message
+        const noFieldsMsg = document.getElementById('noFieldsMsg');
+
+        if (noFieldsMsg) {
+            noFieldsMsg.style.display = 'none';
+        }
+
+
+        // Clear modal fields
+        if (groupEl) {
+            groupEl.value = '';
+        }
+
+        labelEl.value = '';
+
+        if (valueEl) {
+            valueEl.value = '';
+        }
+
+        if (typeEl) {
+            typeEl.value = 'text';
+        }
+
+
+        // Close modal
+        const modalEl = document.getElementById('addFieldModal');
+
+        if (window.HSOverlay && modalEl) {
+
+            try {
+                window.HSOverlay.close(modalEl);
+            } catch (error) {
+                console.log('HSOverlay close error:', error);
+                modalEl.classList.add('hidden');
+            }
+
+        } else if (modalEl) {
+
+            modalEl.classList.add('hidden');
+
+        }
+    }
+
+
+    // ==========================================
+    // HTML ESCAPE
+    // ==========================================
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+    }
+
+
+    // ==========================================
+    // CLICK HANDLER
+    // ==========================================
+    document.addEventListener('click', function (e) {
+
+        // --------------------------------------
+        // ADD LINK
+        // --------------------------------------
+        const addLinkBtn = e.target.closest('#addLinkRowBtn');
+
+        if (addLinkBtn) {
+
+            e.preventDefault();
+
+            addLinkRow();
+
+            return;
+        }
+
+
+        // --------------------------------------
+        // ADD DYNAMIC FIELD
+        // --------------------------------------
+        const addFieldBtn = e.target.closest('#modalAddFieldBtn');
+
+        if (addFieldBtn) {
+
+            e.preventDefault();
+
+            addFieldRow();
+
+            return;
+        }
+
+
+        // --------------------------------------
+        // REMOVE ROW
+        // --------------------------------------
         const removeBtn = e.target.closest('.removeRowBtn');
 
         if (removeBtn) {
+
             e.preventDefault();
 
             const row = removeBtn.closest('tr');
@@ -341,23 +529,38 @@
 
             row.remove();
 
+
+            // Links message
             if (tbody && tbody.id === 'linksTableBody') {
+
                 const msg = document.getElementById('noLinksMsg');
 
                 if (msg) {
-                    msg.style.display = tbody.children.length ? 'none' : '';
+                    msg.style.display =
+                        tbody.children.length > 0
+                            ? 'none'
+                            : '';
                 }
             }
 
+
+            // Dynamic fields message
             if (tbody && tbody.id === 'fieldsTableBody') {
+
                 const msg = document.getElementById('noFieldsMsg');
 
                 if (msg) {
-                    msg.style.display = tbody.children.length ? 'none' : '';
+                    msg.style.display =
+                        tbody.children.length > 0
+                            ? 'none'
+                            : '';
                 }
             }
+
         }
+
     });
+
 })();
 </script>
 
