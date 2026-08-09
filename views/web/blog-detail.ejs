@@ -332,7 +332,12 @@ function copyArticleLink() {
 
         <% if (blog.author) { %>
         <div class="author-box-card">
-          <span class="lazy-img-wrap"><img data-src="<%= avatarSrc(blog.author) %>" alt="<%= blog.author.name %>" class="js-lazy" loading="lazy"></span>
+          <span class="lazy-img-wrap"><img src="<%= avatarSrc(blog.author.profile_photo) %>" 
+     data-src="<%= avatarSrc(blog.author.profile_photo) %>" 
+     alt="<%= blog.author.name %>" 
+     class="js-lazy" 
+     loading="lazy" 
+     onerror="this.src='https://ui-avatars.com/api/?name=<%= encodeURIComponent(blog.author.name) %>&background=0f172a&color=fff'"></span>
           <div class="author-info">
             <h4><%= blog.author.name %></h4>
             <p><%= blog.author.bio || ('Content writer & contributor at ' + ((site_setting && site_setting.site_title) || 'our blog')) %></p>
