@@ -266,124 +266,99 @@
     </div>
 </div>
 
-<%
-var pageScripts = `
+<script>
 (function () {
+    function addLinkRow() {
+        const tbody = document.getElementById('linksTableBody');
+        if (!tbody) return;
 
-  function addLinkRow() {
-    var tbody = document.getElementById('linksTableBody');
-    if (!tbody) return;
+        const tr = document.createElement('tr');
 
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td class="py-2 pr-3"><input type="text" name="links_label" placeholder="e.g. Apply Online" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-      '<td class="py-2 pr-3"><input type="url" name="links_url" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-      '<td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>';
+        tr.innerHTML = `
+            <td class="py-2 pr-3">
+                <input
+                    type="text"
+                    name="links_label[]"
+                    placeholder="e.g. Apply Online"
+                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
+                >
+            </td>
 
-    tbody.appendChild(tr);
+            <td class="py-2 pr-3">
+                <input
+                    type="url"
+                    name="links_url[]"
+                    placeholder="https://..."
+                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
+                >
+            </td>
 
-    var noLinksMsg = document.getElementById('noLinksMsg');
-    if (noLinksMsg) noLinksMsg.style.display = 'none';
+            <td class="py-2 pl-3 text-center">
+                <button
+                    type="button"
+                    class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"
+                >
+                    <i class="icon-trash-2"></i>
+                </button>
+            </td>
+        `;
 
-    // focus the new Label input so the user can start typing right away
-    var labelInput = tr.querySelector('input[name="links_label"]');
-    if (labelInput) labelInput.focus();
-  }
+        tbody.appendChild(tr);
 
-  function addFieldRowFromModal() {
-    var groupEl = document.getElementById('modalFieldGroup');
-    var labelEl = document.getElementById('modalFieldLabel');
-    var typeEl = document.getElementById('modalFieldType');
-    var valueEl = document.getElementById('modalFieldValue');
-    var tbody = document.getElementById('fieldsTableBody');
-    if (!labelEl || !tbody) return;
+        const noLinksMsg = document.getElementById('noLinksMsg');
+        if (noLinksMsg) {
+            noLinksMsg.style.display = 'none';
+        }
 
-    var label = labelEl.value.trim();
-    if (!label) {
-      alert('Field Label is required.');
-      return;
-    }
-    var group = (groupEl && groupEl.value.trim()) || 'Details';
-    var type = typeEl ? typeEl.value : 'text';
-    var value = valueEl ? valueEl.value : '';
-
-    var tr = document.createElement('tr');
-
-    var typeOptions = ['text', 'number', 'date', 'textarea', 'richtext', 'url'].map(function (t) {
-      return '<option value="' + t + '"' + (t === type ? ' selected' : '') + '>' + t + '</option>';
-    }).join('');
-
-    tr.innerHTML =
-      '<td class="py-2 pr-3"><input type="text" name="fields_group" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-      '<td class="py-2 pr-3"><input type="text" name="fields_label" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-      '<td class="py-2 pr-3"><select name="fields_type" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">' + typeOptions + '</select></td>' +
-      '<td class="py-2 pr-3"><input type="text" name="fields_value" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>' +
-      '<td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>';
-
-    tbody.appendChild(tr);
-
-    tr.querySelector('input[name="fields_group"]').value = group;
-    tr.querySelector('input[name="fields_label"]').value = label;
-    tr.querySelector('input[name="fields_value"]').value = value;
-
-    var noFieldsMsg = document.getElementById('noFieldsMsg');
-    if (noFieldsMsg) noFieldsMsg.style.display = 'none';
-
-    // reset modal fields
-    if (groupEl) groupEl.value = '';
-    labelEl.value = '';
-    if (valueEl) valueEl.value = '';
-    if (typeEl) typeEl.value = 'text';
-
-    // close modal (Preline HSOverlay)
-    var modalEl = document.getElementById('addFieldModal');
-    if (window.HSOverlay && modalEl) {
-      window.HSOverlay.close(modalEl);
-    } else if (modalEl) {
-      modalEl.classList.add('hidden');
-    }
-  }
-
-  // ---- Delegated click handler: works no matter when/how the DOM is (re)rendered ----
-  document.addEventListener('click', function (e) {
-
-    // Add Link button
-    if (e.target.closest('#addLinkRowBtn')) {
-      e.preventDefault();
-      addLinkRow();
-      return;
+        const input = tr.querySelector('input[name="links_label[]"]');
+        if (input) {
+            input.focus();
+        }
     }
 
-    // Add Field (inside modal) button
-    if (e.target.closest('#modalAddFieldBtn')) {
-      e.preventDefault();
-      addFieldRowFromModal();
-      return;
-    }
+    document.addEventListener('click', function (e) {
 
-    // Remove row (works for both Links table and Fields table)
-    var removeBtn = e.target.closest('.removeRowBtn');
-    if (removeBtn) {
-      e.preventDefault();
-      var tr = removeBtn.closest('tr');
-      if (!tr) return;
-      var tbody = tr.parentElement;
-      tr.remove();
+        // Add Link
+        const addLinkBtn = e.target.closest('#addLinkRowBtn');
 
-      if (tbody && tbody.id === 'linksTableBody' && !tbody.children.length) {
-        var noLinksMsg = document.getElementById('noLinksMsg');
-        if (noLinksMsg) noLinksMsg.style.display = '';
-      }
-      if (tbody && tbody.id === 'fieldsTableBody' && !tbody.children.length) {
-        var noFieldsMsg = document.getElementById('noFieldsMsg');
-        if (noFieldsMsg) noFieldsMsg.style.display = '';
-      }
-    }
-  });
+        if (addLinkBtn) {
+            e.preventDefault();
+            addLinkRow();
+            return;
+        }
 
+        // Remove Link / Field
+        const removeBtn = e.target.closest('.removeRowBtn');
+
+        if (removeBtn) {
+            e.preventDefault();
+
+            const row = removeBtn.closest('tr');
+
+            if (!row) return;
+
+            const tbody = row.parentElement;
+
+            row.remove();
+
+            if (tbody && tbody.id === 'linksTableBody') {
+                const msg = document.getElementById('noLinksMsg');
+
+                if (msg) {
+                    msg.style.display = tbody.children.length ? 'none' : '';
+                }
+            }
+
+            if (tbody && tbody.id === 'fieldsTableBody') {
+                const msg = document.getElementById('noFieldsMsg');
+
+                if (msg) {
+                    msg.style.display = tbody.children.length ? 'none' : '';
+                }
+            }
+        }
+    });
 })();
-`;
-%>
-
+</script>
 
 <%- include('../../adminlayout/admin-layout-bottom') %>
