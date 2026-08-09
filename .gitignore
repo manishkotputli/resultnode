@@ -3,6 +3,7 @@ node_modules/
 database/database.sqlite
 storage/logs/*.log
 public/uploads/users/*
+public/uploads/*
 !public/uploads/users/.gitkeep
 npm-debug.log*
 .DS_Store
