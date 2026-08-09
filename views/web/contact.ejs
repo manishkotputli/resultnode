@@ -735,11 +735,19 @@ var pageStyles = `
             <div class="sr-avatar-wrapper">
               <span class="sr-avatar-inner">
                 <%
-                  var avatarSrc = member.profile_photo
-                    ? '/uploads/users/' + member.profile_photo
-                    : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=b91c1c&color=fff&bold=true';
-                %>
-                <img src="<%= avatarSrc %>" alt="<%= member.name %>" class="sr-avatar-img" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0f172a&color=fff'">
+                var avatarSrc = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=b91c1c&color=fff&bold=true';
+                
+                if (member.profile_photo) {
+                  if (member.profile_photo.startsWith('/') || member.profile_photo.startsWith('http')) {
+                    avatarSrc = member.profile_photo;
+                  } else if (member.profile_photo.startsWith('uploads/')) {
+                    avatarSrc = '/' + member.profile_photo;
+                  } else {
+                    avatarSrc = '/uploads/profile/' + member.profile_photo;
+                  }
+                }
+              %>
+              <img src="<%= avatarSrc %>" alt="<%= member.name %>" class="sr-avatar-img" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0f172a&color=fff'">
               </span>
               <span class="sr-verified-badge" title="Verified Author"><i class="ti ti-check"></i></span>
             </div>
