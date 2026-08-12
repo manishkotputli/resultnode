@@ -1,87 +1,608 @@
 <%
 var pageStyles = `
-.page-header { text-align: center; margin: 40px 0 20px; }
-.page-header h1 { font-size: 32px; color: #c00; font-weight: 800; }
-.page-header .subtitle { font-size: 15px; color: #666; }
-.page-container { max-width: 960px; margin: 0 auto 60px; padding: 0 15px; }
-.page-box { background: #fff; border-radius: 10px; padding: 26px; border: 1px solid #ececec; box-shadow: 0 6px 20px rgba(0,0,0,0.03); }
-.page-box h2 { color: #1b1b1b; font-size: 18px; margin: 18px 0 10px; font-weight: 700; }
-.page-box p { color: #444; font-size: 15px; line-height: 1.7; margin-bottom: 8px; }
-.page-box ul { margin-left: 18px; margin-bottom: 12px; }
-.page-box li { margin-bottom: 6px; color: #444; }
-.meta { color: #666; font-size: 14px; margin-bottom: 18px; }
-.terms-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; }
-.btn-back { background: #f2f2f2; color: #222; padding: 8px 14px; border-radius: 6px; text-decoration: none; border: 1px solid #e0e0e0; }
-.btn-back:hover { background: #e4e4e4; }
-.muted { color: #888; font-size: 13px; }
-@media (max-width: 640px) { .page-box { padding: 18px; } .terms-footer { flex-direction: column; gap: 12px; align-items: flex-start; } }
+.page-header {
+    text-align: center;
+    margin: 40px 0 20px;
+}
+
+.page-header h1 {
+    font-size: 32px;
+    color: #b31335;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.page-header .subtitle {
+    font-size: 15px;
+    color: #666;
+    margin: 0;
+}
+
+.page-container {
+    max-width: 960px;
+    margin: 0 auto 60px;
+    padding: 0 15px;
+}
+
+.page-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 26px;
+    border: 1px solid #ececec;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+}
+
+.page-box h2 {
+    color: #1b1b1b;
+    font-size: 18px;
+    margin: 22px 0 10px;
+    font-weight: 700;
+}
+
+.page-box h2:first-of-type {
+    margin-top: 10px;
+}
+
+.page-box p {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+
+.page-box ul {
+    margin: 8px 0 14px 20px;
+    padding-left: 5px;
+}
+
+.page-box li {
+    margin-bottom: 7px;
+    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.page-box a {
+    color: #0b63c4;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.page-box a:hover {
+    color: #b31335;
+    text-decoration: underline;
+}
+
+.meta {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.disclaimer-highlight {
+    background: #fff8f8;
+    border-left: 4px solid #b31335;
+    padding: 13px 15px;
+    margin: 15px 0;
+}
+
+.disclaimer-highlight p {
+    margin-bottom: 0;
+}
+
+.contact-block {
+    line-height: 1.8 !important;
+}
+
+.terms-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 25px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+    gap: 15px;
+}
+
+.btn-back {
+    background: #f2f2f2;
+    color: #222 !important;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    border: 1px solid #e0e0e0;
+    font-weight: 600;
+}
+
+.btn-back:hover {
+    background: #e4e4e4;
+    color: #b31335 !important;
+}
+
+.muted {
+    color: #888;
+    font-size: 13px;
+}
+
+@media print {
+
+    .btn-back,
+    .page-header .subtitle {
+        display: none;
+    }
+
+    .page-box {
+        box-shadow: none;
+        border: none;
+    }
+
+}
+
+@media (max-width: 640px) {
+
+    .page-header {
+        margin: 25px 0 15px;
+        padding: 0 10px;
+    }
+
+    .page-header h1 {
+        font-size: 27px;
+    }
+
+    .page-header .subtitle {
+        font-size: 14px;
+    }
+
+    .page-container {
+        padding: 0 10px;
+    }
+
+    .page-box {
+        padding: 18px;
+        border-radius: 8px;
+    }
+
+    .page-box h2 {
+        font-size: 17px;
+    }
+
+    .page-box p,
+    .page-box li {
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .terms-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+}
 `;
 %>
-<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<%- include('../weblayout/layout-top', {
+    title: title,
+    pageStyles: pageStyles
+}) %>
+
 
 <div class="page-header">
-  <h1>Disclaimer</h1>
-  <p class="subtitle">Transparency & clarity for all users</p>
-</div>
 
-<div class="page-container">
-  <div class="page-box">
-    <p class="meta">Last updated: <strong>November 30, 2025</strong></p>
+    <h1>Disclaimer</h1>
 
-    <h2>1. General Information</h2>
-    <p>The information provided on <strong><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></strong> is for general informational purposes only. While we strive to provide accurate, updated, and verified content, we do not make any warranties regarding the completeness, reliability, or accuracy of the information.</p>
-
-    <h2>2. Not an Official Government Website</h2>
-    <p>We are <strong>not affiliated with any government body</strong>, departments, ministries, or any government organization. All exam notifications, results, answer keys and updates are sourced from:</p>
-    <ul>
-      <li>Official government websites</li>
-      <li>Public recruitment portals</li>
-      <li>Authorized organizations</li>
-      <li>Press releases and public announcements</li>
-    </ul>
-    <p>We strongly recommend users verify information from the official website or notification PDF before taking action.</p>
-
-    <h2>3. External Links</h2>
-    <p>Our website may contain links to external websites. While we provide only safe and relevant links, we have no control over their content and nature. Clicking such links is strictly at your own risk.</p>
-
-    <h2>4. No Professional Advice</h2>
-    <p>The content available on this Website is for informational purposes only. It should not be considered legal, financial, educational, employment, or professional advice.</p>
-
-    <h2>5. No Responsibility for Errors</h2>
-    <p>Although we update the information regularly, we do not guarantee that every detail is correct. The Website shall not be responsible for:</p>
-    <ul>
-      <li>Errors, omissions, or outdated information</li>
-      <li>Delays in updates</li>
-      <li>Technical issues</li>
-      <li>Loss or damages experienced from using the Website</li>
-    </ul>
-
-    <h2>6. Exam Results & Job Updates</h2>
-    <p>All exam results, job notifications, admit cards, and recruitment updates are collected from reliable sources. Users must reconfirm the information from official sources such as:</p>
-    <ul>
-      <li>Government Websites (SSC, UPSC, IBPS, State PSC)</li>
-      <li>Official Recruitment PDFs</li>
-      <li>Official Examination Portals</li>
-    </ul>
-
-    <h2>7. Consent</h2>
-    <p>By using our Website, you consent to this Disclaimer and agree to its terms.</p>
-
-    <h2>8. Changes to This Disclaimer</h2>
-    <p>We may update this Disclaimer from time to time. Changes will be posted on this page along with a new "Last Updated" date.</p>
-
-    <h2>9. Contact Us</h2>
-    <p>If you have any questions or require more information about this Disclaimer, please contact us:</p>
-    <p class="contact-block">
-      Email: <a href="mailto:<%= (site_setting && site_setting.contact_email) || 'support@example.com' %>"><%= (site_setting && site_setting.contact_email) || 'support@example.com' %></a><br>
-      Phone: <%= (site_setting && site_setting.contact_phone) || '+91-XXXXXXXXXX' %>
+    <p class="subtitle">
+        Important information about the content and services provided by SarkariResultess.Com.
     </p>
 
-    <div class="terms-footer">
-      <a href="/" class="btn-back">&larr; Back to Home</a>
-      <small class="muted">Always check official notifications before proceeding.</small>
-    </div>
-  </div>
 </div>
+
+
+<div class="page-container">
+
+    <div class="page-box">
+
+
+        <!-- LAST UPDATED -->
+
+        <p class="meta">
+
+            Last updated:
+
+            <strong>
+                <%= new Date().toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                }) %>
+            </strong>
+
+        </p>
+
+
+        <!-- 1 -->
+
+        <h2>1. General Information</h2>
+
+        <p>
+            The information provided on
+            <strong>
+                <%= (site_setting && site_setting.site_title) || 'SarkariResultess.Com' %>
+            </strong>
+            is intended for general informational and educational purposes.
+        </p>
+
+        <p>
+            We make reasonable efforts to provide useful, clear and updated
+            information. However, we do not guarantee that all information
+            published on the Website will always be complete, accurate,
+            current or error-free.
+        </p>
+
+        <div class="disclaimer-highlight">
+
+            <p>
+                <strong>Important:</strong>
+                Candidates should always verify important information from
+                the official notification or official website of the relevant
+                government department, recruitment board or examination
+                authority before taking any action.
+            </p>
+
+        </div>
+
+
+        <!-- 2 -->
+
+        <h2>2. Independent Information Website</h2>
+
+        <p>
+            SarkariResultess.Com is an independent informational website.
+            It is not a government website and is not affiliated with,
+            endorsed by, or operated by any government department,
+            ministry, recruitment board or examination authority unless
+            specifically stated on an individual page.
+        </p>
+
+        <p>
+            Government job, examination and recruitment information may be
+            collected and organised from publicly available sources for
+            the convenience of visitors.
+        </p>
+
+
+        <!-- 3 -->
+
+        <h2>3. Sources of Information</h2>
+
+        <p>
+            Information published on the Website may be based on publicly
+            available sources, including:
+        </p>
+
+        <ul>
+
+            <li>
+                Official government websites
+            </li>
+
+            <li>
+                Official recruitment portals
+            </li>
+
+            <li>
+                Examination authority websites
+            </li>
+
+            <li>
+                Official recruitment notifications and PDFs
+            </li>
+
+            <li>
+                Public notices and announcements
+            </li>
+
+        </ul>
+
+        <p>
+            Whenever possible, users should refer to the original official
+            notification for complete and final information.
+        </p>
+
+
+        <!-- 4 -->
+
+        <h2>4. Government Jobs and Recruitment Information</h2>
+
+        <p>
+            SarkariResultess.Com may publish information about government
+            jobs, recruitment notifications, vacancies, eligibility,
+            application dates, application fees, selection processes,
+            examination schedules and other recruitment-related details.
+        </p>
+
+        <p>
+            Recruitment authorities may change vacancies, eligibility
+            requirements, application deadlines, examination dates or
+            other conditions after information has been published.
+        </p>
+
+        <p>
+            Users are responsible for checking the latest official
+            notification before applying for any recruitment.
+        </p>
+
+
+        <!-- 5 -->
+
+        <h2>5. Results, Admit Cards and Answer Keys</h2>
+
+        <p>
+            The Website may provide information and links related to
+            examination results, merit lists, admit cards, hall tickets,
+            answer keys, examination city information and selection updates.
+        </p>
+
+        <p>
+            Such information may change or be corrected by the concerned
+            examination authority. Users should verify final results,
+            answer keys and examination information from the official
+            source.
+        </p>
+
+
+        <!-- 6 -->
+
+        <h2>6. External Links</h2>
+
+        <p>
+            Our Website may contain links to external websites, including
+            official government websites, examination portals, recruitment
+            websites and other third-party resources.
+        </p>
+
+        <p>
+            External links are provided for convenience and informational
+            purposes. We do not control the content, availability, privacy
+            practices or security of external websites.
+        </p>
+
+        <p>
+            Users should review the terms and privacy policies of external
+            websites before using their services or submitting personal
+            information.
+        </p>
+
+
+        <!-- 7 -->
+
+        <h2>7. No Professional Advice</h2>
+
+        <p>
+            The information available on SarkariResultess.Com should not
+            be considered legal, financial, medical, employment or other
+            professional advice.
+        </p>
+
+        <p>
+            Users should consult the appropriate official authority or
+            qualified professional whenever specialised advice is required.
+        </p>
+
+
+        <!-- 8 -->
+
+        <h2>8. Errors, Omissions and Updates</h2>
+
+        <p>
+            Although we attempt to keep information updated, errors,
+            omissions or outdated information may occasionally occur.
+        </p>
+
+        <p>
+            We may update, correct, modify or remove information whenever
+            necessary. However, we do not guarantee that every page will
+            immediately reflect changes made by an external authority.
+        </p>
+
+
+        <!-- 9 -->
+
+        <h2>9. No Guarantee of Website Availability</h2>
+
+        <p>
+            We make reasonable efforts to keep the Website available,
+            but uninterrupted access cannot be guaranteed.
+        </p>
+
+        <p>
+            The Website may temporarily become unavailable because of
+            maintenance, technical problems, hosting issues, network
+            failures or circumstances beyond our reasonable control.
+        </p>
+
+
+        <!-- 10 -->
+
+        <h2>10. Limitation of Responsibility</h2>
+
+        <p>
+            To the maximum extent permitted by applicable law,
+            SarkariResultess.Com and its operators shall not be responsible
+            for losses or damages resulting from reliance on information
+            published on the Website.
+        </p>
+
+        <p>
+            This may include losses related to missed deadlines,
+            application errors, changes in recruitment rules, incorrect
+            information, technical problems, external website availability
+            or decisions made based on Website content.
+        </p>
+
+
+        <!-- 11 -->
+
+        <h2>11. User Responsibility</h2>
+
+        <p>
+            Users are responsible for verifying information before taking
+            any action based on Website content.
+        </p>
+
+        <ul>
+
+            <li>
+                Read the complete official notification.
+            </li>
+
+            <li>
+                Check the official website of the concerned authority.
+            </li>
+
+            <li>
+                Verify application dates and eligibility.
+            </li>
+
+            <li>
+                Confirm fees and payment instructions.
+            </li>
+
+            <li>
+                Check official examination and result announcements.
+            </li>
+
+        </ul>
+
+
+        <!-- 12 -->
+
+        <h2>12. Consent</h2>
+
+        <p>
+            By accessing and using SarkariResultess.Com, you acknowledge
+            that you have read and understood this Disclaimer and agree
+            to use the information provided on the Website at your own
+            discretion.
+        </p>
+
+
+        <!-- 13 -->
+
+        <h2>13. Changes to This Disclaimer</h2>
+
+        <p>
+            We may update this Disclaimer from time to time to reflect
+            changes in our Website, services, information practices or
+            applicable requirements.
+        </p>
+
+        <p>
+            Any revised version will be published on this page together
+            with an updated "Last updated" date.
+        </p>
+
+
+        <!-- 14 -->
+
+        <h2>14. Privacy Policy and Terms</h2>
+
+        <p>
+            For additional information about how information may be
+            handled on this Website, please review our
+            <a href="/privacy-policy">
+                Privacy Policy
+            </a>.
+        </p>
+
+        <p>
+            Your use of the Website is also subject to our
+            <a href="/terms-and-conditions">
+                Terms & Conditions
+            </a>.
+        </p>
+
+
+        <!-- 15 -->
+
+        <h2>15. Contact Us</h2>
+
+        <p>
+            If you have identified an error, outdated information or have
+            any question regarding this Disclaimer, you can contact us
+            using the details below.
+        </p>
+
+        <p class="contact-block">
+
+            <% if (site_setting && site_setting.contact_email) { %>
+
+                <strong>Email:</strong>
+
+                <a href="mailto:<%= site_setting.contact_email %>">
+                    <%= site_setting.contact_email %>
+                </a>
+
+            <% } %>
+
+
+            <% if (
+                site_setting &&
+                site_setting.contact_email &&
+                site_setting.contact_phone
+            ) { %>
+
+                <br>
+
+            <% } %>
+
+
+            <% if (site_setting && site_setting.contact_phone) { %>
+
+                <strong>Phone:</strong>
+                <%= site_setting.contact_phone %>
+
+            <% } %>
+
+        </p>
+
+
+        <% if (
+            (!site_setting || !site_setting.contact_email) &&
+            (!site_setting || !site_setting.contact_phone)
+        ) { %>
+
+            <p>
+                Please visit our
+                <a href="/contact">
+                    Contact Us
+                </a>
+                page to get in touch with us.
+            </p>
+
+        <% } %>
+
+
+        <!-- FOOTER -->
+
+        <div class="terms-footer">
+
+            <a href="/" class="btn-back">
+                &larr; Back to Home
+            </a>
+
+            <small class="muted">
+                Always verify important information through the relevant
+                official source before proceeding.
+            </small>
+
+        </div>
+
+
+    </div>
+
+</div>
+
 
 <%- include('../weblayout/layout-bottom') %>

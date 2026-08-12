@@ -1,86 +1,591 @@
 <%
 var pageStyles = `
-.page-header { text-align: center; margin: 40px 0 20px; }
-.page-header h1 { font-size: 32px; color: #c00; font-weight: 800; }
-.page-header .subtitle { font-size: 15px; color: #666; }
-.terms-container { max-width: 960px; margin: 0 auto 60px; padding: 0 15px; }
-.terms-card { background: #fff; border-radius: 10px; padding: 26px; border: 1px solid #ececec; box-shadow: 0 6px 20px rgba(0,0,0,0.03); }
-.meta { color: #666; font-size: 14px; margin-bottom: 18px; }
-.terms-card h2 { color: #1b1b1b; font-size: 18px; margin-top: 18px; margin-bottom: 10px; font-weight: 700; }
-.terms-card p { color: #444; font-size: 15px; line-height: 1.7; margin-bottom: 8px; }
-.terms-card ul { margin-left: 18px; margin-bottom: 12px; }
-.terms-card li { margin-bottom: 6px; color: #444; }
-.contact-block a { color: #0b63c4; text-decoration: none; }
-.contact-block a:hover { text-decoration: underline; }
-.terms-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; }
-.btn-back { background: #f2f2f2; color: #222; padding: 8px 14px; border-radius: 6px; text-decoration: none; border: 1px solid #e0e0e0; }
-.btn-back:hover { background: #e9e9e9; }
-.muted { color: #888; font-size: 13px; }
-@media print { .btn-back, .page-header .subtitle { display: none; } .terms-card { box-shadow: none; border: none; } }
-@media (max-width: 640px) { .terms-card { padding: 18px; } .terms-footer { flex-direction: column; gap: 12px; align-items: flex-start; } }
+.page-header {
+    text-align: center;
+    margin: 40px 0 20px;
+}
+
+.page-header h1 {
+    font-size: 32px;
+    color: #b31335;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.page-header .subtitle {
+    font-size: 15px;
+    color: #666;
+    margin: 0;
+}
+
+.terms-container {
+    max-width: 960px;
+    margin: 0 auto 60px;
+    padding: 0 15px;
+}
+
+.terms-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 26px;
+    border: 1px solid #ececec;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+}
+
+.meta {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.terms-card h2 {
+    color: #1b1b1b;
+    font-size: 18px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.terms-card h2:first-of-type {
+    margin-top: 10px;
+}
+
+.terms-card p {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+}
+
+.terms-card ul,
+.terms-card ol {
+    margin-left: 20px;
+    margin-bottom: 12px;
+    padding-left: 5px;
+}
+
+.terms-card li {
+    margin-bottom: 7px;
+    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.terms-card a {
+    color: #0b63c4;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.terms-card a:hover {
+    text-decoration: underline;
+    color: #b31335;
+}
+
+.terms-highlight {
+    background: #fff8f8;
+    border-left: 4px solid #b31335;
+    padding: 12px 15px;
+    margin: 15px 0;
+}
+
+.terms-highlight p {
+    margin-bottom: 0;
+}
+
+.contact-block {
+    line-height: 1.8 !important;
+}
+
+.terms-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 25px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+    gap: 15px;
+}
+
+.btn-back {
+    background: #f2f2f2;
+    color: #222 !important;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    border: 1px solid #e0e0e0;
+    font-weight: 600;
+}
+
+.btn-back:hover {
+    background: #e9e9e9;
+    color: #b31335 !important;
+}
+
+.muted {
+    color: #888;
+    font-size: 13px;
+}
+
+@media print {
+
+    .btn-back,
+    .page-header .subtitle {
+        display: none;
+    }
+
+    .terms-card {
+        box-shadow: none;
+        border: none;
+    }
+
+}
+
+@media (max-width: 640px) {
+
+    .page-header {
+        margin: 25px 0 15px;
+        padding: 0 10px;
+    }
+
+    .page-header h1 {
+        font-size: 27px;
+    }
+
+    .page-header .subtitle {
+        font-size: 14px;
+    }
+
+    .terms-container {
+        padding: 0 10px;
+    }
+
+    .terms-card {
+        padding: 18px;
+        border-radius: 8px;
+    }
+
+    .terms-card h2 {
+        font-size: 17px;
+    }
+
+    .terms-card p,
+    .terms-card li {
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .terms-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
 `;
 %>
-<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<%- include('../weblayout/layout-top', {
+    title: title,
+    pageStyles: pageStyles
+}) %>
+
 
 <div class="page-header">
-  <h1>Terms & Conditions</h1>
-  <p class="subtitle">Please read these terms carefully before using our website.</p>
-</div>
 
-<div class="terms-container">
-  <div class="terms-card">
-    <p class="meta">Last updated: <strong>November 30, 2025</strong></p>
+    <h1>Terms & Conditions</h1>
 
-    <h2>1. Acceptance of Terms</h2>
-    <p>By accessing or using <strong><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></strong> (the "Website"), you agree to be bound by these Terms & Conditions and our Privacy Policy. If you do not agree with any part of these terms, you must not use the Website.</p>
-
-    <h2>2. Use of the Website</h2>
-    <p>You may use the Website for lawful purposes only. You agree not to use the Website:</p>
-    <ul>
-      <li>In any way that breaches any applicable local, national or international law or regulation.</li>
-      <li>To transmit any harmful, obscene, or illegal content.</li>
-      <li>To copy, reproduce, or redistribute content from this Website for commercial purposes without explicit permission.</li>
-    </ul>
-
-    <h2>3. Content and Accuracy</h2>
-    <p>We strive to keep content accurate and up-to-date. However, information on the Website - including job notices, admit card links, answer keys, and results - may change or be updated by official sources. We do not guarantee the completeness, accuracy, or reliability of any content.</p>
-
-    <h2>4. External Links</h2>
-    <p>The Website may include links to third-party websites for your convenience. These links do not imply endorsement of the linked site. We are not responsible for the content or practices of external websites.</p>
-
-    <h2>5. Intellectual Property</h2>
-    <p>All content on this Website (text, graphics, logos, images, and software) is the property of the Website owner or its content providers and is protected by copyright and other intellectual property laws. You may view and print pages for your personal, non-commercial use only.</p>
-
-    <h2>6. User Contributions</h2>
-    <p>If you submit comments, suggestions, or other content ("User Content"), you grant us a perpetual, royalty-free, worldwide license to use, reproduce, modify, publish and distribute that content. Do not post content that is unlawful, offensive, or infringes third-party rights.</p>
-
-    <h2>7. Disclaimer of Warranties</h2>
-    <p>THE WEBSITE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
-
-    <h2>8. Limitation of Liability</h2>
-    <p>IN NO EVENT WILL WE BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES ARISING OUT OF YOUR ACCESS OR USE OF THE WEBSITE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR TOTAL LIABILITY IS LIMITED TO THE AMOUNT YOU PAID (IF ANY) TO USE THE WEBSITE OR &#8377;1000, WHICHEVER IS LOWER.</p>
-
-    <h2>9. Indemnification</h2>
-    <p>You agree to indemnify and hold harmless the Website, its officers, directors, employees and agents from any claim or demand, including reasonable legal fees, arising from your breach of these Terms or your violation of any law.</p>
-
-    <h2>10. Changes to These Terms</h2>
-    <p>We may update these Terms from time to time. When changes are made we will revise the "Last updated" date at the top. Continued use of the Website after changes indicates acceptance of the updated Terms.</p>
-
-    <h2>11. Governing Law</h2>
-    <p>These Terms are governed by and construed in accordance with the laws of India. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts in New Delhi (or another jurisdiction you prefer).</p>
-
-    <h2>12. Contact Us</h2>
-    <p>If you have questions about these Terms, please contact us:</p>
-    <p class="contact-block">
-      Email: <a href="mailto:<%= (site_setting && site_setting.contact_email) || 'support@example.com' %>"><%= (site_setting && site_setting.contact_email) || 'support@example.com' %></a><br>
-      Phone: <%= (site_setting && site_setting.contact_phone) || '+91-XXXXXXXXXX' %>
+    <p class="subtitle">
+        Please read these terms carefully before using SarkariResultess.Com.
     </p>
 
-    <div class="terms-footer">
-      <a href="/" class="btn-back">&larr; Back to Home</a>
-      <small class="muted">Thank you for reading. Stay informed and use official links for final verification.</small>
-    </div>
-  </div>
 </div>
+
+
+<div class="terms-container">
+
+    <div class="terms-card">
+
+        <p class="meta">
+            Last updated:
+            <strong>
+                <%= new Date().toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                }) %>
+            </strong>
+        </p>
+
+
+        <!-- 1 -->
+
+        <h2>1. Acceptance of Terms</h2>
+
+        <p>
+            By accessing or using
+            <strong>
+                <%= (site_setting && site_setting.site_title) || 'SarkariResultess.Com' %>
+            </strong>
+            ("Website"), you agree to comply with these Terms & Conditions.
+        </p>
+
+        <p>
+            If you do not agree with any part of these terms, please
+            discontinue your use of the Website.
+        </p>
+
+
+        <!-- 2 -->
+
+        <h2>2. About the Website</h2>
+
+        <p>
+            SarkariResultess.Com is an independent informational website
+            that publishes information related to government jobs,
+            recruitment notifications, examination results, admit cards,
+            answer keys, online forms and other competitive examination
+            updates.
+        </p>
+
+        <div class="terms-highlight">
+
+            <p>
+                <strong>Important:</strong>
+                SarkariResultess.Com is not a government website and does
+                not represent or speak on behalf of any government
+                department, recruitment board or examination authority.
+            </p>
+
+        </div>
+
+
+        <!-- 3 -->
+
+        <h2>3. Use of the Website</h2>
+
+        <p>
+            You may use the Website for lawful and personal informational
+            purposes. You agree not to use the Website:
+        </p>
+
+        <ul>
+
+            <li>
+                In violation of any applicable law or regulation.
+            </li>
+
+            <li>
+                To upload, transmit or distribute harmful, unlawful or
+                malicious content.
+            </li>
+
+            <li>
+                To attempt to gain unauthorised access to the Website,
+                server or related systems.
+            </li>
+
+            <li>
+                To interfere with the normal operation or security of
+                the Website.
+            </li>
+
+            <li>
+                To reproduce or commercially redistribute substantial
+                portions of Website content without appropriate permission.
+            </li>
+
+        </ul>
+
+
+        <!-- 4 -->
+
+        <h2>4. Information and Content Accuracy</h2>
+
+        <p>
+            We make reasonable efforts to provide useful and updated
+            information. However, recruitment notifications, vacancies,
+            eligibility requirements, application dates, fees, examination
+            schedules, admit cards, answer keys and results may change
+            after publication.
+        </p>
+
+        <p>
+            Therefore, we do not guarantee that all information published
+            on the Website will always be complete, accurate, current or
+            error-free.
+        </p>
+
+        <div class="terms-highlight">
+
+            <p>
+                <strong>Always verify important information</strong>
+                from the official notification or official website of
+                the concerned examination authority before applying,
+                making a payment or taking any important decision.
+            </p>
+
+        </div>
+
+
+        <!-- 5 -->
+
+        <h2>5. External Links</h2>
+
+        <p>
+            The Website may contain links to external websites, including
+            government departments, examination authorities, recruitment
+            portals and other third-party resources.
+        </p>
+
+        <p>
+            External links are provided for convenience and informational
+            purposes. We do not control external websites and cannot
+            guarantee their availability, accuracy, security, privacy
+            practices or content.
+        </p>
+
+        <p>
+            Visiting an external website is subject to that website's
+            own terms, policies and conditions.
+        </p>
+
+
+        <!-- 6 -->
+
+        <h2>6. Intellectual Property</h2>
+
+        <p>
+            Website design, original text, graphics, logos, interface
+            elements and other original materials created for the Website
+            may be protected by applicable intellectual property laws.
+        </p>
+
+        <p>
+            You may access and use the Website for personal and
+            informational purposes. Reproduction, modification,
+            redistribution or commercial use of original Website material
+            without appropriate permission may not be permitted.
+        </p>
+
+        <p>
+            Third-party names, logos, trademarks and other materials
+            remain the property of their respective owners.
+        </p>
+
+
+        <!-- 7 -->
+
+        <h2>7. User Submitted Content</h2>
+
+        <p>
+            If the Website provides features that allow users to submit
+            messages, feedback, comments or other information, you are
+            responsible for the content you submit.
+        </p>
+
+        <p>
+            You should not submit content that is unlawful, misleading,
+            abusive, defamatory, invasive of privacy or infringing upon
+            the rights of another person or organisation.
+        </p>
+
+        <p>
+            We may remove or restrict user-submitted content where we
+            reasonably believe it violates these Terms or applicable law.
+        </p>
+
+
+        <!-- 8 -->
+
+        <h2>8. Disclaimer of Warranties</h2>
+
+        <p>
+            The Website and its content are provided on an
+            "as available" and "as is" basis to the extent permitted
+            by applicable law.
+        </p>
+
+        <p>
+            We do not guarantee uninterrupted availability of the Website
+            or that every page, link, service or piece of information will
+            always be available or error-free.
+        </p>
+
+
+        <!-- 9 -->
+
+        <h2>9. Limitation of Liability</h2>
+
+        <p>
+            To the maximum extent permitted by applicable law,
+            SarkariResultess.Com and its operators will not be responsible
+            for losses or damages arising directly or indirectly from
+            reliance on information published on the Website.
+        </p>
+
+        <p>
+            This includes, where legally permitted, losses associated with
+            missed application deadlines, incorrect information, changes
+            made by examination authorities, external website availability,
+            technical interruptions or decisions made based on Website
+            content.
+        </p>
+
+
+        <!-- 10 -->
+
+        <h2>10. Indemnification</h2>
+
+        <p>
+            To the extent permitted by applicable law, you agree to
+            indemnify and hold harmless the Website and its operators
+            from claims, losses or expenses arising from your unlawful
+            use of the Website, violation of these Terms or infringement
+            of another person's rights.
+        </p>
+
+
+        <!-- 11 -->
+
+        <h2>11. Website Availability and Security</h2>
+
+        <p>
+            We may modify, suspend, restrict or discontinue any part of
+            the Website at any time without prior notice.
+        </p>
+
+        <p>
+            Although reasonable measures may be used to maintain Website
+            security, no online service can be guaranteed to be completely
+            secure or free from every possible technical issue.
+        </p>
+
+
+        <!-- 12 -->
+
+        <h2>12. Privacy Policy</h2>
+
+        <p>
+            Your use of the Website may also be subject to our
+            <a href="/privacy-policy">
+                Privacy Policy
+            </a>,
+            which explains how information may be collected and handled.
+        </p>
+
+
+        <!-- 13 -->
+
+        <h2>13. Changes to These Terms</h2>
+
+        <p>
+            We may update these Terms & Conditions from time to time.
+            When changes are made, the revised version will be published
+            on this page and the "Last updated" date may be changed.
+        </p>
+
+        <p>
+            Your continued use of the Website after an updated version
+            becomes available means that you acknowledge the revised
+            Terms, subject to applicable law.
+        </p>
+
+
+        <!-- 14 -->
+
+        <h2>14. Governing Law</h2>
+
+        <p>
+            These Terms shall be interpreted and governed in accordance
+            with the applicable laws of India, subject to any mandatory
+            legal rights or protections that may apply to users.
+        </p>
+
+        <p>
+            Any dispute arising in connection with the Website or these
+            Terms shall be subject to the jurisdiction of a competent
+            court in accordance with applicable law.
+        </p>
+
+
+        <!-- 15 -->
+
+        <h2>15. Contact Us</h2>
+
+        <p>
+            If you have any questions, concerns or suggestions regarding
+            these Terms & Conditions, you can contact us using the details
+            available below.
+        </p>
+
+        <p class="contact-block">
+
+            <% if (site_setting && site_setting.contact_email) { %>
+
+                <strong>Email:</strong>
+
+                <a href="mailto:<%= site_setting.contact_email %>">
+                    <%= site_setting.contact_email %>
+                </a>
+
+            <% } %>
+
+
+            <% if (
+                site_setting &&
+                site_setting.contact_email &&
+                site_setting.contact_phone
+            ) { %>
+
+                <br>
+
+            <% } %>
+
+
+            <% if (site_setting && site_setting.contact_phone) { %>
+
+                <strong>Phone:</strong>
+                <%= site_setting.contact_phone %>
+
+            <% } %>
+
+        </p>
+
+
+        <% if (
+            (!site_setting || !site_setting.contact_email) &&
+            (!site_setting || !site_setting.contact_phone)
+        ) { %>
+
+            <p>
+                Please visit our
+                <a href="/contact">
+                    Contact Us
+                </a>
+                page to get in touch with us.
+            </p>
+
+        <% } %>
+
+
+        <!-- FOOTER -->
+
+        <div class="terms-footer">
+
+            <a href="/" class="btn-back">
+                &larr; Back to Home
+            </a>
+
+            <small class="muted">
+                Please verify important information through the relevant
+                official source before taking action.
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <%- include('../weblayout/layout-bottom') %>
