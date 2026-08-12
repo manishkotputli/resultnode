@@ -289,7 +289,7 @@
 <!-- TOP BUTTON GRID (2 COLUMNS ON MOBILE) -->
 <div class="top-boxes">
   <% (topPosts || []).forEach(function(post) { %>
-    <a href="/post/<%= post.slug %>" class="top-box-item" style="background: <%= post.highlight_color || '#0033cc' %>">
+    <a href="/post/<%= post.slug %>" target="_blank" class="top-box-item" style="background: <%= post.highlight_color || '#0033cc' %>">
       <%= post.title %>
     </a>
   <% }) %>
@@ -306,7 +306,7 @@
         <div class="col-links">
           <% if (sec.posts && sec.posts.length) { %>
             <% sec.posts.forEach(function(item) { %>
-  <a href="/post/<%= item.slug %>" class="post-link">
+  <a href="/post/<%= item.slug %>" target="_blank" class="post-link">
     &bull; <%= item.title %>
 
     <% 
@@ -328,7 +328,7 @@
         </div>
       </div>
       <div class="view-all-wrapper">
-        <a href="/category/<%= sec.category ? sec.category.slug : '' %>" class="view-all-btn">View All &rarr;</a>
+        <a href="/category/<%= sec.category ? sec.category.slug : '' %>" target="_blank" class="view-all-btn">View All &rarr;</a>
       </div>
     </div>
   <% }) %>
@@ -379,68 +379,732 @@
     </tr>
 </table>
 
-  <!-- SECTION 2: OFFICIAL WEBSITE & DISCLAIMER (IMAGE 2 MIDDLE) -->
+  <!-- =========================================================
+     SECTION 2: ABOUT SARKARIRESULTESS.COM
+========================================================= -->
+
+<div class="seo-footer-container">
+
   <div class="official-banner">
-    Sarkariresult Official Website
+    About SarkariResultess.Com
   </div>
 
-  <div class="seo-intro-text" style="text-align: left;">
-    <strong>SarkariResultess.Com</strong> Is The Official Website Of <em>Sarkari Result ™</em> (Since 2026), Presenting All The Latest Updates Such As Results, Online Forms, Job Notifications, Exam Results 2025, Employment News, Information In Hindi, Government Job Details, And Important Notices And Updates. <span class="seo-badge">Exam City Information</span>
-    <br><br>
-    <strong>Official Website Of Sarkari Result™ – SarkariResult.Com.Cm | Since 2009 | Trademark Applications For “Sarkari Result” Accepted And Advertised By The Controller General Of Patents, Designs And Trade Marks, <span class="seo-badge">Government</span> Of India, Under Application Nos. 6921399 (Class 35) And 6921398 (Class 41).</strong>
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      <strong>SarkariResultess.Com</strong> is an independent online
+      information portal that provides useful updates related to
+      government jobs, Sarkari Result, recruitment notifications,
+      online application forms, admit cards, answer keys, examination
+      schedules and other competitive examination information.
+    </p>
+
+    <p>
+      Our goal is to make important government job and examination
+      information easier to find in one place. Candidates can explore
+      different categories and quickly find information about
+      <strong>latest government jobs, Sarkari Naukri, exam results,
+      admit cards, answer keys and recruitment notifications.</strong>
+    </p>
+
+    <p>
+      Information is organised in a simple format so that students and
+      job seekers can easily understand important dates, eligibility,
+      vacancies, application details and examination-related updates.
+    </p>
+
   </div>
 
-  <!-- DISCOVER MORE ACCORDION/BOX -->
+
+  <!-- IMPORTANT LINKS -->
+
+  <div class="official-banner">
+    Explore SarkariResultess.Com
+  </div>
+
+  <table class="sarkari-table">
+
+    <tr>
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Latest Government Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/result" target="_blank">
+          Sarkari Result
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/admit-card" target="_blank">
+          Admit Card
+        </a>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <a href="/category/answer-key" target="_blank">
+          Answer Key
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/syllabus" target="_blank">
+          Exam Syllabus
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Sarkari Naukri
+        </a>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Government Recruitment
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/result" target="_blank">
+          Government Exam Result
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Latest Vacancy
+        </a>
+      </td>
+    </tr>
+
+  </table>
+
+
+  <!-- DISCOVER MORE -->
+
   <div class="discover-card">
-    <div class="discover-header">Discover more</div>
-    <div class="discover-list">
-      <a href="#" class="discover-item">
-        <span>Exam Preparation Courses</span>
-        <span>&rsaquo;</span>
-      </a>
-      <a href="#" class="discover-item">
-        <span>ICSI Assistant Form</span>
-        <span>&rsaquo;</span>
-      </a>
-      <a href="#" class="discover-item">
-        <span>Internet & Telecom</span>
-        <span>&rsaquo;</span>
-      </a>
+
+    <div class="discover-header">
+      Important Sections
     </div>
+
+    <div class="discover-list">
+
+      <a href="/category/latest-jobs" target="_blank" class="discover-item">
+        <span>Latest Government Jobs 2026</span>
+        <span>&rsaquo;</span>
+      </a>
+
+      <a href="/category/result" target="_blank" class="discover-item">
+        <span>Sarkari Result 2026</span>
+        <span>&rsaquo;</span>
+      </a>
+
+      <a href="/category/admit-card" target="_blank" class="discover-item">
+        <span>Latest Admit Card</span>
+        <span>&rsaquo;</span>
+      </a>
+
+      <a href="/category/answer-key" target="_blank" class="discover-item">
+        <span>Latest Answer Key</span>
+        <span>&rsaquo;</span>
+      </a>
+
+      <a href="/category/syllabus" target="_blank" class="discover-item">
+        <span>Government Exam Syllabus</span>
+        <span>&rsaquo;</span>
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECTION 3: LATEST GOVERNMENT JOBS
+  ====================================================== -->
+
+  <div class="official-banner">
+    Latest Government Jobs 2026
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      Government jobs continue to be a popular career choice for
+      candidates looking for stable employment opportunities. Every year,
+      central and state government departments release recruitment
+      notifications for different posts and qualifications.
+    </p>
+
+    <p>
+      SarkariResultess.Com helps candidates find information about
+      <strong>latest government jobs 2026, Sarkari Naukri, government
+      recruitment, online forms, vacancies and important examination
+      dates.</strong>
+    </p>
+
+    <p>
+      Candidates can visit the
+      <a href="/category/latest-jobs" target="_blank">
+        Latest Jobs
+      </a>
+      section to check newly published recruitment updates and
+      application information.
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECTION 4: SARKARI RESULT
+  ====================================================== -->
+
+  <div class="official-banner">
+    Sarkari Result 2026
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      Candidates preparing for government examinations regularly look
+      for result announcements, merit lists, score cards and selection
+      updates. SarkariResultess.Com provides a dedicated
+      <a href="/category/result" target="_blank">
+        Sarkari Result
+      </a>
+      section where candidates can find examination result updates.
+    </p>
+
+    <p>
+      Result information may include written examination results,
+      preliminary examination results, main examination results,
+      merit lists, shortlisted candidates and final selection updates,
+      depending on the recruitment process.
+    </p>
+
+    <div class="seo-highlight">
+
+      <strong>Important:</strong>
+      Candidates should always verify the final result and selection
+      information from the official website or notification of the
+      concerned examination authority.
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECTION 5: ADMIT CARD & ANSWER KEY
+  ====================================================== -->
+
+  <div class="official-banner">
+    Admit Card, Answer Key & Exam Updates
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      After submitting an online application, candidates may need to
+      follow several stages including application status, examination
+      city information, admit card, examination date, answer key and
+      result.
+    </p>
+
+  </div>
+
+
+  <table class="sarkari-table">
+
+    <tr>
+
+      <td>
+        <a href="/category/admit-card" target="_blank">
+          Latest Admit Card
+        </a>
+
+        <br>
+
+        <small>
+          Check examination hall ticket and admit card updates.
+        </small>
+      </td>
+
+      <td>
+        <a href="/category/answer-key" target="_blank">
+          Latest Answer Key
+        </a>
+
+        <br>
+
+        <small>
+          Find answer key and examination-related updates.
+        </small>
+      </td>
+
+      <td>
+        <a href="/category/result" target="_blank">
+          Latest Results
+        </a>
+
+        <br>
+
+        <small>
+          Check recently published examination results.
+        </small>
+      </td>
+
+    </tr>
+
+  </table>
+
+
+  <!-- =====================================================
+       SECTION 6: CENTRAL & STATE GOVERNMENT JOBS
+  ====================================================== -->
+
+  <div class="official-banner">
+    Central & State Government Jobs
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      Government recruitment is conducted by both central and state
+      government departments. Vacancies may be released for different
+      educational qualifications, age groups and professional
+      backgrounds.
+    </p>
+
+    <p>
+      SarkariResultess.Com covers information across different
+      recruitment categories so candidates can easily discover relevant
+      opportunities.
+    </p>
+
+  </div>
+
+
+  <table class="sarkari-table">
+
+    <tr>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Central Government Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          State Government Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Police Recruitment
+        </a>
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Railway Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Banking Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Teaching Jobs
+        </a>
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Defence Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Medical Jobs
+        </a>
+      </td>
+
+      <td>
+        <a href="/category/latest-jobs" target="_blank">
+          Graduate Jobs
+        </a>
+      </td>
+
+    </tr>
+
+  </table>
+
+
+  <!-- =====================================================
+       SECTION 7: QUALIFICATION BASED JOBS
+  ====================================================== -->
+
+  <div class="official-banner">
+    Government Jobs According to Qualification
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      Government recruitment notifications are released for candidates
+      with different educational qualifications. Eligibility varies from
+      one recruitment to another, therefore candidates should always
+      read the complete official notification.
+    </p>
+
+  </div>
+
+
+  <table class="sarkari-table">
+
+    <tr>
+
+      <td>
+        <strong>10th Pass Jobs</strong>
+        <br>
+        Railway, Police, Group D and other recruitment opportunities.
+      </td>
+
+      <td>
+        <strong>12th Pass Jobs</strong>
+        <br>
+        Clerk, Police, Defence and various competitive examinations.
+      </td>
+
+      <td>
+        <strong>Graduate Jobs</strong>
+        <br>
+        SSC, Banking, UPSC, PSC and other graduate-level recruitment.
+      </td>
+
+    </tr>
+
+  </table>
+
+
+  <!-- =====================================================
+       SECTION 8: HOW TO USE WEBSITE
+  ====================================================== -->
+
+  <div class="official-banner">
+    How to Find Government Job Updates
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      Finding the right recruitment information becomes easier when
+      candidates follow a proper process. SarkariResultess.Com organises
+      updates into different sections to make information easier to find.
+    </p>
+
+    <ol style="padding-left:20px; text-align:left;">
+
+      <li>
+        Visit SarkariResultess.Com and check the latest updates.
+      </li>
+
+      <li>
+        Select the required category such as Latest Jobs, Result,
+        Admit Card or Answer Key.
+      </li>
+
+      <li>
+        Open the recruitment or examination update and read all details.
+      </li>
+
+      <li>
+        Check eligibility, important dates, application fee and vacancy
+        information.
+      </li>
+
+      <li>
+        Before applying, verify the information from the official
+        notification issued by the concerned authority.
+      </li>
+
+    </ol>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECTION 9: WHY USE SARKARIRESULTESS
+  ====================================================== -->
+
+  <div class="official-banner">
+    Why Candidates Use SarkariResultess.Com
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <p>
+      SarkariResultess.Com is designed to provide government job and
+      examination information in a simple and organised format.
+    </p>
+
+    <ul style="padding-left:20px; text-align:left;">
+
+      <li>
+        Latest government recruitment updates
+      </li>
+
+      <li>
+        Sarkari Naukri and vacancy information
+      </li>
+
+      <li>
+        Online application and important date updates
+      </li>
+
+      <li>
+        Sarkari Result and selection updates
+      </li>
+
+      <li>
+        Admit Card and Answer Key information
+      </li>
+
+      <li>
+        Government examination updates
+      </li>
+
+      <li>
+        Easy category-wise navigation
+      </li>
+
+    </ul>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECTION 10: IMPORTANT NOTICE
+  ====================================================== -->
+
+  <div class="official-banner">
+    Important Information for Candidates
+  </div>
+
+  <div class="seo-intro-text" style="text-align:left;">
+
+    <div class="seo-highlight">
+
+      <strong>Please Verify Before Applying:</strong>
+
+      <p style="margin-top:6px;">
+        Recruitment dates, vacancies, eligibility criteria, age limits,
+        application fees, examination schedules and other conditions may
+        change according to the concerned authority.
+      </p>
+
+      <p>
+        Candidates should carefully read the official recruitment
+        notification and verify all important information from the
+        official website of the concerned department before submitting
+        an application or making any payment.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SECTION 11: DISCLAIMER
+  ====================================================== -->
+
+  <div class="official-banner">
+    Disclaimer
   </div>
 
   <div class="disclaimer-text">
-    &bull; This Website Is Not Associated With Official Or Government Websites. All Information Provided Is For General Informational Purposes Only And Users Of Our Website Can Not Use Content For Any Legal Purposes And It Is Hereby Advised To All Visitors To Verify Information From Official Notifications Of Concerning Department Before Relying On It. If Any Errors Are Found In The Uploaded Content Here On Website, The Website Should To Be Notified Through Our Contact Us Page.
+
+    &bull;
+    <strong>SarkariResultess.Com</strong> is an independent
+    informational website and is not a government website.
+
+    The website is not affiliated with or endorsed by any government
+    department, recruitment board or examination authority unless
+    specifically stated on an individual page.
+
+    <br><br>
+
+    Information published on this website is provided for general
+    informational purposes. Candidates should verify recruitment
+    details, eligibility, vacancies, application dates, fees,
+    examination dates and results from the official notification or
+    official website of the concerned authority.
+
+    <br><br>
+
+    If any error or outdated information is found, visitors are
+    encouraged to contact us so that the information can be reviewed
+    and updated.
+
   </div>
 
 </div>
 
-<!-- SECTION 3: FAQ SECTION (IMAGE 2 BOTTOM) -->
+
+<!-- =========================================================
+     SECTION 12: FAQ SECTION
+     FAQ IS STILL AT THE BOTTOM
+========================================================= -->
+
 <div class="faq-container">
-  <div class="faq-title">FAQ – Sarkari Result</div>
+
+  <div class="faq-title">
+    FAQ – SarkariResultess.Com
+  </div>
+
 
   <div class="faq-item">
+
     <div class="faq-question">
-      What is Sarkari Result? <span class="seo-badge">Career News Updates</span>
+      What is SarkariResultess.Com?
     </div>
+
     <div class="faq-answer">
-      Sarkari Result : Find Latest Sarkari Job Vacancies And Sarkari Exam Results At Sarkariresultess.Com Get All The Information You Need On Govt Jobs And Online From, Exam, Results, Admit Card In One Place.
+      SarkariResultess.Com is an independent information portal that
+      provides updates related to government jobs, Sarkari Result,
+      recruitment notifications, online forms, admit cards, answer keys
+      and competitive examinations.
     </div>
+
   </div>
 
-  <div class="faq-item">
-    <div class="faq-question">How can I check the latest government job vacancies?</div>
-    <div class="faq-answer">
-      You can visit our official Sarkari Result website which is sarkariresultess.com and navigate to the “Latest Jobs” section to check the latest government job vacancies.
-    </div>
-  </div>
 
   <div class="faq-item">
-    <div class="faq-question">What is the official website of sarkari result</div>
-    <div class="faq-answer">
-      Sarkariresultess.com is the official website of Sarkari Result since 2026
+
+    <div class="faq-question">
+      How can I check the latest government job vacancies?
     </div>
+
+    <div class="faq-answer">
+      Visit the
+      <a href="/category/latest-jobs" target="_blank">
+        Latest Jobs
+      </a>
+      section of SarkariResultess.Com to find recently published
+      government recruitment and vacancy updates.
+    </div>
+
   </div>
+
+
+  <div class="faq-item">
+
+    <div class="faq-question">
+      Where can I check Sarkari Result?
+    </div>
+
+    <div class="faq-answer">
+      You can visit the
+      <a href="/category/result" target="_blank">
+        Sarkari Result
+      </a>
+      section to find examination result and selection-related updates.
+    </div>
+
+  </div>
+
+
+  <div class="faq-item">
+
+    <div class="faq-question">
+      Where can I find the latest Admit Card?
+    </div>
+
+    <div class="faq-answer">
+      Latest examination admit card and hall ticket updates can be
+      found in the
+      <a href="/category/admit-card" target="_blank">
+        Admit Card
+      </a>
+      section.
+    </div>
+
+  </div>
+
+
+  <div class="faq-item">
+
+    <div class="faq-question">
+      Where can I find Answer Key updates?
+    </div>
+
+    <div class="faq-answer">
+      Candidates can visit the
+      <a href="/category/answer-key" target="_blank">
+        Answer Key
+      </a>
+      section for examination answer key and related updates.
+    </div>
+
+  </div>
+
+
+  <div class="faq-item">
+
+    <div class="faq-question">
+      Does SarkariResultess.Com conduct government examinations?
+    </div>
+
+    <div class="faq-answer">
+      No. SarkariResultess.Com is an independent information portal.
+      Government examinations and recruitment processes are conducted
+      by their respective departments and examination authorities.
+    </div>
+
+  </div>
+
+
+  <div class="faq-item">
+
+    <div class="faq-question">
+      Should I verify information before applying for a government job?
+    </div>
+
+    <div class="faq-answer">
+      Yes. Candidates should always read the complete official
+      notification and verify important details from the official
+      website of the concerned department before submitting an
+      application.
+    </div>
+
+  </div>
+
 </div>
+
 
 <%- include('../weblayout/layout-bottom') %>
