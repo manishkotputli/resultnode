@@ -1,123 +1,414 @@
 <%
 var pageStyles = `
-.category-header { text-align: center; margin: 25px auto 10px; padding: 10px; }
-.category-header h1 { font-size: 30px; color: #c00; font-weight: 700; }
-.category-header p.subtitle { font-size: 15px; color: #444; }
-.category-wrapper { max-width: 1100px; margin: 20px auto; display: grid; gap: 25px; grid-template-columns: 3fr 1fr; }
-.list-box { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #ddd; }
-.list-item { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #eee; text-decoration: none; color: #0077cc; font-size: 16px; font-weight: 500; }
-.list-item:hover { color: #c00; }
-.dot { color: #c00; font-size: 18px; margin-right: 10px; }
-.sidebar-box { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ddd; }
-.sidebar-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #c00; }
-.sidebar-links a { display: block; padding: 7px 0; font-size: 14px; color: #0077cc; }
-.sidebar-links a:hover { color: #c00; }
-.search-bar input { width: 90%; padding: 12px; border-radius: 8px; border: 1px solid #aaa; margin-bottom: 10px; }
-.info-box { background: #fff7f7; border: 1px solid #f2bcbc; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-.about-section { background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-top: 20px; }
-.about-section h2 { color: #c00; font-size: 22px; margin-bottom: 10px; }
-.about-section p { font-size: 15px; color: #444; }
-.faq-section { margin-top: 25px; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #ddd; }
-.faq-question { width: 100%; text-align: left; background: #f8f8f8; border: none; padding: 14px; font-size: 17px; font-weight: 600; cursor: pointer; border-bottom: 1px solid #eee; transition: 0.2s; }
-.faq-question:hover { background: #f1f1f1; }
-.faq-answer { display: none; padding: 15px; }
-.faq-item.active .faq-answer { display: block; }
-.faq-step { display: flex; gap: 15px; margin-bottom: 15px; }
-.step-number { width: 38px; height: 38px; background: #c00; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-.step-details { flex: 1; }
-.faq-step-img { margin-top: 10px; max-width: 100%; border-radius: 8px; border: 1px solid #ddd; }
-@media(max-width: 768px){ .category-wrapper { grid-template-columns: 1fr; } }
+.category-header {
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+.category-header h1 {
+    font-size: 30px;
+    line-height: 1.25;
+    color: #0000a0;
+    font-weight: 500;
+    margin: 0 0 20px;
+        margin-left: 22px;
+}
+
+.category-header p.subtitle {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #111;
+    margin: 0 0 2px;
+        margin-left: 22px;
+}
+
+.category-header p.subtitle a {
+    color: #0000ee;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.category-header p.subtitle a:hover {
+    text-decoration: underline;
+}
+
+.category-header p.hindi-info {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #111;
+    margin: 0 0 8px;
+        margin-left: 22px;
+}
+
+.category-header p.hindi-info strong {
+    color: #000;
+}
+
+.latest-title {
+    background: #b40000;
+    color: #fff;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 27px;
+    height: 27px;
+    margin: 0 0 5px;
+}
+
+.latest-list {
+    margin: 0 0 15px;
+    padding-left: 30px;
+}
+
+.latest-list li {
+    margin: 0;
+    padding: 0;
+    line-height: 20px;
+    font-size: 13px;
+    color: #111;
+}
+
+.latest-list li a {
+    color: #0000ee;
+    text-decoration: none;
+}
+
+.latest-list li a:hover {
+    text-decoration: underline;
+}
+
+.latest-list .post-date {
+    color: #111;
+}
+
+.category-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.category-main {
+    width: 100%;
+}
+
+.info-box {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0 0 5px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #111;
+}
+
+.info-box strong {
+    color: #000;
+}
+
+.about-section {
+    background: #fff;
+    border: 0;
+    border-radius: 0;
+    padding: 10px 0;
+    margin-top: 15px;
+}
+
+.about-section h2 {
+    color: #0000a0;
+    font-size: 22px;
+    margin: 0 0 8px;
+        margin-left: 22px;
+}
+
+.about-section p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0 0 8px;
+        margin-left: 22px;
+}
+
+.faq-section {
+    margin-top: 15px;
+    background: #fff;
+    padding: 10px 0;
+    border: 0;
+    border-radius: 0;
+}
+
+.faq-section > h3 {
+    color: #0000a0;
+    font-size: 22px;
+    margin: 0 0 10px;
+        margin-left: 22px;
+}
+
+.faq-item {
+    margin-bottom: 5px;
+}
+
+.faq-question {
+    width: 100%;
+    text-align: left;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #111;
+}
+
+.faq-question:hover {
+    background: #f1f1f1;
+}
+
+.faq-answer {
+    display: none;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-top: 0;
+}
+
+.faq-item.active .faq-answer {
+    display: block;
+}
+
+.faq-step {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.step-number {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    background: #c00;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-details {
+    flex: 1;
+}
+
+.faq-step-img {
+    margin-top: 10px;
+    max-width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Pagination */
+.pagination {
+    margin: 15px 0;
+}
+
+/* Mobile */
+@media(max-width: 768px) {
+    .category-header h1 {
+        font-size: 26px;
+    }
+
+    .category-header p.subtitle,
+    .category-header p.hindi-info,
+    .info-box {
+        font-size: 13px;
+    }
+
+    .latest-title {
+        font-size: 18px;
+    }
+
+    .latest-list {
+        padding-left: 18px;
+    }
+
+    .latest-list li {
+        font-size: 13px;
+        line-height: 19px;
+    }
+}
 `;
+
 var pageScripts = `
 document.querySelectorAll(".faq-question").forEach(function(btn){
-  btn.addEventListener("click", function(){ btn.parentElement.classList.toggle("active"); });
+    btn.addEventListener("click", function(){
+        btn.parentElement.classList.toggle("active");
+    });
 });
 `;
 %>
-<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
 
-<div class="category-header">
-  <h1><%= category.name %></h1>
-  <p class="subtitle">Latest updates, notifications, results & more</p>
-</div>
+<%- include('../weblayout/layout-top', { 
+    title: title, 
+    pageStyles: pageStyles 
+}) %>
 
 <div class="category-wrapper">
-  <div>
-    <div class="info-box">
-      <strong>&#128226; Latest Updates:</strong>
-      This page shows the latest official notifications related to <b><%= category.name %></b>.
+
+    <div class="category-main">
+
+        <!-- CATEGORY TITLE -->
+        <div class="category-header">
+
+            <h1><%= category.name %></h1>
+
+            <p class="subtitle">
+                Welcome to <a href="/">official Sarkari Result</a> since 2009.
+                Stay informed about the Latest Jobs of various competitive exams
+                conducted by government bodies across India, whether you are waiting
+                for the Job Notification of any recruitment exam, entrance exam or
+                any other government exam then we update the Latest Job from time
+                to time to keep you informed.
+                <a href="/">Let's update.</a>
+            </p>
+
+            <p class="hindi-info">
+                <strong>● Sarkari Result</strong> में आपका स्वागत है। अगर आप सरकारी
+                नौकरी, सरकारी रिजल्ट, एडमिट कार्ड, प्रवेश परीक्षा या किसी अन्य सरकारी
+                परीक्षा की नौकरी की अधिसूचना की प्रतीक्षा कर रहे हैं, तो हम आपको
+                सूचित रखने के लिए समय-समय पर नवीनतम नौकरी अपडेट करते हैं।
+            </p>
+
+        </div>
+
+
+        <!-- LATEST POSTS -->
+        <div class="latest-title">
+            All <%= category.name %>
+        </div>
+
+        <ul class="latest-list">
+
+            <% if (posts && posts.length) { %>
+
+                <% posts.forEach(function(post) { %>
+
+                    <li>
+                        <a href="/post/<%= post.slug %>">
+                            <%= post.title %>
+                        </a>
+
+                      <% if (post.lastDate) { %>
+    <span class="post-date">
+        – Last Date:
+        <%= formatDate(post.lastDate, 'DD MMMM YYYY') %>
+    </span>
+<% } %>
+                    </li>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <li>No latest updates available.</li>
+
+            <% } %>
+
+        </ul>
+
+
+        <!-- PAGINATION -->
+        <%- include('../partials/pagination', { pagination: pagination }) %>
+
+
+        <!-- ABOUT -->
+        <div class="about-section">
+
+            <h2>
+                About <%= category.name %>
+            </h2>
+
+            <p>
+                <%= category.name %> section helps candidates to find the latest
+                openings, eligibility, important dates, notifications and
+                application details for government exams.
+            </p>
+
+            <p>
+                We update this page regularly so you get accurate and fast
+                government job and examination updates.
+            </p>
+
+        </div>
+
+
+        <!-- FAQ -->
+        <div class="faq-section">
+
+            <h3>
+                Frequently Asked Questions
+            </h3>
+
+            <% if (faqs && faqs.length) { %>
+
+                <% faqs.forEach(function(faq) { %>
+
+                    <div class="faq-item">
+
+                        <button class="faq-question">
+                            &#10003; <%= faq.question %>
+                        </button>
+
+                        <div class="faq-answer">
+
+                            <% (faq.answers || []).forEach(function(ans, index) { %>
+
+                                <div class="faq-step">
+
+                                    <div class="step-number">
+                                        <%= index + 1 %>
+                                    </div>
+
+                                    <div class="step-details">
+
+                                        <p>
+                                            <%- (ans.answer || '').replace(/\n/g, '<br>') %>
+                                        </p>
+
+                                        <% if (ans.image) { %>
+
+                                            <img
+                                                src="/uploads/faq/<%= ans.image %>"
+                                                class="faq-step-img"
+                                                alt="<%= faq.question %>"
+                                                loading="lazy"
+                                            >
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <p>
+                    No FAQs found for this category.
+                </p>
+
+            <% } %>
+
+        </div>
+
     </div>
 
-    <div class="list-box">
-      <% if (posts && posts.length) { %>
-        <% posts.forEach(function(post) { %>
-          <a href="/post/<%= post.slug %>" class="list-item">
-            <span class="dot">&#9679;</span>
-            <span class="title"><%= post.title %></span>
-            <span class="date"><%= formatDate(post.createdAt, 'DD MMM, YYYY') %></span>
-          </a>
-        <% }) %>
-      <% } else { %>
-        <p>No data available.</p>
-      <% } %>
-    </div>
-
-    <%- include('../partials/pagination', { pagination: pagination }) %>
-
-    <div class="about-section">
-      <h2>About <%= category.name %></h2>
-      <p><%= category.name %> section helps candidates to find the latest openings, eligibility, important dates, notifications and application details for government exams.</p>
-      <p>We update this page daily so you get the most accurate & fast updates.</p>
-    </div>
-
-    <div class="faq-section">
-      <h3>Frequently Asked Questions</h3>
-      <% if (faqs && faqs.length) { %>
-        <% faqs.forEach(function(faq) { %>
-          <div class="faq-item">
-            <button class="faq-question">&#10003; <%= faq.question %></button>
-            <div class="faq-answer">
-              <% (faq.answers || []).forEach(function(ans, index) { %>
-                <div class="faq-step">
-                  <div class="step-number"><%= index + 1 %></div>
-                  <div class="step-details">
-                    <p><%- (ans.answer || '').replace(/\n/g, '<br>') %></p>
-                    <% if (ans.image) { %>
-                      <img src="/uploads/faq/<%= ans.image %>" class="faq-step-img">
-                    <% } %>
-                  </div>
-                </div>
-              <% }) %>
-            </div>
-          </div>
-        <% }) %>
-      <% } else { %>
-        <p>No FAQs found for this category.</p>
-      <% } %>
-    </div>
-  </div>
-
-  <div>
-    <div class="sidebar-box search-bar">
-      <h3>&#128269; Search</h3>
-      <input type="text" placeholder="Search job, result, admit card...">
-    </div>
-    <div class="sidebar-box">
-      <h3>Quick Links</h3>
-      <div class="sidebar-links">
-        <a href="/category/latest-jobs">Latest Jobs</a>
-        <a href="/category/admit-card">Admit Card</a>
-        <a href="/category/result">Results</a>
-        <a href="/category/syllabus">Syllabus</a>
-        <a href="/category/answer-key">Answer Key</a>
-        <a href="/contact">Contact Us</a>
-      </div>
-    </div>
-    <div class="sidebar-box">
-      <h3>Important Notices</h3>
-      <p>Stay updated with official announcements & notifications.</p>
-    </div>
-  </div>
 </div>
 
-<%- include('../weblayout/layout-bottom', { pageScripts: pageScripts }) %>
+<%- include('../weblayout/layout-bottom', { 
+    pageScripts: pageScripts 
+}) %>

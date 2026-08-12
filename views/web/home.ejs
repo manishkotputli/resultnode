@@ -114,6 +114,159 @@
     color: #ffffff;
     text-decoration: none;
   }
+
+  .post-link {
+  display: flex !important;
+  align-items: center;
+  gap: 1px;
+}
+
+.new-post-gif {
+  width: 25px;
+  height: auto;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+/* ms */
+/* SEO CONTENT & TABLE SECTION */
+  .seo-footer-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+  }
+
+  .seo-intro-text {
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+
+  .seo-badge {
+    background-color: #0056b3;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: inline-block;
+  }
+
+  .table-title-header {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .sarkari-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+
+  .sarkari-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    width: 33.33%;
+  }
+
+  .sarkari-table a {
+    color: #0000ff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .sarkari-table a:hover {
+    text-decoration: underline;
+  }
+
+  /* OFFICIAL WEBSITE BANNER & DISCOVER BOX */
+  .official-banner {
+    background-color: #ab2828;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    padding: 6px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .discover-card {
+    border: 1px solid #e0e0e0;
+    background: #f4f7ff;
+    border-radius: 4px;
+    margin: 15px 0;
+    overflow: hidden;
+  }
+
+  .discover-header {
+    padding: 10px 15px;
+    font-weight: bold;
+    color: #444;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .discover-list {
+    background: #fff;
+  }
+
+  .discover-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .disclaimer-text {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 15px;
+  }
+
+  /* FAQ SECTION */
+  .faq-container {
+        max-width: 1000px;
+    margin: 20px auto;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    background: #ffffffff;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    color: #000;
+  }
+
+  .faq-title {
+    font-size: 22px;
+    color: #1a365d;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .faq-item {
+    margin-bottom: 15px;
+  }
+
+  .faq-question {
+    font-weight: bold;
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 5px;
+  }
+
+  .faq-answer {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+  }
 </style>
 
 <!-- MARQUEE NEWS TICKER -->
@@ -153,8 +306,22 @@
         <div class="col-links">
           <% if (sec.posts && sec.posts.length) { %>
             <% sec.posts.forEach(function(item) { %>
-              <a href="/post/<%= item.slug %>">&bull; <%= item.title %></a>
-            <% }) %>
+  <a href="/post/<%= item.slug %>" class="post-link">
+    &bull; <%= item.title %>
+
+    <% 
+      const postDate = item.post_date 
+        ? new Date(item.post_date).toISOString().split('T')[0] 
+        : '';
+      
+      const today = new Date().toISOString().split('T')[0];
+    %>
+
+    <% if (postDate === today) { %>
+      <img src="/admin-assets/new.gif" class="new-post-gif" alt="NEW">
+    <% } %>
+  </a>
+<% }) %>
           <% } else { %>
             <span style="font-size:11px; color:#666;">No posts available</span>
           <% } %>
@@ -165,6 +332,115 @@
       </div>
     </div>
   <% }) %>
+</div>
+
+<!-- SECTION 1: SEO TEXT, LINKS TABLE & DISCOVER MORE (IMAGE 1 & 2 TOP) -->
+<div class="seo-footer-container">
+  
+  <div class="seo-intro-text">
+    <a href="/" style="font-weight:bold; color:#000;">Sarkari Result™ 2026</a> : Find Latest Sarkari <span class="seo-badge">job</span> Vacancies And Sarkari Exam Results At Sarkariresult.Com.Cm Official Website Of Sarkari Result Since 2009. Get All The Information You Need On Govt <span class="seo-badge">jobs</span> And Online From, Exam, Results, Admit Card In One Place.
+    <br><br>
+    <span class="seo-badge">Career News Updates</span>
+  </div>
+
+  <div class="table-title-header">
+    *** <a href="/" style="color:red; font-style:italic;">Top Sarkari Result Pages</a> ***
+  </div>
+
+ <table class="sarkari-table">
+    <tr>
+        <td><a href="https://bharatresult.com/" target="_blank" rel="noopener">Bharat Result</a></td>
+        <td><a href="https://www.uppolice.gov.in/" target="_blank" rel="noopener">Up Police Result</a></td>
+        <td><a href="https://police.bihar.gov.in/" target="_blank" rel="noopener">Bihar Police Result</a></td>
+    </tr>
+
+    <tr>
+        <td><a href="https://www.sarkariexam.com/" target="_blank" rel="noopener">Sarkari Exam</a></td>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">SarkariResult Hindi</a></td>
+        <td><a href="https://www.sarkariresult.com/railway/rrb-ntpc/" target="_blank" rel="noopener">Sarkari Result Ntpc</a></td>
+    </tr>
+
+    <tr>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">Sarkari Result 2026</a></td>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">Sarkari Result</a></td>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">Sarkari</a></td>
+    </tr>
+
+    <tr>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">Sarkari Naukri</a></td>
+        <td><a href="https://www.sarkariresult.com/10th/" target="_blank" rel="noopener">Sarkari Result 10th</a></td>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">Sarkari Result Center</a></td>
+    </tr>
+
+    <tr>
+        <td><a href="https://www.sarkariresult.com/12th/" target="_blank" rel="noopener">Sarkari Result 10+2</a></td>
+        <td><a href="https://www.sarkariresult.com/" target="_blank" rel="noopener">Sarkariresult</a></td>
+        <td><a href="https://www.sarkariresult.com/ssc/" target="_blank" rel="noopener">Sarkari Result SSC</a></td>
+    </tr>
+</table>
+
+  <!-- SECTION 2: OFFICIAL WEBSITE & DISCLAIMER (IMAGE 2 MIDDLE) -->
+  <div class="official-banner">
+    Sarkariresult Official Website
+  </div>
+
+  <div class="seo-intro-text" style="text-align: left;">
+    <strong>SarkariResultess.Com</strong> Is The Official Website Of <em>Sarkari Result ™</em> (Since 2026), Presenting All The Latest Updates Such As Results, Online Forms, Job Notifications, Exam Results 2025, Employment News, Information In Hindi, Government Job Details, And Important Notices And Updates. <span class="seo-badge">Exam City Information</span>
+    <br><br>
+    <strong>Official Website Of Sarkari Result™ – SarkariResult.Com.Cm | Since 2009 | Trademark Applications For “Sarkari Result” Accepted And Advertised By The Controller General Of Patents, Designs And Trade Marks, <span class="seo-badge">Government</span> Of India, Under Application Nos. 6921399 (Class 35) And 6921398 (Class 41).</strong>
+  </div>
+
+  <!-- DISCOVER MORE ACCORDION/BOX -->
+  <div class="discover-card">
+    <div class="discover-header">Discover more</div>
+    <div class="discover-list">
+      <a href="#" class="discover-item">
+        <span>Exam Preparation Courses</span>
+        <span>&rsaquo;</span>
+      </a>
+      <a href="#" class="discover-item">
+        <span>ICSI Assistant Form</span>
+        <span>&rsaquo;</span>
+      </a>
+      <a href="#" class="discover-item">
+        <span>Internet & Telecom</span>
+        <span>&rsaquo;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="disclaimer-text">
+    &bull; This Website Is Not Associated With Official Or Government Websites. All Information Provided Is For General Informational Purposes Only And Users Of Our Website Can Not Use Content For Any Legal Purposes And It Is Hereby Advised To All Visitors To Verify Information From Official Notifications Of Concerning Department Before Relying On It. If Any Errors Are Found In The Uploaded Content Here On Website, The Website Should To Be Notified Through Our Contact Us Page.
+  </div>
+
+</div>
+
+<!-- SECTION 3: FAQ SECTION (IMAGE 2 BOTTOM) -->
+<div class="faq-container">
+  <div class="faq-title">FAQ – Sarkari Result</div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      What is Sarkari Result? <span class="seo-badge">Career News Updates</span>
+    </div>
+    <div class="faq-answer">
+      Sarkari Result : Find Latest Sarkari Job Vacancies And Sarkari Exam Results At Sarkariresultess.Com Get All The Information You Need On Govt Jobs And Online From, Exam, Results, Admit Card In One Place.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">How can I check the latest government job vacancies?</div>
+    <div class="faq-answer">
+      You can visit our official Sarkari Result website which is sarkariresultess.com and navigate to the “Latest Jobs” section to check the latest government job vacancies.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">What is the official website of sarkari result</div>
+    <div class="faq-answer">
+      Sarkariresultess.com is the official website of Sarkari Result since 2026
+    </div>
+  </div>
 </div>
 
 <%- include('../weblayout/layout-bottom') %>
