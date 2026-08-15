@@ -246,32 +246,36 @@ function previewSelectedImage(input, previewImgId, wrapperId) {
     }
 }
 
-var pageScripts = `
-document.querySelectorAll('.editBannerBtn').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    document.getElementById('editBannerForm').action = '/admin/banners/' + btn.dataset.id + '/update';
-    document.getElementById('editBannerText').value = btn.dataset.text || '';
-    document.getElementById('editBannerUrl').value = btn.dataset.url || '';
-    document.getElementById('editBannerColor').value = btn.dataset.color || '';
-    
-    const previewWrapper = document.getElementById('editBannerImagePreviewWrapper');
-    const previewImg = document.getElementById('editBannerImagePreview');
-    if (btn.dataset.image) {
-      previewImg.src = btn.dataset.image;
-      previewWrapper.classList.remove('hidden');
-    } else {
-      previewWrapper.classList.add('hidden');
-      previewImg.src = '';
-    }
-  });
-});
+// Direct Execution - Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.editBannerBtn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const form = document.getElementById('editBannerForm');
+            form.action = '/admin/banners/' + btn.dataset.id + '/update';
+            
+            document.getElementById('editBannerText').value = btn.dataset.text || '';
+            document.getElementById('editBannerUrl').value = btn.dataset.url || '';
+            document.getElementById('editBannerColor').value = btn.dataset.color || '';
+            
+            const previewWrapper = document.getElementById('editBannerImagePreviewWrapper');
+            const previewImg = document.getElementById('editBannerImagePreview');
+            
+            if (btn.dataset.image) {
+                previewImg.src = btn.dataset.image;
+                previewWrapper.classList.remove('hidden');
+            } else {
+                previewWrapper.classList.add('hidden');
+                previewImg.src = '';
+            }
+        });
+    });
 
-document.querySelectorAll('.deleteBannerBtn').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    document.getElementById('deleteBannerForm').action = '/admin/banners/' + btn.dataset.id + '/delete';
-    document.getElementById('deleteBannerText').textContent = btn.dataset.text || '';
-  });
+    document.querySelectorAll('.deleteBannerBtn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('deleteBannerForm').action = '/admin/banners/' + btn.dataset.id + '/delete';
+            document.getElementById('deleteBannerText').textContent = btn.dataset.text || '';
+        });
+    });
 });
-`;
 </script>
 <%- include('../../adminlayout/admin-layout-bottom') %>
