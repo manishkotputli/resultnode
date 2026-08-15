@@ -4,7 +4,12 @@ const { Op } = require('sequelize');
 
 async function list(search = '') {
   const where = {};
-  if (search) where.text = { [Op.like]: `%${search}%` };
+  if (search) {
+    where[Op.or] = [
+      { text: { [Op.like]: `%${search}%` } },
+      { url: { [Op.like]: `%${search}%` } }
+    ];
+  }
   return db.Banner.findAll({ where, order: [['id', 'DESC']] });
 }
 

@@ -315,19 +315,76 @@
 
 
 <!-- BANNERS SECTION -->
+<!-- BANNER CAROUSEL SECTION -->
 <% if (typeof banners !== 'undefined' && banners && banners.length > 0) { %>
-  <div class="home-banners-wrapper">
-    <% banners.forEach(function(banner) { %>
-      <a 
-        href="<%= banner.url || '#' %>" 
-        target="_blank" 
-        class="banner-item" 
-        style="background-color: <%= banner.color || '#ab2828' %>; color: #ffffff;"
-      >
-        <%= banner.text %>
-      </a>
-    <% }); %>
+  <div class="banner-carousel-container">
+    <div class="banner-carousel-track" id="bannerTrack">
+      <% banners.forEach(function(banner) { %>
+        <div class="banner-slide">
+          <a href="<%= banner.url || '#' %>" target="_blank" class="banner-link">
+            <% if (banner.image) { %>
+              <img src="<%= banner.image %>" alt="<%= banner.text || 'Banner' %>" class="banner-img" />
+            <% } else { %>
+              <div class="banner-text-box" style="background-color: <%= banner.color || '#ab2828' %>;">
+                <%= banner.text %>
+              </div>
+            <% } %>
+          </a>
+        </div>
+      <% }); %>
+    </div>
   </div>
+
+  <style>
+    .banner-carousel-container {
+      max-width: 1000px;
+      margin: 10px auto;
+      overflow: hidden;
+      position: relative;
+      border-radius: 6px;
+    }
+    .banner-carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .banner-slide {
+      min-width: 100%;
+      box-sizing: border-box;
+    }
+    .banner-link {
+      display: block;
+      text-decoration: none;
+    }
+    .banner-img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      display: block;
+      border-radius: 6px;
+    }
+    .banner-text-box {
+      padding: 12px 20px;
+      color: #ffffff;
+      font-weight: bold;
+      text-align: center;
+      font-size: 15px;
+      border-radius: 4px;
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const track = document.getElementById('bannerTrack');
+      const slides = track ? track.children : [];
+      if (slides.length > 1) {
+        let currentIndex = 0;
+        setInterval(() => {
+          currentIndex = (currentIndex + 1) % slides.length;
+          track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }, 4000); // Har 4 second me slide switch hoga
+      }
+    });
+  </script>
 <% } %>
 
 

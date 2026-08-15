@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       text: { type: DataTypes.STRING, allowNull: false },
       url: { type: DataTypes.STRING },
       color: { type: DataTypes.STRING },
+      image: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
       status: { type: DataTypes.BOOLEAN, defaultValue: true },
     },
     { sequelize, modelName: 'Banner', tableName: 'banners',timestamps: false }

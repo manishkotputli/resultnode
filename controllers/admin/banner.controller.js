@@ -17,7 +17,8 @@ async function index(req, res, next) {
 
 async function store(req, res, next) {
   try {
-    await service.createBanner(req.body);
+    // Pass req.file alongside req.body for image upload
+    await service.createBanner(req.body, req.file);
     req.flash('success', 'Banner created successfully.');
     res.redirect('/admin/banners');
   } catch (err) {
@@ -31,7 +32,8 @@ async function store(req, res, next) {
 
 async function update(req, res, next) {
   try {
-    await service.updateBanner(req.params.id, req.body);
+    // Pass req.file alongside req.body for image upload update
+    await service.updateBanner(req.params.id, req.body, req.file);
     req.flash('success', 'Banner updated successfully.');
     res.redirect('/admin/banners');
   } catch (err) {

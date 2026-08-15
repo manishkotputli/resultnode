@@ -5,37 +5,47 @@ async function getList(search) {
   return repo.list(search);
 }
 
-async function createBanner(body) {
-  if (!body.text) {
-    const err = new Error('Banner text is required.');
+async function createBanner(body, file) {
+  const imagePath = file ? `/uploads/banners/${file.filename}` : null;
+
+  // Validation: At least Text or Image should be present
+  if (!body.text && !imagePath) {
+    const err = new Error('Either Banner text or an Image is required.');
     err.status = 400;
     throw err;
   }
+
   return repo.create({
-    text: body.text.trim(),
+    text: body.text ? body.text.trim() : null,
     url: body.url || null,
     color: body.color || null,
-    status: body.status === 'on' || body.status === 'true' || body.status === '1',
+    image: imagePath,
+    status: body.status === 'on' || body.status === 'true' || body.status === '1' || body.status === true,
   });
 }
 
-async function updateBanner(id, body) {
+async function updateBanner(id, body, file) {
   const banner = await repo.findById(id);
   if (!banner) {
     const err = new Error('Banner not found');
     err.status = 404;
     throw err;
   }
-  if (!body.text) {
-    const err = new Error('Banner text is required.');
+
+  const imagePath = file ? `/uploads/banners/${file.filename}` : banner.image;
+
+  if (!body.text && !imagePath) {
+    const err = new Error('Either Banner text or an Image is required.');
     err.status = 400;
     throw err;
   }
+
   return repo.update(banner, {
-    text: body.text.trim(),
+    text: body.text ? body.text.trim() : null,
     url: body.url || null,
     color: body.color || null,
-    status: body.status === 'on' || body.status === 'true' || body.status === '1',
+    image: imagePath,
+    status: body.status === 'on' || body.status === 'true' || body.status === '1' || body.status === true,
   });
 }
 
