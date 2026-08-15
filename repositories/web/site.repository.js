@@ -100,6 +100,13 @@ async function logEvent({ trackableType, trackableId, eventType, userId, ip, use
   });
 }
 
+async function getActiveBanners() {
+  return db.Banner.findAll({
+    where: { status: true },
+    order: [['id', 'DESC']], // optional ordering
+  });
+}
+
 module.exports = {
   getMarqueePosts,
   getTopPosts,
@@ -113,4 +120,5 @@ module.exports = {
   incrementPostViews,
   incrementPostClicks,
   logEvent,
+  getActiveBanners,
 };

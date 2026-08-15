@@ -1,5 +1,31 @@
 <%- include('../../adminlayout/admin-layout-top') %>
 
+<style>
+  /* CKEditor Visual Editable Area */
+  .ck-editor__editable_inline {
+    min-height: 480px !important;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  
+  /* Transparent/Checkerboard background for crisp image preview */
+  .preview-bg-pattern {
+    background-color: #f8fafc;
+    background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+    background-size: 12px 12px;
+  }
+
+  /* HTML Code Editor Large Dark Box */
+  .html-code-editor {
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    font-size: 14px;
+    background-color: #0f172a;
+    color: #38bdf8;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+</style>
+
 <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
     <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold"><%= mode === 'edit' ? 'Edit Blog Post' : 'Add Blog Post' %></h1>
     <a href="/admin/blogs" class="text-sm font-medium text-gray-600 hover:text-primary flex items-center gap-1"><i class="icon-arrow-left"></i> Back to Blog Posts</a>
@@ -8,19 +34,20 @@
 <form method="POST" action="<%= formAction %>" enctype="multipart/form-data" id="blogForm">
     <div class="grid grid-cols-12 gap-4 lg:gap-6">
 
+        <!-- Main Form Column -->
         <div class="col-span-12 xxl:col-span-8 space-y-4 lg:space-y-6">
-            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-                <h2 class="text-gray-900 text-lg font-bold mb-4">Content</h2>
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-4">Content & Media</h2>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Title <span class="text-danger">*</span></label>
-                    <input type="text" name="title" id="titleInput" required value="<%= blog ? blog.title : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Title <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" id="titleInput" required value="<%= blog ? blog.title : '' %>" class="form-input w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-900 mb-2">Category</label>
-                        <select name="category_id" class="form-select w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        <select name="category_id" class="form-select w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary">
                             <option value="">Select Category</option>
                             <% categories.forEach(function(cat) { %>
                                 <option value="<%= cat.id %>" <%= blog && blog.category_id === cat.id ? 'selected' : '' %>><%= cat.name %></option>
@@ -29,58 +56,77 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-900 mb-2">Slug <span class="text-gray-400 font-normal">(optional)</span></label>
-                        <input type="text" name="slug" value="<%= blog ? blog.slug : '' %>" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                        <input type="text" name="slug" value="<%= blog ? blog.slug : '' %>" class="form-input w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary">
                     </div>
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Short Description</label>
-                    <textarea name="short_description" rows="2" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= blog ? (blog.short_description || '') : '' %></textarea>
+                    <textarea name="short_description" rows="2" class="form-input w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-2 focus:ring-primary/20 focus:border-primary"><%= blog ? (blog.short_description || '') : '' %></textarea>
                 </div>
 
-                <div class="mb-1">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Content</label>
-                    <textarea name="content" id="contentEditor"><%= blog ? (blog.content || '') : '' %></textarea>
+                <!-- 2 EDITOR TABS HEADER -->
+                <div class="mb-2">
+                    <div class="flex items-center justify-between border-b border-gray-200 mb-3">
+                        <div class="flex gap-2">
+                            <button type="button" id="tabVisualBtn" class="py-2.5 px-5 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer">
+                                <span>📝</span> Visual Editor
+                            </button>
+                            <button type="button" id="tabHtmlBtn" class="py-2.5 px-5 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer">
+                                <span>💻</span> HTML / Code Editor
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- VISUAL EDITOR CONTAINER -->
+                    <div id="visualEditorPane">
+                        <textarea name="content" id="contentEditor"><%= blog ? (blog.content || '') : '' %></textarea>
+                    </div>
+
+                    <!-- RAW HTML CODE CONTAINER (EXPANDED LARGE HEIGHT) -->
+                    <div id="htmlEditorPane" class="hidden">
+                        <textarea id="rawHtmlTextarea" class="html-code-editor w-full h-[600px] rounded-lg p-4 border border-gray-800 shadow-inner focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Type plain text or write raw HTML code... Switching tabs will automatically format HTML content."><%= blog ? (blog.content || '') : '' %></textarea>
+                    </div>
                 </div>
-                <p class="text-xs text-gray-400 mt-2 mb-0">Tip: paste an image URL directly in the editor toolbar's image button, or drag &amp; drop / paste an image to auto-upload.</p>
+                <p class="text-xs text-gray-400 mt-2">Tip: Switch tabs anytime. Plain text in visual editor is converted to formatted HTML code automatically.</p>
 
                 <div class="mt-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Tags <span class="text-gray-400 font-normal">(comma separated)</span></label>
-                    <input type="text" name="tags" value="<%= blog ? (blog.tags || '') : '' %>" placeholder="ssc, jobs, exam-tips" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <input type="text" name="tags" value="<%= blog ? (blog.tags || '') : '' %>" placeholder="ssc, jobs, exam-tips" class="form-input w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
                 </div>
             </div>
 
-            <!-- SEO -->
-            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <!-- SEO Meta Card -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
                 <h2 class="text-gray-900 text-lg font-bold mb-4">SEO Meta</h2>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Meta Title</label>
-                    <input type="text" name="meta_title" id="metaTitleInput" value="<%= blog ? (blog.meta_title || '') : '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <input type="text" name="meta_title" id="metaTitleInput" value="<%= blog ? (blog.meta_title || '') : '' %>" class="form-input w-full bg-white border border-gray-300 text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
                     <p class="text-xs text-gray-400 mt-1 mb-0"><span id="metaTitleCount">0</span>/60 characters</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Meta Keywords</label>
-                    <input type="text" name="meta_keywords" value="<%= blog ? (blog.meta_keywords || '') : '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <input type="text" name="meta_keywords" value="<%= blog ? (blog.meta_keywords || '') : '' %>" class="form-input w-full bg-white border border-gray-300 text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Meta Description</label>
-                    <textarea name="meta_description" id="metaDescInput" rows="2" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= blog ? (blog.meta_description || '') : '' %></textarea>
+                    <textarea name="meta_description" id="metaDescInput" rows="2" class="form-input w-full bg-white border border-gray-300 text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= blog ? (blog.meta_description || '') : '' %></textarea>
                     <p class="text-xs text-gray-400 mt-1 mb-0"><span id="metaDescCount">0</span>/160 characters</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Canonical URL</label>
-                    <input type="url" name="canonical_url" value="<%= blog ? (blog.canonical_url || '') : '' %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <input type="url" name="canonical_url" value="<%= blog ? (blog.canonical_url || '') : '' %>" class="form-input w-full bg-white border border-gray-300 text-sm rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
                 </div>
                 <div class="flex items-center gap-6">
-                    <label class="flex items-center gap-2 text-sm font-medium text-gray-900"><input type="checkbox" name="noindex" <%= blog && blog.noindex ? 'checked' : '' %> class="w-4 h-4 text-primary rounded focus:ring-0 cursor-pointer"> No-index</label>
-                    <label class="flex items-center gap-2 text-sm font-medium text-gray-900"><input type="checkbox" name="nofollow" <%= blog && blog.nofollow ? 'checked' : '' %> class="w-4 h-4 text-primary rounded focus:ring-0 cursor-pointer"> No-follow</label>
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-900"><input type="checkbox" name="noindex" <%= blog && blog.noindex ? 'checked' : '' %> class="w-4 h-4 text-primary rounded cursor-pointer"> No-index</label>
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-900"><input type="checkbox" name="nofollow" <%= blog && blog.nofollow ? 'checked' : '' %> class="w-4 h-4 text-primary rounded cursor-pointer"> No-follow</label>
                 </div>
             </div>
 
-            <!-- Google Search Preview -->
-            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <!-- SERP Preview Card -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
                 <h2 class="text-gray-900 text-lg font-bold mb-4">Search Engine Preview</h2>
-                <div class="border border-border-color rounded-lg p-4 bg-white">
+                <div class="border border-gray-200 rounded-lg p-4 bg-white">
                     <p id="serpUrl" class="text-[13px] text-gray-600 mb-1 truncate">yoursite.com &rsaquo; blog &rsaquo; <span id="serpSlug"><%= blog ? blog.slug : 'post-slug' %></span></p>
                     <p id="serpTitle" class="text-[#1a0dab] text-lg leading-snug mb-1 truncate"><%= blog && blog.meta_title ? blog.meta_title : (blog ? blog.title : 'Your Blog Title Appears Here') %></p>
                     <p id="serpDesc" class="text-sm text-gray-600 line-clamp-2 mb-0"><%= blog && blog.meta_description ? blog.meta_description : 'Your meta description will appear here to preview how it looks on Google search results.' %></p>
@@ -88,58 +134,72 @@
             </div>
         </div>
 
+        <!-- Sidebar Column -->
         <div class="col-span-12 xxl:col-span-4 space-y-4 lg:space-y-6">
-            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-                <h2 class="text-gray-900 text-lg font-bold mb-4">Thumbnail</h2>
+            <!-- THUMBNAIL CARD -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
+                <h2 class="text-gray-900 text-lg font-bold mb-3">Thumbnail Image</h2>
 
-                <div id="thumbPreviewWrap" class="<%= blog && blog.thumbnail ? '' : 'hidden' %> mb-3">
-                    <img id="thumbPreviewImg" src="<%= blog && blog.thumbnail ? blog.thumbnail : '' %>" class="w-full h-44 object-cover rounded-lg bg-light border border-border-color" alt="Thumbnail preview">
-                </div>
-                <div id="thumbPlaceholder" class="<%= blog && blog.thumbnail ? 'hidden' : '' %> w-full h-44 rounded-lg bg-light border border-dashed border-border-color flex items-center justify-center text-gray-400 text-sm mb-3">
-                    No image selected
+                <div class="w-full aspect-video rounded-lg border border-gray-200 preview-bg-pattern overflow-hidden relative mb-3 flex items-center justify-center">
+                    <div id="thumbPreviewWrap" class="<%= blog && blog.thumbnail ? '' : 'hidden' %> w-full h-full relative group">
+                        <img id="thumbPreviewImg" src="<%= blog && blog.thumbnail ? blog.thumbnail : '' %>" class="w-full h-full object-contain p-1" alt="Thumbnail preview">
+                        
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                            <button type="button" id="removeThumbBtn" class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition shadow" title="Remove image">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="thumbPlaceholder" class="<%= blog && blog.thumbnail ? 'hidden' : '' %> flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+                        <svg class="w-10 h-10 mb-1 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span class="text-xs font-medium">16:9 Image Preview</span>
+                    </div>
                 </div>
 
-                <div class="flex gap-2 mb-2">
-                    <button type="button" id="tabUploadBtn" class="thumb-tab-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-primary bg-primary text-white cursor-pointer">Upload File</button>
-                    <button type="button" id="tabUrlBtn" class="thumb-tab-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border-color bg-white text-gray-700 cursor-pointer">Image URL</button>
+                <div class="flex gap-2 mb-3">
+                    <button type="button" id="tabThumbUploadBtn" class="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-primary bg-primary text-white transition cursor-pointer">Upload File</button>
+                    <button type="button" id="tabThumbUrlBtn" class="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 bg-white text-gray-700 transition cursor-pointer">Image URL</button>
                 </div>
 
-                <div id="uploadPane">
-                    <input type="file" name="thumbnail" id="thumbnailFileInput" accept="image/*" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
-                    <p class="text-xs text-gray-400 mt-1 mb-0">JPG/PNG/WEBP, max 5MB<%= blog && blog.thumbnail ? '. Leave blank to keep current image.' : '' %></p>
+                <div id="thumbUploadPane">
+                    <input type="file" name="thumbnail" id="thumbnailFileInput" accept="image/*" class="form-input w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <p class="text-xs text-gray-400 mt-1 mb-0">JPG, PNG, WEBP, GIF (Max 5MB)</p>
                 </div>
-                <div id="urlPane" class="hidden">
-                    <input type="text" id="thumbnailUrlInput" placeholder="https://example.com/image.jpg" class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
-                    <input type="hidden" name="thumbnail_url" id="thumbnailUrlHidden" value="<%= blog && blog.thumbnail && blog.thumbnail.startsWith('http') ? blog.thumbnail : '' %>">
-                    <p class="text-xs text-gray-400 mt-1 mb-0">Paste a direct image link and press Tab/Enter to preview.</p>
+
+                <div id="thumbUrlPane" class="hidden">
+                    <input type="text" id="thumbnailUrlInput" placeholder="https://example.com/image.jpg" class="form-input w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <input type="hidden" name="thumbnail_url" id="thumbnailUrlHidden" value="<%= blog && blog.thumbnail ? blog.thumbnail : '' %>">
+                    <p class="text-xs text-gray-400 mt-1 mb-0">Paste direct image link & hit Enter to preview.</p>
                 </div>
             </div>
 
-            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <!-- Publish Box -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
                 <h2 class="text-gray-900 text-lg font-bold mb-4">Publish</h2>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Status</label>
-                    <select name="status" class="form-select w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary">
+                    <select name="status" class="form-select w-full bg-white border border-gray-300 text-sm text-gray-900 rounded-lg py-2.5 px-3 focus:ring-0 focus:border-primary">
                         <option value="draft" <%= (!blog || blog.status === 'draft') ? 'selected' : '' %>>Draft</option>
                         <option value="published" <%= blog && blog.status === 'published' ? 'selected' : '' %>>Published</option>
                     </select>
                 </div>
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-5">
                     <label class="text-sm font-medium text-gray-900">Featured Post</label>
-                    <input type="checkbox" name="is_featured" <%= blog && blog.is_featured ? 'checked' : '' %> class="w-5 h-5 text-primary border-border-color rounded focus:ring-0 cursor-pointer">
+                    <input type="checkbox" name="is_featured" <%= blog && blog.is_featured ? 'checked' : '' %> class="w-5 h-5 text-primary border-gray-300 rounded cursor-pointer">
                 </div>
-                <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition cursor-pointer">
+                <button type="submit" class="w-full py-2.5 px-4 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary/90 transition shadow-sm cursor-pointer">
                     <%= mode === 'edit' ? 'Update Post' : 'Save Post' %>
                 </button>
             </div>
 
             <% if (mode === 'edit' && blog) { %>
-            <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
                 <h2 class="text-gray-900 text-lg font-bold mb-3">Stats</h2>
                 <div class="text-sm text-gray-600 space-y-2">
-                    <p class="mb-0">Views: <%= blog.views %></p>
-                    <p class="mb-0">Word Count: <%= blog.word_count %> &middot; Read Time: <%= blog.read_time %> min</p>
-                    <p class="mb-0">Likes: <%= blog.likes_count %> &middot; Comments: <%= blog.comments_count %></p>
+                    <p class="mb-0">Views: <%= blog.views || 0 %></p>
+                    <p class="mb-0">Word Count: <%= blog.word_count || 0 %> &middot; Read Time: <%= blog.read_time || 0 %> min</p>
+                    <p class="mb-0">Likes: <%= blog.likes_count || 0 %> &middot; Comments: <%= blog.comments_count || 0 %></p>
                 </div>
             </div>
             <% } %>
@@ -147,132 +207,241 @@
     </div>
 </form>
 
-<!-- CKEditor 5 Classic Build (free, CDN) -->
+<!-- CKEditor 5 Script -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
 <script>
 (function () {
-  // ---------- Custom upload adapter (drag/drop + paste images inside editor) ----------
-  class CustomUploadAdapter {
-    constructor(loader) { this.loader = loader; }
+  // ---------- CUSTOM IMAGE UPLOAD ADAPTER (WITH BASE64 FALLBACK) ----------
+  class SmartUploadAdapter {
+    constructor(loader) {
+      this.loader = loader;
+    }
+    
     upload() {
       return this.loader.file.then((file) => new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('upload', file);
+
         fetch('/admin/upload/editor-image', { method: 'POST', body: formData })
           .then((r) => r.json())
           .then((data) => {
-            if (data.url) resolve({ default: data.url });
-            else reject(data.error && data.error.message ? data.error.message : 'Upload failed');
+            if (data && data.url) {
+              resolve({ default: data.url });
+            } else {
+              throw new Error('Server upload failed');
+            }
           })
-          .catch(() => reject('Upload failed. Please try again.'));
+          .catch(() => {
+            // Base64 fallback on error
+            const reader = new FileReader();
+            reader.onload = () => resolve({ default: reader.result });
+            reader.onerror = (err) => reject('Failed to read file: ' + err);
+            reader.readAsDataURL(file);
+          });
       }));
     }
     abort() {}
   }
-  function CustomUploadAdapterPlugin(editor) {
-    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => new CustomUploadAdapter(loader);
+
+  function SmartUploadAdapterPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => new SmartUploadAdapter(loader);
   }
 
+  // ---------- AUTOMATIC HTML FORMATTING FUNCTION ----------
+  function generateFormattedHtml(htmlContent) {
+    if (!htmlContent || !htmlContent.trim()) return '';
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlContent, 'text/html');
+
+      // Add auto-styling to image elements
+      const imgs = doc.querySelectorAll('img');
+      imgs.forEach(img => {
+        if (!img.style.maxWidth) img.style.maxWidth = '100%';
+        if (!img.style.height) img.style.height = 'auto';
+      });
+
+      let rawHtml = doc.body.innerHTML;
+      let formatted = '';
+      let indent = '';
+      const reg = /(>)(<)(\/*)/g;
+      rawHtml = rawHtml.replace(reg, '$1\r\n$2$3');
+
+      rawHtml.split('\r\n').forEach(function(node) {
+        if (node.match(/.+<\/\w[^>]*>$/)) {
+          formatted += indent + node + '\r\n';
+        } else if (node.match(/^<\/\w/)) {
+          if (indent !== '') indent = indent.substring(2);
+          formatted += indent + node + '\r\n';
+        } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+          formatted += indent + node + '\r\n';
+          indent += '  ';
+        } else {
+          formatted += indent + node + '\r\n';
+        }
+      });
+      return formatted.trim();
+    } catch (e) {
+      return htmlContent;
+    }
+  }
+
+  // ---------- INITIALIZE CKEDITOR WITH IMAGE RESIZE & TEXT FORMATTING ----------
+  let editorInstance = null;
+  
   ClassicEditor
     .create(document.querySelector('#contentEditor'), {
-      extraPlugins: [CustomUploadAdapterPlugin],
+      extraPlugins: [SmartUploadAdapterPlugin],
       toolbar: {
         items: [
           'heading', '|',
+          'fontSize', 'fontColor', 'fontBackgroundColor', '|',
           'bold', 'italic', 'underline', 'strikethrough', '|',
-          'link', 'blockQuote', 'insertTable', '|',
-          'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-          'imageUpload', 'insertImage', 'mediaEmbed', '|',
-          'undo', 'redo', '|',
-          'sourceEditing'
+          'alignment', 'bulletedList', 'numberedList', 'outdent', 'indent', '|',
+          'link', 'blockQuote', 'insertTable', 'imageUpload', 'mediaEmbed', '|',
+          'undo', 'redo'
         ],
         shouldNotGroupWhenFull: true
       },
       image: {
-        toolbar: [
-          'imageTextAlternative', 'toggleImageCaption', '|',
-          'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
-          'linkImage'
+        resizeUnit: '%',
+        resizeOptions: [
+          { name: 'resizeImage:original', value: null, icon: 'original' },
+          { name: 'resizeImage:25', value: '25', icon: 'small' },
+          { name: 'resizeImage:50', value: '50', icon: 'medium' },
+          { name: 'resizeImage:75', value: '75', icon: 'large' }
         ],
-        insert: { integrations: ['upload', 'assetManager', 'url'] }
+        toolbar: [
+          'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+          'toggleImageCaption', 'imageTextAlternative', '|',
+          'resizeImage'
+        ]
       },
       table: {
         contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
       },
-      link: { addTargetToExternalLinks: true },
-      licenseKey: ''
+      link: { addTargetToExternalLinks: true }
     })
-    .then((editor) => { window.__blogEditor = editor; })
+    .then((editor) => {
+      editorInstance = editor;
+      window.__blogEditor = editor;
+    })
     .catch((err) => console.error('CKEditor init error:', err));
 
-  // ---------- Thumbnail tabs (Upload vs URL) ----------
-  var tabUploadBtn = document.getElementById('tabUploadBtn');
-  var tabUrlBtn = document.getElementById('tabUrlBtn');
-  var uploadPane = document.getElementById('uploadPane');
-  var urlPane = document.getElementById('urlPane');
+  // ---------- TAB SWITCHING & AUTO HTML CONVERSION ----------
+  const tabVisualBtn = document.getElementById('tabVisualBtn');
+  const tabHtmlBtn = document.getElementById('tabHtmlBtn');
+  const visualPane = document.getElementById('visualEditorPane');
+  const htmlPane = document.getElementById('htmlEditorPane');
+  const rawHtmlTextarea = document.getElementById('rawHtmlTextarea');
 
-  function activateTab(which) {
-    var isUpload = which === 'upload';
-    uploadPane.classList.toggle('hidden', !isUpload);
-    urlPane.classList.toggle('hidden', isUpload);
-    tabUploadBtn.className = 'thumb-tab-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border cursor-pointer ' + (isUpload ? 'border-primary bg-primary text-white' : 'border-border-color bg-white text-gray-700');
-    tabUrlBtn.className = 'thumb-tab-btn flex-1 py-1.5 text-xs font-semibold rounded-lg border cursor-pointer ' + (!isUpload ? 'border-primary bg-primary text-white' : 'border-border-color bg-white text-gray-700');
-  }
-  tabUploadBtn.addEventListener('click', function () { activateTab('upload'); });
-  tabUrlBtn.addEventListener('click', function () { activateTab('url'); });
-  <% if (blog && blog.thumbnail && blog.thumbnail.startsWith('http')) { %>activateTab('url');<% } %>
+  tabVisualBtn.addEventListener('click', function () {
+    // Sync HTML textarea -> Visual Editor
+    if (editorInstance) {
+      editorInstance.setData(rawHtmlTextarea.value);
+    }
+    
+    visualPane.classList.remove('hidden');
+    htmlPane.classList.add('hidden');
 
-  // ---------- Thumbnail preview ----------
-  var previewWrap = document.getElementById('thumbPreviewWrap');
-  var previewImg = document.getElementById('thumbPreviewImg');
-  var placeholder = document.getElementById('thumbPlaceholder');
+    tabVisualBtn.className = "py-2.5 px-5 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer";
+    tabHtmlBtn.className = "py-2.5 px-5 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer";
+  });
+
+  tabHtmlBtn.addEventListener('click', function () {
+    // Convert text into formatted HTML automatically on tab click
+    if (editorInstance) {
+      const editorData = editorInstance.getData();
+      rawHtmlTextarea.value = generateFormattedHtml(editorData);
+    }
+    
+    htmlPane.classList.remove('hidden');
+    visualPane.classList.add('hidden');
+
+    tabHtmlBtn.className = "py-2.5 px-5 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer";
+    tabVisualBtn.className = "py-2.5 px-5 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer";
+  });
+
+  // ---------- THUMBNAIL TAB & PREVIEW LOGIC ----------
+  const tabThumbUploadBtn = document.getElementById('tabThumbUploadBtn');
+  const tabThumbUrlBtn = document.getElementById('tabThumbUrlBtn');
+  const thumbUploadPane = document.getElementById('thumbUploadPane');
+  const thumbUrlPane = document.getElementById('thumbUrlPane');
+
+  const previewWrap = document.getElementById('thumbPreviewWrap');
+  const previewImg = document.getElementById('thumbPreviewImg');
+  const placeholder = document.getElementById('thumbPlaceholder');
+  const fileInput = document.getElementById('thumbnailFileInput');
+  const urlInput = document.getElementById('thumbnailUrlInput');
+  const urlHidden = document.getElementById('thumbnailUrlHidden');
+  const removeBtn = document.getElementById('removeThumbBtn');
 
   function showPreview(src) {
+    if (!src) return clearPreview();
     previewImg.src = src;
     previewWrap.classList.remove('hidden');
     placeholder.classList.add('hidden');
   }
+
   function clearPreview() {
+    previewImg.src = '';
     previewWrap.classList.add('hidden');
     placeholder.classList.remove('hidden');
+    fileInput.value = '';
+    urlInput.value = '';
+    urlHidden.value = '';
   }
 
-  document.getElementById('thumbnailFileInput').addEventListener('change', function (e) {
-    var file = e.target.files && e.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function (ev) { showPreview(ev.target.result); };
-    reader.readAsDataURL(file);
+  function activateThumbTab(which) {
+    const isUpload = which === 'upload';
+    thumbUploadPane.classList.toggle('hidden', !isUpload);
+    thumbUrlPane.classList.toggle('hidden', isUpload);
+
+    tabThumbUploadBtn.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg border transition cursor-pointer ' + (isUpload ? 'border-primary bg-primary text-white' : 'border-gray-300 bg-white text-gray-700');
+    tabThumbUrlBtn.className = 'flex-1 py-1.5 text-xs font-semibold rounded-lg border transition cursor-pointer ' + (!isUpload ? 'border-primary bg-primary text-white' : 'border-gray-300 bg-white text-gray-700');
+  }
+
+  tabThumbUploadBtn.addEventListener('click', () => activateThumbTab('upload'));
+  tabThumbUrlBtn.addEventListener('click', () => activateThumbTab('url'));
+
+  fileInput.addEventListener('change', function (e) {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => showPreview(ev.target.result);
+      reader.readAsDataURL(file);
+    }
   });
 
-  var urlInput = document.getElementById('thumbnailUrlInput');
-  var urlHidden = document.getElementById('thumbnailUrlHidden');
   function applyUrl() {
-    var val = urlInput.value.trim();
-    urlHidden.value = val;
+    const val = urlInput.value.trim();
     if (val) {
-      var testImg = new Image();
-      testImg.onload = function () { showPreview(val); };
-      testImg.onerror = function () { clearPreview(); };
-      testImg.src = val;
-    } else {
-      clearPreview();
+      urlHidden.value = val;
+      showPreview(val);
     }
   }
-  urlInput.addEventListener('change', applyUrl);
-  urlInput.addEventListener('keyup', function (e) { if (e.key === 'Enter') applyUrl(); });
-  <% if (blog && blog.thumbnail && blog.thumbnail.startsWith('http')) { %>
-  urlInput.value = "<%- blog.thumbnail %>";
+
+  urlInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') applyUrl(); });
+  urlInput.addEventListener('blur', applyUrl);
+
+  removeBtn.addEventListener('click', clearPreview);
+
+  <% if (blog && blog.thumbnail) { %>
+    if ("<%- blog.thumbnail %>".startsWith('http')) {
+      urlInput.value = "<%- blog.thumbnail %>";
+      activateThumbTab('url');
+    }
   <% } %>
 
-  // ---------- Live SEO / SERP preview ----------
-  var titleInput = document.getElementById('titleInput');
-  var metaTitleInput = document.getElementById('metaTitleInput');
-  var metaDescInput = document.getElementById('metaDescInput');
-  var serpTitle = document.getElementById('serpTitle');
-  var serpDesc = document.getElementById('serpDesc');
-  var metaTitleCount = document.getElementById('metaTitleCount');
-  var metaDescCount = document.getElementById('metaDescCount');
+  // ---------- SERP PREVIEW ----------
+  const titleInput = document.getElementById('titleInput');
+  const metaTitleInput = document.getElementById('metaTitleInput');
+  const metaDescInput = document.getElementById('metaDescInput');
+  const serpTitle = document.getElementById('serpTitle');
+  const serpDesc = document.getElementById('serpDesc');
+  const metaTitleCount = document.getElementById('metaTitleCount');
+  const metaDescCount = document.getElementById('metaDescCount');
 
   function updateSerp() {
     serpTitle.textContent = metaTitleInput.value.trim() || titleInput.value.trim() || 'Your Blog Title Appears Here';
@@ -280,17 +449,20 @@
     metaTitleCount.textContent = metaTitleInput.value.length;
     metaDescCount.textContent = metaDescInput.value.length;
   }
-  [titleInput, metaTitleInput, metaDescInput].forEach(function (el) {
-    el.addEventListener('input', updateSerp);
-  });
+
+  [titleInput, metaTitleInput, metaDescInput].forEach(el => el.addEventListener('input', updateSerp));
   updateSerp();
 
-  // ---------- Submit hook: if URL thumbnail chosen, make sure file input doesn't override ----------
+  // ---------- SUBMIT HANDLER ----------
   document.getElementById('blogForm').addEventListener('submit', function () {
-    if (!urlPane.classList.contains('hidden')) {
-      document.getElementById('thumbnailFileInput').value = '';
+    if (!htmlPane.classList.contains('hidden') && editorInstance) {
+      editorInstance.setData(rawHtmlTextarea.value);
+    }
+
+    if (!thumbUploadPane.classList.contains('hidden')) {
+      if (fileInput.files.length > 0) urlHidden.value = '';
     } else {
-      urlHidden.value = '';
+      fileInput.value = '';
     }
   });
 })();

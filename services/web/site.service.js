@@ -11,6 +11,7 @@ async function getHomeData() {
     siteRepo.getMarqueePosts(),
     siteRepo.getTopPosts(),
     siteRepo.getHomeSections(),
+    siteRepo.getActiveBanners(),
   ]);
 
   // Group marquee posts by category, same as the old marqueeRows groupBy
@@ -30,7 +31,7 @@ async function getHomeData() {
     }))
   );
 
-  return { marqueeRows: Array.from(marqueeRows.entries()), topPosts, dynamicSections };
+  return { marqueeRows: Array.from(marqueeRows.entries()), topPosts, dynamicSections, banners };
 }
   catch (error) {
     console.error("========================================");

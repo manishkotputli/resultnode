@@ -1,5 +1,24 @@
 <%- include('../../adminlayout/admin-layout-top') %>
 
+<style>
+  /* CKEditor Visual Content Styling */
+  .ck-editor__editable_inline {
+    min-height: 450px !important;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Code View Styling */
+  .html-code-editor {
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    font-size: 14px;
+    background-color: #0f172a;
+    color: #38bdf8;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+</style>
+
 <!-- Title -->
 <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
     <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold"><%= mode === 'edit' ? 'Edit Post' : 'Add Post' %></h1>
@@ -46,10 +65,30 @@
                         class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= post ? (post.short_description || '') : '' %></textarea>
                 </div>
 
-                <div>
+                <!-- FULL DESCRIPTION WITH CKEDITOR + CODE VIEW TABS -->
+                <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-900 mb-2">Full Description</label>
-                    <textarea name="full_description" rows="8" placeholder="Full post content / notification details"
-                        class="form-input w-full bg-white border border-border-color text-sm text-gray-900 rounded-lg py-2 px-3 focus:ring-0 focus:border-primary"><%= post ? (post.full_description || '') : '' %></textarea>
+                    
+                    <div class="flex items-center justify-between border-b border-border-color mb-3">
+                        <div class="flex gap-2">
+                            <button type="button" id="tabVisualBtn" class="py-2 px-4 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer">
+                                <span>📝</span> Visual Editor
+                            </button>
+                            <button type="button" id="tabHtmlBtn" class="py-2 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer">
+                                <span>💻</span> HTML Code View
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Visual Editor Box -->
+                    <div id="visualEditorPane">
+                        <textarea name="full_description" id="contentEditor"><%= post ? (post.full_description || '') : '' %></textarea>
+                    </div>
+
+                    <!-- Raw HTML Box -->
+                    <div id="htmlEditorPane" class="hidden">
+                        <textarea id="rawHtmlTextarea" class="html-code-editor w-full h-[500px] rounded-lg p-4 border border-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Type plain text or write raw HTML code... Switching tabs auto-formats HTML."><%= post ? (post.full_description || '') : '' %></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -60,7 +99,7 @@
                         <h2 class="text-gray-900 text-lg font-bold mb-1">Important Links</h2>
                         <p class="text-sm text-gray-500 mb-0">e.g. Apply Online, Download Notification, Official Website</p>
                     </div>
-                    <button type="button" id="addLinkRowBtn" class="btn px-3 py-2 rounded-full bg-white border border-border-color text-gray-900 text-sm font-medium inline-flex items-center gap-2 hover:bg-light">
+                    <button type="button" id="addLinkRowBtn" class="btn px-3 py-2 rounded-full bg-white border border-border-color text-gray-900 text-sm font-medium inline-flex items-center gap-2 hover:bg-light cursor-pointer">
                         <i class="icon-plus"></i> Add Link
                     </button>
                 </div>
@@ -77,8 +116,8 @@
                             <% if (post && post.links && post.links.length) { %>
                                 <% post.links.forEach(function(link) { %>
                                 <tr>
-                                    <td class="py-2 pr-3"><input type="text" name="links_label" value="<%= link.label %>" placeholder="e.g. Apply Online" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>
-                                    <td class="py-2 pr-3"><input type="url" name="links_url" value="<%= link.url %>" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>
+                                    <td class="py-2 pr-3"><input type="text" name="links_label[]" value="<%= link.label %>" placeholder="e.g. Apply Online" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>
+                                    <td class="py-2 pr-3"><input type="url" name="links_url[]" value="<%= link.url %>" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"></td>
                                     <td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>
                                 </tr>
                                 <% }) %>
@@ -96,7 +135,7 @@
                         <h2 class="text-gray-900 text-lg font-bold mb-1">Dynamic Fields</h2>
                         <p class="text-sm text-gray-500 mb-0">Custom fields grouped into sections e.g. "Important Dates", "Application Fee", "Age Limit"</p>
                     </div>
-                    <button type="button" data-hs-overlay="#addFieldModal" class="btn px-3 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover">
+                    <button type="button" data-hs-overlay="#addFieldModal" class="btn px-3 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover cursor-pointer">
                         <i class="icon-plus"></i> Add Field
                     </button>
                 </div>
@@ -112,25 +151,25 @@
                             </tr>
                         </thead>
                         <tbody id="fieldsTableBody">
-                            <% if (fieldGroups && fieldGroups.length) { %>
+                            <% if (typeof fieldGroups !== 'undefined' && fieldGroups && fieldGroups.length) { %>
                                 <% fieldGroups.forEach(function(group) { %>
                                     <% group.fields.forEach(function(f) { %>
                                     <tr>
                                         <td class="py-2 pr-3">
-                                            <input type="text" name="fields_group" value="<%= f.group_name %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
+                                            <input type="text" name="fields_group[]" value="<%= f.group_name %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
                                         </td>
                                         <td class="py-2 pr-3">
-                                            <input type="text" name="fields_label" value="<%= f.field_label %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
+                                            <input type="text" name="fields_label[]" value="<%= f.field_label %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
                                         </td>
                                         <td class="py-2 pr-3">
-                                            <select name="fields_type" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
+                                            <select name="fields_type[]" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
                                                 <% ['text','number','date','textarea','richtext','url'].forEach(function(t) { %>
                                                     <option value="<%= t %>" <%= f.field_type === t ? 'selected' : '' %>><%= t %></option>
                                                 <% }) %>
                                             </select>
                                         </td>
                                         <td class="py-2 pr-3">
-                                            <input type="text" name="fields_value" value="<%= (f.field_value || '').replace(/"/g, '&quot;') %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
+                                            <input type="text" name="fields_value[]" value="<%= (f.field_value || '').replace(/"/g, '&quot;') %>" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
                                         </td>
                                         <td class="py-2 pl-3 text-center"><button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button></td>
                                     </tr>
@@ -139,11 +178,11 @@
                             <% } %>
                         </tbody>
                     </table>
-                    <p class="text-sm text-gray-400 mt-2 mb-0" id="noFieldsMsg" style="<%= (fieldGroups && fieldGroups.length) ? 'display:none;' : '' %>">No dynamic fields added yet. Click "Add Field" to create one.</p>
+                    <p class="text-sm text-gray-400 mt-2 mb-0" id="noFieldsMsg" style="<%= (typeof fieldGroups !== 'undefined' && fieldGroups && fieldGroups.length) ? 'display:none;' : '' %>">No dynamic fields added yet. Click "Add Field" to create one.</p>
                 </div>
             </div>
 
-            <!-- SEO -->
+            <!-- SEO Meta -->
             <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
                 <h2 class="text-gray-900 text-lg font-bold mb-4">SEO Meta</h2>
                 <div class="mb-4">
@@ -204,8 +243,8 @@
             <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
                 <h2 class="text-gray-900 text-lg font-bold mb-3">Record Info</h2>
                 <div class="text-sm text-gray-600 space-y-2">
-                    <p class="mb-0">Created: <%= formatDate(post.created_at) %></p>
-                    <p class="mb-0">Last Updated: <%= formatDate(post.updated_at) %></p>
+                    <p class="mb-0">Created: <%= typeof formatDate !== 'undefined' ? formatDate(post.created_at) : post.created_at %></p>
+                    <p class="mb-0">Last Updated: <%= typeof formatDate !== 'undefined' ? formatDate(post.updated_at) : post.updated_at %></p>
                     <p class="mb-0">Views: <%= post.views_count %> &middot; Clicks: <%= post.clicks_count %></p>
                 </div>
             </div>
@@ -266,127 +305,215 @@
     </div>
 </div>
 
+<!-- Include CKEditor 5 Build -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
 <script>
 (function () {
+
+    // ==========================================
+    // CKEDITOR & SMART IMAGE ADAPTER
+    // ==========================================
+    class SmartUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+        upload() {
+            return this.loader.file.then((file) => new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('upload', file);
+
+                fetch('/admin/upload/editor-image', { method: 'POST', body: formData })
+                    .then((r) => r.json())
+                    .then((data) => {
+                        if (data && data.url) {
+                            resolve({ default: data.url });
+                        } else {
+                            throw new Error('Server upload failed');
+                        }
+                    })
+                    .catch(() => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve({ default: reader.result });
+                        reader.onerror = (err) => reject('File read error: ' + err);
+                        reader.readAsDataURL(file);
+                    });
+            }));
+        }
+        abort() {}
+    }
+
+    function SmartUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => new SmartUploadAdapter(loader);
+    }
+
+    function generateFormattedHtml(htmlContent) {
+        if (!htmlContent || !htmlContent.trim()) return '';
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+
+            const imgs = doc.querySelectorAll('img');
+            imgs.forEach(img => {
+                if (!img.style.maxWidth) img.style.maxWidth = '100%';
+                if (!img.style.height) img.style.height = 'auto';
+            });
+
+            let rawHtml = doc.body.innerHTML;
+            let formatted = '';
+            let indent = '';
+            rawHtml = rawHtml.replace(/(>)(<)(\/*)/g, '$1\r\n$2$3');
+
+            rawHtml.split('\r\n').forEach(function(node) {
+                if (node.match(/.+<\/\w[^>]*>$/)) {
+                    formatted += indent + node + '\r\n';
+                } else if (node.match(/^<\/\w/)) {
+                    if (indent !== '') indent = indent.substring(2);
+                    formatted += indent + node + '\r\n';
+                } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+                    formatted += indent + node + '\r\n';
+                    indent += '  ';
+                } else {
+                    formatted += indent + node + '\r\n';
+                }
+            });
+            return formatted.trim();
+        } catch (e) {
+            return htmlContent;
+        }
+    }
+
+    let editorInstance = null;
+
+    ClassicEditor
+        .create(document.querySelector('#contentEditor'), {
+            extraPlugins: [SmartUploadAdapterPlugin],
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'alignment', 'bulletedList', 'numberedList', 'outdent', 'indent', '|',
+                    'link', 'blockQuote', 'insertTable', 'imageUpload', 'mediaEmbed', '|',
+                    'undo', 'redo'
+                ],
+                shouldNotGroupWhenFull: true
+            },
+            image: {
+                toolbar: [
+                    'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+                    'toggleImageCaption', 'imageTextAlternative', '|', 'resizeImage'
+                ]
+            },
+            table: {
+                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+            },
+            link: { addTargetToExternalLinks: true }
+        })
+        .then((editor) => {
+            editorInstance = editor;
+        })
+        .catch((err) => console.error('CKEditor init failed:', err));
+
+    // Tab Switches
+    const tabVisualBtn = document.getElementById('tabVisualBtn');
+    const tabHtmlBtn = document.getElementById('tabHtmlBtn');
+    const visualPane = document.getElementById('visualEditorPane');
+    const htmlPane = document.getElementById('htmlEditorPane');
+    const rawHtmlTextarea = document.getElementById('rawHtmlTextarea');
+
+    tabVisualBtn.addEventListener('click', function () {
+        if (editorInstance) {
+            editorInstance.setData(rawHtmlTextarea.value);
+        }
+        visualPane.classList.remove('hidden');
+        htmlPane.classList.add('hidden');
+
+        tabVisualBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer";
+        tabHtmlBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer";
+    });
+
+    tabHtmlBtn.addEventListener('click', function () {
+        if (editorInstance) {
+            const data = editorInstance.getData();
+            rawHtmlTextarea.value = generateFormattedHtml(data);
+        }
+        htmlPane.classList.remove('hidden');
+        visualPane.classList.add('hidden');
+
+        tabHtmlBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer";
+        tabVisualBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer";
+    });
+
+    // Sync on form submit
+    document.getElementById('postForm').addEventListener('submit', function () {
+        if (!htmlPane.classList.contains('hidden') && editorInstance) {
+            editorInstance.setData(rawHtmlTextarea.value);
+        }
+    });
 
     // ==========================================
     // ADD LINK ROW
     // ==========================================
     function addLinkRow() {
         const tbody = document.getElementById('linksTableBody');
-
         if (!tbody) return;
 
         const tr = document.createElement('tr');
-
         tr.innerHTML = `
             <td class="py-2 pr-3">
-                <input
-                    type="text"
-                    name="links_label[]"
-                    placeholder="e.g. Apply Online"
-                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
-                >
+                <input type="text" name="links_label[]" placeholder="e.g. Apply Online" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
             </td>
-
             <td class="py-2 pr-3">
-                <input
-                    type="url"
-                    name="links_url[]"
-                    placeholder="https://..."
-                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
-                >
+                <input type="url" name="links_url[]" placeholder="https://..." class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
             </td>
-
             <td class="py-2 pl-3 text-center">
-                <button
-                    type="button"
-                    class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"
-                >
-                    <i class="icon-trash-2"></i>
-                </button>
+                <button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button>
             </td>
         `;
 
         tbody.appendChild(tr);
 
         const noLinksMsg = document.getElementById('noLinksMsg');
-
-        if (noLinksMsg) {
-            noLinksMsg.style.display = 'none';
-        }
+        if (noLinksMsg) noLinksMsg.style.display = 'none';
 
         const labelInput = tr.querySelector('input[name="links_label[]"]');
-
-        if (labelInput) {
-            labelInput.focus();
-        }
+        if (labelInput) labelInput.focus();
     }
-
 
     // ==========================================
     // ADD DYNAMIC FIELD
     // ==========================================
     function addFieldRow() {
-
         const groupEl = document.getElementById('modalFieldGroup');
         const labelEl = document.getElementById('modalFieldLabel');
         const typeEl = document.getElementById('modalFieldType');
         const valueEl = document.getElementById('modalFieldValue');
         const tbody = document.getElementById('fieldsTableBody');
 
-        if (!tbody || !labelEl) {
-            console.error('Dynamic field elements not found');
-            return;
-        }
+        if (!tbody || !labelEl) return;
 
         const label = labelEl.value.trim();
-
         if (!label) {
             alert('Field Label is required.');
             labelEl.focus();
             return;
         }
 
-        const group = groupEl && groupEl.value.trim()
-            ? groupEl.value.trim()
-            : 'Details';
-
-        const type = typeEl
-            ? typeEl.value
-            : 'text';
-
-        const value = valueEl
-            ? valueEl.value.trim()
-            : '';
-
+        const group = groupEl && groupEl.value.trim() ? groupEl.value.trim() : 'Details';
+        const type = typeEl ? typeEl.value : 'text';
+        const value = valueEl ? valueEl.value.trim() : '';
 
         const tr = document.createElement('tr');
-
         tr.innerHTML = `
             <td class="py-2 pr-3">
-                <input
-                    type="text"
-                    name="fields_group[]"
-                    value="${escapeHtml(group)}"
-                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
-                >
+                <input type="text" name="fields_group[]" value="${escapeHtml(group)}" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
             </td>
-
             <td class="py-2 pr-3">
-                <input
-                    type="text"
-                    name="fields_label[]"
-                    value="${escapeHtml(label)}"
-                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
-                >
+                <input type="text" name="fields_label[]" value="${escapeHtml(label)}" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
             </td>
-
             <td class="py-2 pr-3">
-                <select
-                    name="fields_type[]"
-                    class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
-                >
+                <select name="fields_type[]" class="form-select w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
                     <option value="text" ${type === 'text' ? 'selected' : ''}>Text</option>
                     <option value="number" ${type === 'number' ? 'selected' : ''}>Number</option>
                     <option value="date" ${type === 'date' ? 'selected' : ''}>Date</option>
@@ -395,170 +522,78 @@
                     <option value="url" ${type === 'url' ? 'selected' : ''}>URL</option>
                 </select>
             </td>
-
             <td class="py-2 pr-3">
-                <input
-                    type="text"
-                    name="fields_value[]"
-                    value="${escapeHtml(value)}"
-                    class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary"
-                >
+                <input type="text" name="fields_value[]" value="${escapeHtml(value)}" class="form-input w-full bg-white border border-border-color text-sm rounded-lg py-1.5 px-2.5 focus:ring-0 focus:border-primary">
             </td>
-
             <td class="py-2 pl-3 text-center">
-                <button
-                    type="button"
-                    class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"
-                >
-                    <i class="icon-trash-2"></i>
-                </button>
+                <button type="button" class="removeRowBtn text-danger hover:text-danger-hover cursor-pointer"><i class="icon-trash-2"></i></button>
             </td>
         `;
 
         tbody.appendChild(tr);
 
-
-        // Hide "No dynamic fields" message
         const noFieldsMsg = document.getElementById('noFieldsMsg');
+        if (noFieldsMsg) noFieldsMsg.style.display = 'none';
 
-        if (noFieldsMsg) {
-            noFieldsMsg.style.display = 'none';
-        }
-
-
-        // Clear modal fields
-        if (groupEl) {
-            groupEl.value = '';
-        }
-
+        if (groupEl) groupEl.value = '';
         labelEl.value = '';
+        if (valueEl) valueEl.value = '';
+        if (typeEl) typeEl.value = 'text';
 
-        if (valueEl) {
-            valueEl.value = '';
-        }
-
-        if (typeEl) {
-            typeEl.value = 'text';
-        }
-
-
-        // Close modal
         const modalEl = document.getElementById('addFieldModal');
-
         if (window.HSOverlay && modalEl) {
-
             try {
                 window.HSOverlay.close(modalEl);
             } catch (error) {
-                console.log('HSOverlay close error:', error);
                 modalEl.classList.add('hidden');
             }
-
         } else if (modalEl) {
-
             modalEl.classList.add('hidden');
-
         }
     }
 
-
-    // ==========================================
-    // HTML ESCAPE
-    // ==========================================
     function escapeHtml(value) {
-
         return String(value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
-
     }
 
-
-    // ==========================================
-    // CLICK HANDLER
-    // ==========================================
+    // Event Delegations
     document.addEventListener('click', function (e) {
-
-        // --------------------------------------
-        // ADD LINK
-        // --------------------------------------
-        const addLinkBtn = e.target.closest('#addLinkRowBtn');
-
-        if (addLinkBtn) {
-
+        if (e.target.closest('#addLinkRowBtn')) {
             e.preventDefault();
-
             addLinkRow();
-
             return;
         }
 
-
-        // --------------------------------------
-        // ADD DYNAMIC FIELD
-        // --------------------------------------
-        const addFieldBtn = e.target.closest('#modalAddFieldBtn');
-
-        if (addFieldBtn) {
-
+        if (e.target.closest('#modalAddFieldBtn')) {
             e.preventDefault();
-
             addFieldRow();
-
             return;
         }
 
-
-        // --------------------------------------
-        // REMOVE ROW
-        // --------------------------------------
         const removeBtn = e.target.closest('.removeRowBtn');
-
         if (removeBtn) {
-
             e.preventDefault();
-
             const row = removeBtn.closest('tr');
-
             if (!row) return;
 
             const tbody = row.parentElement;
-
             row.remove();
 
-
-            // Links message
             if (tbody && tbody.id === 'linksTableBody') {
-
                 const msg = document.getElementById('noLinksMsg');
-
-                if (msg) {
-                    msg.style.display =
-                        tbody.children.length > 0
-                            ? 'none'
-                            : '';
-                }
+                if (msg) msg.style.display = tbody.children.length > 0 ? 'none' : '';
             }
 
-
-            // Dynamic fields message
             if (tbody && tbody.id === 'fieldsTableBody') {
-
                 const msg = document.getElementById('noFieldsMsg');
-
-                if (msg) {
-                    msg.style.display =
-                        tbody.children.length > 0
-                            ? 'none'
-                            : '';
-                }
+                if (msg) msg.style.display = tbody.children.length > 0 ? 'none' : '';
             }
-
         }
-
     });
 
 })();
