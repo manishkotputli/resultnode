@@ -7,7 +7,7 @@ const PER_PAGE = 20;
 
 async function getHomeData() {
   try{
-  const [marqueeItems, topPosts, sections] = await Promise.all([
+  const [marqueeItems, topPosts, sections, banners] = await Promise.all([
     siteRepo.getMarqueePosts(),
     siteRepo.getTopPosts(),
     siteRepo.getHomeSections(),
@@ -30,6 +30,7 @@ async function getHomeData() {
       posts: await siteRepo.getPostsByCategoryId(s.category_id, s.post_limit),
     }))
   );
+
 
   return { marqueeRows: Array.from(marqueeRows.entries()), topPosts, dynamicSections, banners };
 }
