@@ -6,7 +6,7 @@ async function getList(search) {
 }
 
 async function createBanner(body, file) {
-  const imagePath = file ? `/uploads/banners/${file.filename}` : null;
+  const imagePath = file ? `/uploads/banner/${file.filename}` : null;
 
   // Validation: At least Text or Image should be present
   if (!body.text && !imagePath) {
@@ -32,7 +32,7 @@ async function updateBanner(id, body, file) {
     throw err;
   }
 
-  const imagePath = file ? `/uploads/banners/${file.filename}` : banner.image;
+  const imagePath = file ? `/uploads/banner/${file.filename}` : banner.image;
 
   if (!body.text && !imagePath) {
     const err = new Error('Either Banner text or an Image is required.');
