@@ -1,6 +1,6 @@
 <%
 function thumb(b) { return b.thumbnail ? '' + b.thumbnail : '/images/placeholder.svg'; }
-function avatarSrc(u) { return u && u.profile_photo ? '/uploads/users/' + u.profile_photo : '/images/avatar-placeholder.png'; }
+function avatarSrc(u) { return u && u.profile_photo ? '' + u.profile_photo : '/images/avatar-placeholder.png'; }
 var pageUrl = (typeof siteUrl !== 'undefined' ? siteUrl : '') + '/blog/' + blog.slug;
 
 function wrapContentImages(html) {
