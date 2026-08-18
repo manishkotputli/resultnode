@@ -1,74 +1,89 @@
+
 <%
 var pageStyles = `
+/* =========================================================
+   TERMS & CONDITIONS
+   SEO + READABILITY + MOBILE FRIENDLY
+   ========================================================= */
+
 .page-header {
     text-align: center;
-    margin: 40px 0 20px;
+    margin: 42px auto 24px;
+    padding: 0 15px;
+    max-width: 900px;
 }
 
 .page-header h1 {
-    font-size: 32px;
+    font-size: 34px;
+    line-height: 1.25;
     color: #b31335;
     font-weight: 800;
-    margin-bottom: 8px;
+    margin: 0 0 10px;
 }
 
 .page-header .subtitle {
     font-size: 15px;
+    line-height: 1.7;
     color: #666;
-    margin: 0;
+    margin: 0 auto;
+    max-width: 760px;
 }
 
 .terms-container {
-    max-width: 960px;
-    margin: 0 auto 60px;
+    max-width: 900px;
+    margin: 0 auto 70px;
     padding: 0 15px;
 }
 
 .terms-card {
     background: #fff;
     border-radius: 10px;
-    padding: 26px;
-    border: 1px solid #ececec;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    padding: 26px 28px;
+    border: 1px solid #e9e9e9;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.035);
 }
 
 .meta {
     color: #666;
-    font-size: 14px;
-    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
 .terms-card h2 {
     color: #1b1b1b;
-    font-size: 18px;
-    margin-top: 22px;
-    margin-bottom: 10px;
-    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.4;
+    margin: 25px 0 11px;
+    font-weight: 750;
 }
 
 .terms-card h2:first-of-type {
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .terms-card p {
     color: #444;
     font-size: 15px;
-    line-height: 1.7;
-    margin-bottom: 10px;
+    line-height: 1.75;
+    margin: 0 0 12px;
+}
+
+.terms-card p:last-child {
+    margin-bottom: 0;
 }
 
 .terms-card ul,
 .terms-card ol {
-    margin-left: 20px;
-    margin-bottom: 12px;
+    margin: 8px 0 15px 21px;
     padding-left: 5px;
 }
 
 .terms-card li {
-    margin-bottom: 7px;
+    margin-bottom: 6px;
     color: #444;
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .terms-card a {
@@ -85,23 +100,31 @@ var pageStyles = `
 .terms-highlight {
     background: #fff8f8;
     border-left: 4px solid #b31335;
-    padding: 12px 15px;
-    margin: 15px 0;
+    padding: 14px 16px;
+    margin: 16px 0;
+    border-radius: 4px;
 }
 
 .terms-highlight p {
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .contact-block {
     line-height: 1.8 !important;
 }
 
+.contact-box {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 14px 16px;
+}
+
 .terms-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 25px;
+    margin-top: 28px;
     padding-top: 18px;
     border-top: 1px solid #eee;
     gap: 15px;
@@ -125,6 +148,7 @@ var pageStyles = `
 .muted {
     color: #888;
     font-size: 13px;
+    line-height: 1.6;
 }
 
 @media print {
@@ -144,35 +168,42 @@ var pageStyles = `
 @media (max-width: 640px) {
 
     .page-header {
-        margin: 25px 0 15px;
-        padding: 0 10px;
+        margin: 28px auto 18px;
+        padding: 0 12px;
     }
 
     .page-header h1 {
-        font-size: 27px;
+        font-size: 28px;
     }
 
     .page-header .subtitle {
         font-size: 14px;
+        line-height: 1.65;
     }
 
     .terms-container {
         padding: 0 10px;
+        margin-bottom: 45px;
     }
 
     .terms-card {
-        padding: 18px;
+        padding: 19px 16px;
         border-radius: 8px;
     }
 
     .terms-card h2 {
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .terms-card p,
     .terms-card li {
         font-size: 14px;
-        line-height: 1.65;
+        line-height: 1.7;
+    }
+
+    .terms-card ul,
+    .terms-card ol {
+        margin-left: 19px;
     }
 
     .terms-footer {
@@ -185,39 +216,48 @@ var pageStyles = `
 %>
 
 <%- include('../weblayout/layout-top', {
-    title: title,
+    title: title || 'Terms & Conditions - SarkariResultess.Com',
     pageStyles: pageStyles
 }) %>
 
 
-<div class="page-header">
+<!-- =========================================================
+     PAGE HEADER
+     ========================================================= -->
+
+<header class="page-header">
 
     <h1>Terms & Conditions</h1>
 
     <p class="subtitle">
-        Please read these terms carefully before using SarkariResultess.Com.
+        Please read these Terms & Conditions carefully before using
+        SarkariResultess.Com.
     </p>
 
-</div>
+</header>
 
 
-<div class="terms-container">
+<main class="terms-container">
 
-    <div class="terms-card">
+    <article class="terms-card">
+
+        <!-- =================================================
+             LAST UPDATED
+             ================================================= -->
 
         <p class="meta">
-            Last updated:
-            <strong>
-                <%= new Date().toLocaleDateString('en-IN', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                }) %>
-            </strong>
+            <strong>Last Updated:</strong>
+            <%= new Date().toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            }) %>
         </p>
 
 
-        <!-- 1 -->
+        <!-- =================================================
+             1. ACCEPTANCE
+             ================================================= -->
 
         <h2>1. Acceptance of Terms</h2>
 
@@ -226,7 +266,8 @@ var pageStyles = `
             <strong>
                 <%= (site_setting && site_setting.site_title) || 'SarkariResultess.Com' %>
             </strong>
-            ("Website"), you agree to comply with these Terms & Conditions.
+            ("Website"), you agree to comply with and be bound by
+            these Terms & Conditions.
         </p>
 
         <p>
@@ -235,37 +276,72 @@ var pageStyles = `
         </p>
 
 
-        <!-- 2 -->
+        <!-- =================================================
+             2. ABOUT WEBSITE
+             ================================================= -->
 
-        <h2>2. About the Website</h2>
+        <h2>2. About SarkariResultess.Com</h2>
 
         <p>
             SarkariResultess.Com is an independent informational website
             that publishes information related to government jobs,
             recruitment notifications, examination results, admit cards,
-            answer keys, online forms and other competitive examination
-            updates.
+            answer keys, admissions, online forms, educational
+            opportunities and other competitive examination updates.
         </p>
 
         <div class="terms-highlight">
 
             <p>
                 <strong>Important:</strong>
-                SarkariResultess.Com is not a government website and does
-                not represent or speak on behalf of any government
-                department, recruitment board or examination authority.
+                SarkariResultess.Com is an independent website. It is
+                not a government website and is not affiliated with,
+                authorized by, endorsed by or officially connected with
+                any government department, recruitment board,
+                examination authority, university or other government
+                organization unless specifically stated.
             </p>
 
         </div>
 
 
-        <!-- 3 -->
+        <!-- =================================================
+             3. PURPOSE OF INFORMATION
+             ================================================= -->
 
-        <h2>3. Use of the Website</h2>
+        <h2>3. Purpose of Published Information</h2>
 
         <p>
-            You may use the Website for lawful and personal informational
-            purposes. You agree not to use the Website:
+            Information published on the Website is provided for
+            general informational and educational purposes.
+        </p>
+
+        <p>
+            We may publish information obtained from official
+            notifications, official websites, public announcements
+            and other publicly available sources.
+        </p>
+
+        <p>
+            Users should always verify important information through
+            the relevant official source before applying for a job,
+            examination, admission or other opportunity.
+        </p>
+
+
+        <!-- =================================================
+             4. USE OF WEBSITE
+             ================================================= -->
+
+        <h2>4. Acceptable Use of the Website</h2>
+
+        <p>
+            You may use the Website for lawful and personal
+            informational purposes.
+        </p>
+
+        <p>
+            You agree not to use the Website:
         </p>
 
         <ul>
@@ -275,66 +351,107 @@ var pageStyles = `
             </li>
 
             <li>
-                To upload, transmit or distribute harmful, unlawful or
-                malicious content.
+                To upload, transmit or distribute harmful, unlawful
+                or malicious content.
             </li>
 
             <li>
-                To attempt to gain unauthorised access to the Website,
-                server or related systems.
+                To attempt unauthorized access to the Website,
+                server, database or related systems.
             </li>
 
             <li>
-                To interfere with the normal operation or security of
-                the Website.
+                To interfere with the normal operation, availability
+                or security of the Website.
+            </li>
+
+            <li>
+                To use automated methods to abuse, overload or disrupt
+                Website services.
             </li>
 
             <li>
                 To reproduce or commercially redistribute substantial
-                portions of Website content without appropriate permission.
+                portions of original Website content without appropriate
+                permission.
+            </li>
+
+            <li>
+                To impersonate another person, organization or authority.
             </li>
 
         </ul>
 
 
-        <!-- 4 -->
+        <!-- =================================================
+             5. CONTENT ACCURACY
+             ================================================= -->
 
-        <h2>4. Information and Content Accuracy</h2>
+        <h2>5. Information Accuracy and Updates</h2>
 
         <p>
             We make reasonable efforts to provide useful and updated
             information. However, recruitment notifications, vacancies,
-            eligibility requirements, application dates, fees, examination
-            schedules, admit cards, answer keys and results may change
-            after publication.
+            eligibility requirements, application dates, fees,
+            examination schedules, admit cards, answer keys, results
+            and other details may change after publication.
         </p>
 
         <p>
-            Therefore, we do not guarantee that all information published
-            on the Website will always be complete, accurate, current or
-            error-free.
+            Therefore, we do not guarantee that every piece of
+            information published on the Website will always be
+            complete, accurate, current or error-free.
         </p>
 
         <div class="terms-highlight">
 
             <p>
-                <strong>Always verify important information</strong>
-                from the official notification or official website of
-                the concerned examination authority before applying,
-                making a payment or taking any important decision.
+                <strong>Important:</strong>
+                Always verify important information from the official
+                notification or official website of the concerned
+                authority before applying, making a payment or taking
+                any important decision.
             </p>
 
         </div>
 
 
-        <!-- 5 -->
+        <!-- =================================================
+             6. OFFICIAL SOURCE
+             ================================================= -->
 
-        <h2>5. External Links</h2>
+        <h2>6. Verification of Official Information</h2>
 
         <p>
-            The Website may contain links to external websites, including
-            government departments, examination authorities, recruitment
-            portals and other third-party resources.
+            SarkariResultess.Com may provide links to official websites
+            and notifications for reference and convenience.
+        </p>
+
+        <p>
+            The concerned government department, recruitment board,
+            examination authority, university or organization remains
+            the final authority regarding recruitment, examination,
+            admission, result, eligibility, fees, dates and other
+            official information.
+        </p>
+
+        <p>
+            Users are responsible for checking the latest official
+            notification before taking action.
+        </p>
+
+
+        <!-- =================================================
+             7. EXTERNAL LINKS
+             ================================================= -->
+
+        <h2>7. External Links</h2>
+
+        <p>
+            The Website may contain links to external websites,
+            including government departments, examination authorities,
+            recruitment portals, universities, educational institutions
+            and other third-party resources.
         </p>
 
         <p>
@@ -346,58 +463,130 @@ var pageStyles = `
 
         <p>
             Visiting an external website is subject to that website's
-            own terms, policies and conditions.
+            own terms, privacy policy and other applicable conditions.
         </p>
 
 
-        <!-- 6 -->
+        <!-- =================================================
+             8. ADVERTISING
+             ================================================= -->
 
-        <h2>6. Intellectual Property</h2>
+        <h2>8. Advertising and Third-Party Services</h2>
+
+        <p>
+            The Website may display advertisements provided by
+            third-party advertising networks, including Google AdSense
+            or other advertising partners.
+        </p>
+
+        <p>
+            Third-party advertising providers may use cookies, web
+            beacons, IP addresses or similar technologies to display
+            advertisements, measure advertising performance and
+            provide advertising-related services.
+        </p>
+
+        <p>
+            Advertising providers operate independently and may process
+            information according to their own privacy policies and
+            applicable settings.
+        </p>
+
+        <p>
+            For information about how personal information and cookies
+            may be handled, please review our
+            <a href="/privacy-policy">
+                Privacy Policy
+            </a>.
+        </p>
+
+
+        <!-- =================================================
+             9. INTELLECTUAL PROPERTY
+             ================================================= -->
+
+        <h2>9. Intellectual Property</h2>
 
         <p>
             Website design, original text, graphics, logos, interface
-            elements and other original materials created for the Website
-            may be protected by applicable intellectual property laws.
+            elements and other original materials created for the
+            Website may be protected by applicable intellectual
+            property laws.
         </p>
 
         <p>
             You may access and use the Website for personal and
-            informational purposes. Reproduction, modification,
-            redistribution or commercial use of original Website material
-            without appropriate permission may not be permitted.
+            informational purposes.
         </p>
 
         <p>
-            Third-party names, logos, trademarks and other materials
-            remain the property of their respective owners.
+            Reproduction, modification, redistribution or commercial
+            use of original Website material without appropriate
+            permission may not be permitted.
+        </p>
+
+        <p>
+            Government department names, examination names, logos,
+            trademarks and third-party materials remain the property
+            of their respective owners.
         </p>
 
 
-        <!-- 7 -->
+        <!-- =================================================
+             10. USER SUBMITTED CONTENT
+             ================================================= -->
 
-        <h2>7. User Submitted Content</h2>
+        <h2>10. User-Submitted Information</h2>
 
         <p>
             If the Website provides features that allow users to submit
-            messages, feedback, comments or other information, you are
-            responsible for the content you submit.
+            messages, feedback, enquiries, comments or other information,
+            users are responsible for the content they submit.
         </p>
 
         <p>
-            You should not submit content that is unlawful, misleading,
-            abusive, defamatory, invasive of privacy or infringing upon
-            the rights of another person or organisation.
+            Users should not submit information that is unlawful,
+            misleading, abusive, defamatory, invasive of privacy or
+            infringing upon the rights of another person or organization.
         </p>
 
         <p>
-            We may remove or restrict user-submitted content where we
-            reasonably believe it violates these Terms or applicable law.
+            We may remove, restrict or decline to publish user-submitted
+            content where we reasonably believe it violates these Terms
+            or applicable law.
         </p>
 
 
-        <!-- 8 -->
+        <!-- =================================================
+             11. WEBSITE AVAILABILITY
+             ================================================= -->
 
-        <h2>8. Disclaimer of Warranties</h2>
+        <h2>11. Website Availability and Security</h2>
+
+        <p>
+            We aim to keep the Website available and functioning
+            properly, but uninterrupted availability cannot be
+            guaranteed.
+        </p>
+
+        <p>
+            We may modify, update, suspend, restrict or discontinue
+            any part of the Website, temporarily or permanently,
+            without prior notice where reasonably necessary.
+        </p>
+
+        <p>
+            Although reasonable technical and security measures may be
+            used, no online service can be guaranteed to be completely
+            secure or free from every possible technical issue.
+        </p>
+
+
+        <!-- =================================================
+             12. DISCLAIMER OF WARRANTIES
+             ================================================= -->
+
+        <h2>12. Disclaimer of Warranties</h2>
 
         <p>
             The Website and its content are provided on an
@@ -406,82 +595,86 @@ var pageStyles = `
         </p>
 
         <p>
-            We do not guarantee uninterrupted availability of the Website
-            or that every page, link, service or piece of information will
-            always be available or error-free.
+            We do not guarantee uninterrupted Website availability,
+            complete accuracy of every published detail, or that every
+            page, link, service or piece of information will always be
+            available or error-free.
         </p>
 
 
-        <!-- 9 -->
+        <!-- =================================================
+             13. LIMITATION OF LIABILITY
+             ================================================= -->
 
-        <h2>9. Limitation of Liability</h2>
+        <h2>13. Limitation of Liability</h2>
 
         <p>
             To the maximum extent permitted by applicable law,
-            SarkariResultess.Com and its operators will not be responsible
-            for losses or damages arising directly or indirectly from
-            reliance on information published on the Website.
+            SarkariResultess.Com and its operators will not be
+            responsible for losses or damages arising directly or
+            indirectly from reliance on information published on
+            the Website.
         </p>
 
         <p>
-            This includes, where legally permitted, losses associated with
-            missed application deadlines, incorrect information, changes
-            made by examination authorities, external website availability,
-            technical interruptions or decisions made based on Website
-            content.
+            This may include, where legally permitted, losses associated
+            with missed application deadlines, changes made by
+            examination authorities, incorrect or outdated information,
+            external website availability, technical interruptions or
+            decisions made based on Website content.
         </p>
 
 
-        <!-- 10 -->
+        <!-- =================================================
+             14. INDEMNIFICATION
+             ================================================= -->
 
-        <h2>10. Indemnification</h2>
+        <h2>14. Indemnification</h2>
 
         <p>
             To the extent permitted by applicable law, you agree to
             indemnify and hold harmless the Website and its operators
-            from claims, losses or expenses arising from your unlawful
-            use of the Website, violation of these Terms or infringement
-            of another person's rights.
+            from claims, losses, liabilities or expenses arising from
+            your unlawful use of the Website, violation of these Terms,
+            or infringement of another person's or organization's rights.
         </p>
 
 
-        <!-- 11 -->
+        <!-- =================================================
+             15. PRIVACY POLICY
+             ================================================= -->
 
-        <h2>11. Website Availability and Security</h2>
-
-        <p>
-            We may modify, suspend, restrict or discontinue any part of
-            the Website at any time without prior notice.
-        </p>
-
-        <p>
-            Although reasonable measures may be used to maintain Website
-            security, no online service can be guaranteed to be completely
-            secure or free from every possible technical issue.
-        </p>
-
-
-        <!-- 12 -->
-
-        <h2>12. Privacy Policy</h2>
+        <h2>15. Privacy Policy</h2>
 
         <p>
             Your use of the Website may also be subject to our
             <a href="/privacy-policy">
                 Privacy Policy
-            </a>,
-            which explains how information may be collected and handled.
+            </a>.
+        </p>
+
+        <p>
+            Our Privacy Policy explains how information may be collected,
+            used and handled through the Website, including information
+            relating to cookies, analytics and advertising services.
         </p>
 
 
-        <!-- 13 -->
+        <!-- =================================================
+             16. CHANGES TO TERMS
+             ================================================= -->
 
-        <h2>13. Changes to These Terms</h2>
+        <h2>16. Changes to These Terms</h2>
 
         <p>
-            We may update these Terms & Conditions from time to time.
+            We may update these Terms & Conditions from time to time
+            to reflect changes to the Website, services, technology,
+            legal requirements or operating practices.
+        </p>
+
+        <p>
             When changes are made, the revised version will be published
-            on this page and the "Last updated" date may be changed.
+            on this page and the "Last Updated" date may be changed.
         </p>
 
         <p>
@@ -491,9 +684,11 @@ var pageStyles = `
         </p>
 
 
-        <!-- 14 -->
+        <!-- =================================================
+             17. GOVERNING LAW
+             ================================================= -->
 
-        <h2>14. Governing Law</h2>
+        <h2>17. Governing Law</h2>
 
         <p>
             These Terms shall be interpreted and governed in accordance
@@ -503,72 +698,94 @@ var pageStyles = `
 
         <p>
             Any dispute arising in connection with the Website or these
-            Terms shall be subject to the jurisdiction of a competent
-            court in accordance with applicable law.
+            Terms shall be handled in accordance with applicable law.
         </p>
 
 
-        <!-- 15 -->
+        <!-- =================================================
+             18. CONTACT US
+             ================================================= -->
 
-        <h2>15. Contact Us</h2>
+        <h2>18. Contact Us</h2>
 
         <p>
-            If you have any questions, concerns or suggestions regarding
-            these Terms & Conditions, you can contact us using the details
-            available below.
+            If you have questions, concerns or suggestions regarding
+            these Terms & Conditions, please contact us using the
+            details below.
         </p>
 
-        <p class="contact-block">
+        <div class="contact-box">
 
             <% if (site_setting && site_setting.contact_email) { %>
 
-                <strong>Email:</strong>
-
-                <a href="mailto:<%= site_setting.contact_email %>">
-                    <%= site_setting.contact_email %>
-                </a>
-
-            <% } %>
-
-
-            <% if (
-                site_setting &&
-                site_setting.contact_email &&
-                site_setting.contact_phone
-            ) { %>
-
-                <br>
+                <p class="contact-block">
+                    <strong>Email:</strong>
+                    <a href="mailto:<%= site_setting.contact_email %>">
+                        <%= site_setting.contact_email %>
+                    </a>
+                </p>
 
             <% } %>
 
 
             <% if (site_setting && site_setting.contact_phone) { %>
 
-                <strong>Phone:</strong>
-                <%= site_setting.contact_phone %>
+                <p class="contact-block">
+                    <strong>Phone:</strong>
+                    <%= site_setting.contact_phone %>
+                </p>
 
             <% } %>
 
+
+            <% if (
+                (!site_setting || !site_setting.contact_email) &&
+                (!site_setting || !site_setting.contact_phone)
+            ) { %>
+
+                <p>
+                    Please visit our
+                    <a href="/contact">
+                        Contact Us
+                    </a>
+                    page to get in touch with us.
+                </p>
+
+            <% } %>
+
+        </div>
+
+
+        <!-- =================================================
+             19. IMPORTANT NOTICE
+             ================================================= -->
+
+        <h2>19. Important Notice</h2>
+
+        <div class="terms-highlight">
+
+            <p>
+                <strong>SarkariResultess.Com is an independent
+                informational website.</strong>
+                It is not an official government website and should
+                not be considered a substitute for official government
+                notifications, recruitment notices, examination
+                authority websites or other official sources.
+            </p>
+
+        </div>
+
+        <p>
+            Before submitting an application, paying a fee, attending
+            an examination or relying on any important information,
+            users should verify the latest details through the relevant
+            official source.
         </p>
 
 
-        <% if (
-            (!site_setting || !site_setting.contact_email) &&
-            (!site_setting || !site_setting.contact_phone)
-        ) { %>
-
-            <p>
-                Please visit our
-                <a href="/contact">
-                    Contact Us
-                </a>
-                page to get in touch with us.
-            </p>
-
-        <% } %>
-
-
-        <!-- FOOTER -->
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
 
         <div class="terms-footer">
 
@@ -577,15 +794,15 @@ var pageStyles = `
             </a>
 
             <small class="muted">
-                Please verify important information through the relevant
-                official source before taking action.
+                Please verify important information through the
+                relevant official source before taking action.
             </small>
 
         </div>
 
-    </div>
+    </article>
 
-</div>
+</main>
 
 
 <%- include('../weblayout/layout-bottom') %>

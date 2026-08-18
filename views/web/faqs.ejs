@@ -1,71 +1,372 @@
 <%
 var pageStyles = `
-.page-header { text-align: center; margin: 40px 0 20px; }
-.page-header h1 { font-size: 32px; color: #c00; font-weight: 800; }
-.page-header .subtitle { font-size: 15px; color: #666; }
-.faq-container { max-width: 900px; margin: 0 auto 60px; padding: 0 15px; }
-.faq-intro p { font-size: 16px; text-align: center; color: #444; }
-.faq-item { background: #fff; border: 1px solid #eee; border-radius: 12px; margin-bottom: 15px; box-shadow: 0px 3px 12px rgba(0,0,0,0.05); overflow: hidden; }
-.faq-question { width: 100%; background: #f8f8f8; border: none; padding: 16px 20px; font-size: 17px; font-weight: 600; color: #111; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: .25s; }
-.faq-question:hover { background: #f2f2f2; }
-.arrow { transition: transform .3s; }
-.faq-item.active .arrow { transform: rotate(180deg); }
-.faq-answer { display: none; padding: 20px 20px 5px; }
-.faq-item.active .faq-answer { display: block; }
-.faq-step { display: flex; gap: 15px; margin-bottom: 25px; position: relative; }
-.faq-step:before { content: ""; position: absolute; left: 14px; top: 35px; width: 2px; height: calc(100% - 40px); background: #ddd; }
-.step-bullet { width: 28px; height: 28px; border-radius: 50%; background: #c00; color: #fff; text-align: center; line-height: 28px; font-weight: 700; z-index: 2; }
-.step-content { background: #fafafa; padding: 12px 18px; border-radius: 10px; border: 1px solid #eee; width: 100%; }
-.step-title { font-size: 17px; color: #c00; font-weight: 700; margin-bottom: 6px; }
-.step-text { font-size: 15px; color: #333; }
-.faq-img-box img { margin-top: 12px; width: 100%; border-radius: 10px; border: 1px solid #ddd; }
+/* ==========================================================================
+   PREMIUM & MODERN FAQ PAGE STYLES
+   ========================================================================== */
+:root {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+.faq-page-wrapper {
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  padding: 50px 15px 80px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* HEADER STYLES */
+.page-header { 
+  text-align: center; 
+  max-width: 700px;
+  margin: 0 auto 40px; 
+}
+.page-header .badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+.page-header h1 { 
+  font-size: 38px; 
+  color: var(--text-main); 
+  font-weight: 800; 
+  letter-spacing: -0.8px;
+  margin: 0 0 12px 0;
+  line-height: 1.2;
+}
+.page-header .subtitle { 
+  font-size: 16px; 
+  color: var(--text-muted); 
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* SEARCH BAR UI */
+.faq-search-box {
+  max-width: 600px;
+  margin: 0 auto 35px;
+  position: relative;
+}
+.faq-search-box input {
+  width: 100%;
+  padding: 16px 20px 16px 50px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  font-size: 15px;
+  box-shadow: var(--shadow-md);
+  outline: none;
+  transition: all 0.3s ease;
+}
+.faq-search-box input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+.faq-search-box i {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+/* FAQ CONTAINER */
+.faq-container { 
+  max-width: 850px; 
+  margin: 0 auto; 
+}
+
+/* FAQ ITEM CARD */
+.faq-item { 
+  background: var(--card-bg); 
+  border: 1px solid var(--border-color); 
+  border-radius: 16px; 
+  margin-bottom: 18px; 
+  box-shadow: var(--shadow-md); 
+  overflow: hidden; 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-item:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-hover);
+}
+.faq-item.active {
+  border-color: var(--primary-color);
+}
+
+/* ACCORDION BUTTON */
+.faq-question { 
+  width: 100%; 
+  background: transparent; 
+  border: none; 
+  padding: 22px 24px; 
+  font-size: 17px; 
+  font-weight: 700; 
+  color: var(--text-main); 
+  cursor: pointer; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 15px;
+  text-align: left;
+  transition: color 0.2s ease; 
+}
+.faq-question span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+.faq-question .q-icon {
+  color: var(--primary-color);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.arrow-icon { 
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, color 0.3s ease; 
+  flex-shrink: 0;
+}
+.faq-item.active .arrow-icon { 
+  transform: rotate(180deg); 
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+/* ACCORDION ANSWER CONTENT */
+.faq-answer { 
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-answer-inner {
+  padding: 5px 24px 25px;
+}
+
+/* STEP TIMELINE DESIGN */
+.faq-steps-list {
+  position: relative;
+  padding-left: 20px;
+}
+.faq-steps-list::before {
+  content: "";
+  position: absolute;
+  left: 33px;
+  top: 25px;
+  bottom: 25px;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.faq-step { 
+  display: flex; 
+  gap: 20px; 
+  margin-bottom: 20px; 
+  position: relative; 
+  z-index: 1;
+}
+.faq-step:last-child {
+  margin-bottom: 0;
+}
+
+.step-bullet { 
+  width: 28px; 
+  height: 28px; 
+  border-radius: 50%; 
+  background: var(--primary-color); 
+  color: #ffffff; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700; 
+  box-shadow: 0 0 0 4px #ffffff, 0 2px 8px rgba(79, 70, 229, 0.4);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-content { 
+  background: #f8fafc; 
+  padding: 16px 20px; 
+  border-radius: 12px; 
+  border: 1px solid var(--border-color); 
+  width: 100%; 
+}
+.step-title { 
+  font-size: 15px; 
+  color: var(--primary-color); 
+  font-weight: 700; 
+  margin: 0 0 6px 0; 
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.step-text { 
+  font-size: 15px; 
+  color: #334155; 
+  line-height: 1.6;
+  margin: 0;
+}
+
+.faq-img-box img { 
+  margin-top: 14px; 
+  max-width: 100%; 
+  border-radius: 10px; 
+  border: 1px solid var(--border-color); 
+  box-shadow: var(--shadow-sm);
+}
+
+.no-faqs {
+  text-align: center;
+  padding: 40px;
+  background: #fff;
+  border-radius: 16px;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-color);
+}
+
+@media (max-width: 640px) {
+  .page-header h1 { font-size: 28px; }
+  .faq-question { padding: 18px; font-size: 15px; }
+  .faq-answer-inner { padding: 0 15px 20px; }
+  .faq-steps-list { padding-left: 0; }
+  .faq-steps-list::before { left: 13px; }
+  .faq-step { gap: 12px; }
+  .step-content { padding: 12px 14px; }
+}
 `;
+
 var pageScripts = `
-document.querySelectorAll(".faq-question").forEach(function(btn){
-  btn.addEventListener("click", function(){ btn.parentElement.classList.toggle("active"); });
+document.addEventListener("DOMContentLoaded", function() {
+  // Accordion Functionality with Dynamic Smooth Height Animation
+  const faqItems = document.querySelectorAll(".faq-item");
+
+  faqItems.forEach(function(item) {
+    const btn = item.querySelector(".faq-question");
+    const answer = item.querySelector(".faq-answer");
+
+    btn.addEventListener("click", function() {
+      const isActive = item.classList.contains("active");
+
+      // Optional: Close other open FAQs (Accordion Mode)
+      faqItems.forEach(function(otherItem) {
+        otherItem.classList.remove("active");
+        otherItem.querySelector(".faq-answer").style.maxHeight = null;
+      });
+
+      if (!isActive) {
+        item.classList.add("active");
+        answer.style.maxHeight = answer.scrollHeight + "px";
+      }
+    });
+  });
+
+  // Client-side Instant Filter/Search
+  const searchInput = document.getElementById("faqSearch");
+  if (searchInput) {
+    searchInput.addEventListener("keyup", function() {
+      const filter = this.value.toLowerCase();
+      
+      faqItems.forEach(function(item) {
+        const questionText = item.querySelector(".faq-question span").textContent.toLowerCase();
+        if (questionText.indexOf(filter) > -1) {
+          item.style.display = "";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    });
+  }
 });
 `;
 %>
+
 <%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
 
-<div class="page-header">
-  <h1>Frequently Asked Questions (FAQ)</h1>
-  <p class="subtitle">Find answers to commonly asked questions</p>
-</div>
-
-<div class="faq-container">
-  <div class="faq-intro">
-    <p>Below is a list of helpful FAQs asked by candidates, students & job seekers. Each question includes multiple steps, solutions, and optional images.</p>
+<div class="faq-page-wrapper">
+  
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <span class="badge">Help Center</span>
+    <h1>Frequently Asked Questions</h1>
+    <p class="subtitle">Got questions? We've got answers. Explore our step-by-step solutions below.</p>
   </div>
 
-  <div class="faq-list">
-    <% if (faqs && faqs.length) { %>
-      <% faqs.forEach(function(faq) { %>
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>&#128204; <%= faq.question %></span>
-            <i class="ti ti-chevron-down arrow"></i>
-          </button>
-          <div class="faq-answer">
-            <% (faq.answers || []).forEach(function(ans, index) { %>
-              <div class="faq-step">
-                <div class="step-bullet"><span><%= index + 1 %></span></div>
-                <div class="step-content">
-                  <h4 class="step-title">Step <%= index + 1 %></h4>
-                  <p class="step-text"><%- (ans.answer || '').replace(/\n/g, '<br>') %></p>
-                  <% if (ans.image) { %>
-                    <div class="faq-img-box"><img src="/uploads/faq/<%= ans.image %>" alt="FAQ Image"></div>
-                  <% } %>
+  <!-- SEARCH BAR -->
+  <div class="faq-search-box">
+    <i class="ti ti-search"></i>
+    <input type="text" id="faqSearch" placeholder="Type keywords to search questions...">
+  </div>
+
+  <!-- FAQ LIST CONTAINER -->
+  <div class="faq-container">
+    <div class="faq-list">
+      <% if (faqs && faqs.length) { %>
+        <% faqs.forEach(function(faq) { %>
+          <div class="faq-item">
+            <button class="faq-question" type="button">
+              <span>
+                <i class="ti ti-help-circle q-icon"></i>
+                <%= faq.question %>
+              </span>
+              <div class="arrow-icon">
+                <i class="ti ti-chevron-down"></i>
+              </div>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                <div class="faq-steps-list">
+                  <% (faq.answers || []).forEach(function(ans, index) { %>
+                    <div class="faq-step">
+                      <div class="step-bullet"><span><%= index + 1 %></span></div>
+                      <div class="step-content">
+                        <h4 class="step-title">Step <%= index + 1 %></h4>
+                        <p class="step-text"><%- (ans.answer || '').replace(/\n/g, '<br>') %></p>
+                        <% if (ans.image) { %>
+                          <div class="faq-img-box">
+                            <img src="/uploads/faq/<%= ans.image %>" alt="Step Illustration" loading="lazy">
+                          </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  <% }) %>
                 </div>
               </div>
-            <% }) %>
+            </div>
           </div>
+        <% }) %>
+      <% } else { %>
+        <div class="no-faqs">
+          <i class="ti ti-info-circle" style="font-size: 32px; margin-bottom: 8px; display: block;"></i>
+          <p>No FAQs found at the moment.</p>
         </div>
-      <% }) %>
-    <% } else { %>
-      <p class="text-center">No FAQs added yet.</p>
-    <% } %>
+      <% } %>
+    </div>
   </div>
+
 </div>
 
 <%- include('../weblayout/layout-bottom', { pageScripts: pageScripts }) %>

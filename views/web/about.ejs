@@ -1,125 +1,1737 @@
 <%
 var pageStyles = `
-.about-hero { background: linear-gradient(90deg, #fff 0%, #fff 60%, rgba(196,16,16,0.03) 100%); border-bottom: 1px solid rgba(0,0,0,0.04); padding: 44px 0; }
-.about-hero .container { max-width: 1140px; margin: 0 auto; display:flex; align-items:center; gap: 28px; justify-content: space-between; padding: 0 12px; }
-.hero-inner h1 { margin: 0 0 8px 0; font-size: 34px; color: #c41a1a; letter-spacing: 0.2px; font-weight: 800; }
-.hero-inner .lead { margin: 0 0 16px 0; color: #333; font-size: 15px; }
-.btn-primary-cta { display:inline-block; background: #c41a1a; color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration:none; font-weight:700; box-shadow: 0 6px 18px rgba(196,26,26,0.08); }
-.hero-visual { opacity: 0.9; }
-.about-container { max-width: 1140px; margin: 26px auto; padding: 0 12px 60px; }
-.grid-2{ display:grid; grid-template-columns: 1fr 360px; gap:24px; }
-.gap-lg { gap: 24px; margin-top: 16px; }
-@media(max-width:980px){ .grid-2 { grid-template-columns: 1fr; } }
-.card { background:#fff; border:1px solid #eee; border-radius:10px; padding:22px; box-shadow:0 6px 20px rgba(0,0,0,0.03); }
-.about-card h2, .card h3 { margin:0 0 12px 0; color:#222; font-weight:700; }
-.muted { color:#666; font-size:14px; line-height:1.6; }
-.stats-card { display:flex; flex-direction:column; gap:14px; align-items:stretch; }
-.stat{ display:flex; justify-content:space-between; align-items:center; padding:12px; border-radius:8px; background:#fbfbfb; }
-.stat-value { font-weight:800; color:#0b4ea2; font-size:20px; }
-.stat-label { color:#555; font-size:13px; }
-.cta-box { margin-top:6px; padding:12px; border-radius:8px; background:linear-gradient(180deg,#fff,#fbfbfb); text-align:center; }
-.btn-outline { display:inline-block; padding:8px 12px; border-radius:6px; border:1px solid #dcdcdc; text-decoration:none; color:#0b4ea2; font-weight:700; }
-.section-title-large { text-align:center; margin:28px 0 14px; }
-.features-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:12px; }
-.feature { background:#fff; border:1px solid #eee; padding:18px; border-radius:10px; text-align:center; }
-.feature-icon { font-size:24px; margin-bottom:8px; }
-.feature h4 { margin:6px 0; }
-.team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px; }
-.member { display:flex; gap:12px; align-items:center; }
-.avatar{ width:56px; height:56px; border-radius:10px; object-fit:cover; border:1px solid #eee; }
-.timeline { list-style:none; padding-left:0; margin:12px 0 0 0; }
-.timeline li { padding:10px 0; border-bottom:1px dashed #f0f0f0; }
-.timeline li strong { display:block; font-size:15px; color:#c41a1a; }
-.cta-hero { margin:36px 0 0; text-align:center; }
-.cta-inner { display:inline-block; padding:22px 30px; background:#fff; border:1px solid #eee; border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,0.04); }
-.cta-inner h3{ margin:0 0 6px; color:#222; }
-.cta-inner .muted{ margin:0 0 12px; color:#666; }
-@media(max-width:1200px){ .features-grid{ grid-template-columns:repeat(2,1fr); } .team-grid{ grid-template-columns:repeat(2,1fr); } }
-@media(max-width:640px){ .features-grid{ grid-template-columns:1fr; } .team-grid{ grid-template-columns:1fr; } .hero-inner h1{ font-size:28px; } .hero-visual{ display:none; } }
+/* =========================================================
+   SARKARIRESULTESS.COM - PREMIUM ABOUT PAGE
+   ========================================================= */
+
+:root {
+    --sr-red: #b91c1c;
+    --sr-red-dark: #991b1b;
+    --sr-red-light: #fef2f2;
+    --sr-red-soft: #fff7f7;
+
+    --sr-navy: #0f172a;
+    --sr-navy-light: #1e293b;
+
+    --sr-text: #334155;
+    --sr-muted: #64748b;
+
+    --sr-bg: #f8fafc;
+    --sr-white: #ffffff;
+
+    --sr-border: #e2e8f0;
+
+    --sr-green: #15803d;
+    --sr-blue: #2563eb;
+
+    --sr-radius: 16px;
+    --sr-radius-sm: 10px;
+
+    --sr-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+    --sr-shadow-md: 0 8px 28px rgba(15, 23, 42, 0.07);
+    --sr-shadow-lg: 0 18px 45px rgba(15, 23, 42, 0.10);
+
+    --sr-transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.sr-about-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 22px 70px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.sr-about-hero {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(185, 28, 28, 0.08),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #fffafa 48%,
+            #f8fafc 100%
+        );
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.sr-about-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 260px;
+    height: 260px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(185, 28, 28, 0.08),
+            transparent 68%
+        );
+
+    right: -80px;
+    top: -100px;
+
+    pointer-events: none;
+}
+
+
+.sr-about-hero-inner {
+    max-width: 1180px;
+    min-height: 370px;
+
+    margin: 0 auto;
+    padding: 58px 22px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(300px, 0.85fr);
+
+    align-items: center;
+
+    gap: 50px;
+
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.sr-about-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 14px;
+
+    border-radius: 50px;
+
+    background: var(--sr-red-light);
+    color: var(--sr-red);
+
+    border: 1px solid #fecaca;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+
+    margin-bottom: 16px;
+}
+
+
+.sr-about-hero h1 {
+    margin: 0 0 14px;
+
+    color: var(--sr-navy);
+
+    font-size: 43px;
+    line-height: 1.12;
+
+    font-weight: 850;
+    letter-spacing: -0.035em;
+}
+
+
+.sr-about-hero h1 span {
+    color: var(--sr-red);
+}
+
+
+.sr-about-hero-lead {
+    max-width: 680px;
+
+    margin: 0 0 23px;
+
+    color: var(--sr-muted);
+
+    font-size: 16px;
+    line-height: 1.75;
+}
+
+
+.sr-about-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+
+.sr-about-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding: 0 18px;
+
+    border-radius: 9px;
+
+    text-decoration: none !important;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    transition: var(--sr-transition);
+    box-sizing: border-box;
+}
+
+
+.sr-about-btn-primary {
+    background: var(--sr-red);
+    color: #ffffff !important;
+
+    box-shadow:
+        0 7px 18px rgba(185, 28, 28, 0.18);
+}
+
+
+.sr-about-btn-primary:hover {
+    background: var(--sr-red-dark);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 11px 24px rgba(185, 28, 28, 0.24);
+}
+
+
+.sr-about-btn-outline {
+    background: #ffffff;
+
+    color: var(--sr-navy) !important;
+
+    border: 1px solid var(--sr-border);
+}
+
+
+.sr-about-btn-outline:hover {
+    border-color: #fecaca;
+
+    color: var(--sr-red) !important;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   HERO VISUAL
+   ========================================================= */
+
+.sr-about-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sr-visual-card {
+    width: min(100%, 390px);
+
+    background: rgba(255, 255, 255, 0.92);
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 22px;
+
+    padding: 24px;
+
+    box-shadow: var(--sr-shadow-lg);
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+.sr-visual-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(185, 28, 28, 0.12),
+            transparent 70%
+        );
+
+    right: -50px;
+    top: -50px;
+}
+
+
+.sr-visual-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+
+.sr-visual-logo {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: var(--sr-red-light);
+    color: var(--sr-red);
+
+    font-size: 21px;
+    font-weight: 900;
+}
+
+
+.sr-visual-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    color: var(--sr-green);
+
+    background: #f0fdf4;
+
+    border: 1px solid #bbf7d0;
+
+    padding: 6px 10px;
+
+    border-radius: 50px;
+}
+
+
+.sr-status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--sr-green);
+}
+
+
+.sr-visual-title {
+    color: var(--sr-navy);
+
+    font-size: 20px;
+    font-weight: 850;
+
+    margin-bottom: 7px;
+}
+
+
+.sr-visual-description {
+    color: var(--sr-muted);
+
+    font-size: 13px;
+    line-height: 1.65;
+
+    margin-bottom: 20px;
+}
+
+
+.sr-visual-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+
+.sr-visual-line {
+    height: 10px;
+
+    border-radius: 50px;
+
+    background: #f1f5f9;
+
+    overflow: hidden;
+}
+
+
+.sr-visual-line span {
+    display: block;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fecaca,
+            #b91c1c
+        );
+}
+
+
+.sr-visual-line:nth-child(1) span {
+    width: 84%;
+}
+
+.sr-visual-line:nth-child(2) span {
+    width: 68%;
+}
+
+.sr-visual-line:nth-child(3) span {
+    width: 92%;
+}
+
+
+/* =========================================================
+   COMMON SECTIONS
+   ========================================================= */
+
+.sr-about-section {
+    margin-top: 54px;
+}
+
+
+.sr-section-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+
+.sr-section-heading h2 {
+    margin: 0 0 8px;
+
+    color: var(--sr-navy);
+
+    font-size: 28px;
+    font-weight: 850;
+
+    letter-spacing: -0.025em;
+}
+
+
+.sr-section-heading p {
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    color: var(--sr-muted);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   ABOUT GRID
+   ========================================================= */
+
+.sr-about-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(300px, 0.65fr);
+
+    gap: 24px;
+}
+
+
+.sr-about-card {
+    background: #ffffff;
+
+    border: 1px solid var(--sr-border);
+
+    border-radius: var(--sr-radius);
+
+    padding: 29px;
+
+    box-shadow: var(--sr-shadow-md);
+
+    box-sizing: border-box;
+}
+
+
+.sr-about-card h2 {
+    margin: 0 0 13px;
+
+    color: var(--sr-navy);
+
+    font-size: 21px;
+    font-weight: 850;
+}
+
+
+.sr-about-card h3 {
+    margin: 25px 0 7px;
+
+    color: var(--sr-navy);
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+.sr-about-card p {
+    margin: 0;
+
+    color: var(--sr-text);
+
+    font-size: 14px;
+
+    line-height: 1.8;
+}
+
+
+.sr-about-card p + p {
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   HIGHLIGHT CARD
+   ========================================================= */
+
+.sr-about-highlight {
+    position: relative;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff7f7 0%,
+            #ffffff 65%
+        );
+
+    border: 1px solid #fecaca;
+
+    border-radius: var(--sr-radius);
+
+    padding: 28px;
+
+    box-shadow: var(--sr-shadow-md);
+
+    overflow: hidden;
+}
+
+
+.sr-about-highlight::after {
+    content: "";
+
+    position: absolute;
+
+    width: 130px;
+    height: 130px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(185, 28, 28, 0.10),
+            transparent 70%
+        );
+
+    right: -55px;
+    bottom: -55px;
+}
+
+
+.sr-highlight-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: var(--sr-red);
+    color: #ffffff;
+
+    font-size: 20px;
+
+    margin-bottom: 17px;
+
+    box-shadow:
+        0 8px 18px rgba(185, 28, 28, 0.18);
+}
+
+
+.sr-about-highlight h3 {
+    margin: 0 0 8px;
+
+    color: var(--sr-navy);
+
+    font-size: 18px;
+    font-weight: 850;
+}
+
+
+.sr-about-highlight p {
+    margin: 0;
+
+    color: var(--sr-muted);
+
+    font-size: 13.5px;
+    line-height: 1.7;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================================
+   PRINCIPLES
+   ========================================================= */
+
+.sr-principles-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.sr-principle {
+    background: #ffffff;
+
+    border: 1px solid var(--sr-border);
+
+    border-radius: 14px;
+
+    padding: 21px 18px;
+
+    box-shadow: var(--sr-shadow-sm);
+
+    transition: var(--sr-transition);
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+.sr-principle:hover {
+    transform: translateY(-5px);
+
+    border-color: #fecaca;
+
+    box-shadow: var(--sr-shadow-md);
+}
+
+
+.sr-principle-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: var(--sr-red-light);
+    color: var(--sr-red);
+
+    font-size: 18px;
+
+    margin-bottom: 14px;
+}
+
+
+.sr-principle h3 {
+    margin: 0 0 7px;
+
+    color: var(--sr-navy);
+
+    font-size: 15px;
+    font-weight: 850;
+}
+
+
+.sr-principle p {
+    margin: 0;
+
+    color: var(--sr-muted);
+
+    font-size: 12.5px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   CATEGORIES
+   ========================================================= */
+
+.sr-category-section {
+    margin-top: 54px;
+}
+
+
+.sr-category-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+
+.sr-category-card {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 13px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--sr-border);
+
+    border-radius: 13px;
+
+    padding: 19px;
+
+    box-shadow: var(--sr-shadow-sm);
+
+    transition: var(--sr-transition);
+}
+
+
+.sr-category-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #fecaca;
+
+    box-shadow: var(--sr-shadow-md);
+}
+
+
+.sr-category-icon {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--sr-red-light);
+    color: var(--sr-red);
+
+    font-size: 17px;
+}
+
+
+.sr-category-card h3 {
+    margin: 0 0 5px;
+
+    color: var(--sr-navy);
+
+    font-size: 14px;
+    font-weight: 850;
+}
+
+
+.sr-category-card p {
+    margin: 0;
+
+    color: var(--sr-muted);
+
+    font-size: 12.5px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   APPROACH
+   ========================================================= */
+
+.sr-approach {
+    margin-top: 54px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.sr-approach-card {
+    background: #ffffff;
+
+    border: 1px solid var(--sr-border);
+
+    border-radius: 14px;
+
+    padding: 23px;
+
+    box-shadow: var(--sr-shadow-sm);
+
+    position: relative;
+}
+
+
+.sr-approach-number {
+    font-size: 34px;
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    color: #fee2e2;
+
+    margin-bottom: 12px;
+}
+
+
+.sr-approach-card h3 {
+    margin: 0 0 7px;
+
+    color: var(--sr-navy);
+
+    font-size: 16px;
+    font-weight: 850;
+}
+
+
+.sr-approach-card p {
+    margin: 0;
+
+    color: var(--sr-muted);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   MANISH PRAJAPATI NOTE
+   ========================================================= */
+
+.sr-founder-note {
+    margin-top: 54px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a 0%,
+            #1e293b 100%
+        );
+
+    border-radius: 20px;
+
+    padding: 32px;
+
+    color: #ffffff;
+
+    position: relative;
+    overflow: hidden;
+
+    box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.14);
+}
+
+
+.sr-founder-note::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    right: -80px;
+    top: -100px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(248, 113, 113, 0.22),
+            transparent 70%
+        );
+}
+
+
+.sr-founder-label {
+    display: inline-block;
+
+    color: #fca5a5;
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    margin-bottom: 10px;
+}
+
+
+.sr-founder-note h2 {
+    margin: 0 0 10px;
+
+    font-size: 23px;
+
+    font-weight: 850;
+
+    color: #ffffff;
+}
+
+
+.sr-founder-note p {
+    max-width: 820px;
+
+    margin: 0;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+    line-height: 1.8;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+.sr-founder-name {
+    margin-top: 17px;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+.sr-founder-name span {
+    color: #fca5a5;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   NOTICE
+   ========================================================= */
+
+.sr-about-notice {
+    margin-top: 25px;
+
+    padding: 17px 19px;
+
+    background: var(--sr-red-light);
+
+    border: 1px dashed #fecaca;
+
+    border-radius: 11px;
+
+    color: var(--sr-text);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+.sr-about-notice strong {
+    color: var(--sr-red);
+}
+
+
+/* =========================================================
+   POLICY LINKS
+   ========================================================= */
+
+.sr-policy-links {
+    margin-top: 30px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px 18px;
+}
+
+
+.sr-policy-links a {
+    color: var(--sr-muted);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+
+.sr-policy-links a:hover {
+    color: var(--sr-red);
+}
+
+
+/* =========================================================
+   FINAL CTA
+   ========================================================= */
+
+.sr-about-final-cta {
+    margin-top: 50px;
+
+    text-align: center;
+
+    padding: 34px 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7f7,
+            #ffffff
+        );
+
+    border: 1px solid #fecaca;
+
+    border-radius: 18px;
+}
+
+
+.sr-about-final-cta h2 {
+    margin: 0 0 8px;
+
+    color: var(--sr-navy);
+
+    font-size: 24px;
+    font-weight: 850;
+}
+
+
+.sr-about-final-cta p {
+    margin: 0 auto 18px;
+
+    max-width: 650px;
+
+    color: var(--sr-muted);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .sr-about-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 30px;
+
+        padding-top: 48px;
+        padding-bottom: 48px;
+    }
+
+    .sr-about-visual {
+        justify-content: flex-start;
+    }
+
+    .sr-about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sr-principles-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sr-category-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 720px) {
+
+    .sr-about-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .sr-about-hero-inner {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .sr-about-hero h1 {
+        font-size: 34px;
+    }
+
+    .sr-approach {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .sr-about-hero-inner {
+        min-height: auto;
+
+        padding-top: 35px;
+        padding-bottom: 38px;
+    }
+
+    .sr-about-hero h1 {
+        font-size: 29px;
+    }
+
+    .sr-about-hero-lead {
+        font-size: 14px;
+    }
+
+    .sr-about-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sr-about-btn {
+        width: 100%;
+    }
+
+    .sr-visual-card {
+        padding: 20px;
+    }
+
+    .sr-about-card,
+    .sr-about-highlight {
+        padding: 22px;
+    }
+
+    .sr-section-heading h2 {
+        font-size: 24px;
+    }
+
+    .sr-principles-grid,
+    .sr-category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sr-founder-note {
+        padding: 25px 21px;
+        border-radius: 16px;
+    }
+
+    .sr-founder-note h2 {
+        font-size: 21px;
+    }
+
+    .sr-policy-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+}
 `;
 %>
-<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
 
-<div class="about-hero">
-  <div class="container">
-    <div class="hero-inner">
-      <h1>About <%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h1>
-      <p class="lead">Reliable, fast and accurate updates for Government Jobs, Admit Cards, Answer Keys, Results and more.</p>
-      <a href="/contact" class="btn btn-primary-cta">Contact Us</a>
+
+<%- include("../weblayout/layout-top", {
+    title: title || "About Us - SarkariResultess.Com",
+    pageStyles: pageStyles
+}) %>
+
+
+<section class="sr-about-hero">
+
+    <div class="sr-about-hero-inner">
+
+        <div>
+
+            <span class="sr-about-badge">
+                ✓ About SarkariResultess.Com
+            </span>
+
+            <h1>
+                About
+                <span>
+                    <%= (site_setting && site_setting.site_title) || "SarkariResultess.Com" %>
+                </span>
+            </h1>
+
+            <p class="sr-about-hero-lead">
+                SarkariResultess.Com is an independent informational
+                platform created to make government job, examination,
+                result, admit card, answer key, admission and other
+                important educational updates easier to discover and
+                understand.
+            </p>
+
+            <div class="sr-about-buttons">
+
+                <a
+                    href="/"
+                    class="sr-about-btn sr-about-btn-primary"
+                >
+                    Explore Latest Updates
+                </a>
+
+                <a
+                    href="/contact"
+                    class="sr-about-btn sr-about-btn-outline"
+                >
+                    Contact Us
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="sr-about-visual">
+
+            <div class="sr-visual-card">
+
+                <div class="sr-visual-top">
+
+                    <div class="sr-visual-logo">
+                        SR
+                    </div>
+
+                    <div class="sr-visual-status">
+
+                        <span class="sr-status-dot"></span>
+
+                        Information Portal
+
+                    </div>
+
+                </div>
+
+                <div class="sr-visual-title">
+                    Government Exam Information
+                </div>
+
+                <div class="sr-visual-description">
+                    A simple platform for finding important recruitment,
+                    examination and educational updates in one place.
+                </div>
+
+                <div class="sr-visual-lines">
+
+                    <div class="sr-visual-line">
+                        <span></span>
+                    </div>
+
+                    <div class="sr-visual-line">
+                        <span></span>
+                    </div>
+
+                    <div class="sr-visual-line">
+                        <span></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-    <div class="hero-visual" aria-hidden="true">
-      <svg width="320" height="200" viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="320" height="200" rx="12" fill="#fff"/>
-        <g opacity="0.06" fill="#c00"><rect x="12" y="28" width="70" height="12" rx="4"/><rect x="12" y="54" width="110" height="10" rx="4"/></g>
-        <g opacity="0.06" fill="#0b4ea2"><rect x="140" y="28" width="160" height="12" rx="4"/><rect x="140" y="54" width="120" height="10" rx="4"/></g>
-      </svg>
+
+</section>
+
+
+<div class="sr-about-container">
+
+
+    <section class="sr-about-section">
+
+        <div class="sr-about-grid">
+
+            <article class="sr-about-card">
+
+                <h2>Who We Are</h2>
+
+                <p>
+                    <%= (site_setting && site_setting.site_title) || "SarkariResultess.Com" %>
+                    is an independent information website focused on
+                    government jobs, competitive examinations, results,
+                    admit cards, answer keys, admissions, syllabus
+                    information and other useful updates for students
+                    and job aspirants.
+                </p>
+
+                <p>
+                    Our aim is to organize publicly available information
+                    in a clear and easy-to-use format so that visitors can
+                    quickly understand what an update is about and where
+                    they should go for the official information.
+                </p>
+
+                <h3>Our Mission</h3>
+
+                <p>
+                    Our mission is to make important government examination
+                    and recruitment information easier to find, easier to
+                    understand and easier to access while encouraging users
+                    to verify important details from the concerned official
+                    source.
+                </p>
+
+                <h3>Our Vision</h3>
+
+                <p>
+                    We aim to build a useful, reliable and mobile-friendly
+                    information platform where students and applicants can
+                    discover relevant updates without unnecessary
+                    complexity.
+                </p>
+
+            </article>
+
+
+            <aside class="sr-about-highlight">
+
+                <div class="sr-highlight-icon">
+                    &#128203;
+                </div>
+
+                <h3>Information First</h3>
+
+                <p>
+                    We focus on presenting useful information in a structured
+                    way, including important dates, eligibility details,
+                    application information, examination updates, results,
+                    answer keys and official-source references whenever
+                    available.
+                </p>
+
+            </aside>
+
+        </div>
+
+    </section>
+
+
+    <section class="sr-about-section">
+
+        <div class="sr-section-heading">
+
+            <h2>
+                Why Use
+                <%= (site_setting && site_setting.site_title) || "SarkariResultess.Com" %>?
+            </h2>
+
+            <p>
+                We focus on clarity, accessibility and useful organization
+                of information for students, applicants and examination
+                aspirants.
+            </p>
+
+        </div>
+
+
+        <div class="sr-principles-grid">
+
+            <article class="sr-principle">
+
+                <div class="sr-principle-icon">&#128269;</div>
+
+                <h3>Easy to Find</h3>
+
+                <p>
+                    Important updates are organized into categories so
+                    visitors can find relevant information more easily.
+                </p>
+
+            </article>
+
+
+            <article class="sr-principle">
+
+                <div class="sr-principle-icon">&#128221;</div>
+
+                <h3>Clear Information</h3>
+
+                <p>
+                    We aim to present recruitment and examination details
+                    in a simple and readable format.
+                </p>
+
+            </article>
+
+
+            <article class="sr-principle">
+
+                <div class="sr-principle-icon">&#128241;</div>
+
+                <h3>Mobile Friendly</h3>
+
+                <p>
+                    The website is designed to remain useful across
+                    smartphones, tablets and desktop devices.
+                </p>
+
+            </article>
+
+
+            <article class="sr-principle">
+
+                <div class="sr-principle-icon">&#128737;</div>
+
+                <h3>Official Verification</h3>
+
+                <p>
+                    Visitors are encouraged to verify important information
+                    with the concerned official authority before applying.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <section class="sr-category-section">
+
+        <div class="sr-section-heading">
+
+            <h2>What You Can Find Here</h2>
+
+            <p>
+                Our website covers several categories of government
+                recruitment and examination-related information.
+            </p>
+
+        </div>
+
+
+        <div class="sr-category-grid">
+
+            <article class="sr-category-card">
+
+                <div class="sr-category-icon">&#128188;</div>
+
+                <div>
+
+                    <h3>Latest Government Jobs</h3>
+
+                    <p>
+                        Recruitment notifications, vacancies,
+                        eligibility information and application details.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="sr-category-card">
+
+                <div class="sr-category-icon">&#128196;</div>
+
+                <div>
+
+                    <h3>Admit Cards</h3>
+
+                    <p>
+                        Information about admit cards, hall tickets and
+                        examination-related downloads.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="sr-category-card">
+
+                <div class="sr-category-icon">&#127942;</div>
+
+                <div>
+
+                    <h3>Results</h3>
+
+                    <p>
+                        Examination results, merit lists and selection
+                        updates where publicly available.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="sr-category-card">
+
+                <div class="sr-category-icon">&#128221;</div>
+
+                <div>
+
+                    <h3>Answer Keys</h3>
+
+                    <p>
+                        Answer key announcements and related examination
+                        information.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="sr-category-card">
+
+                <div class="sr-category-icon">&#127891;</div>
+
+                <div>
+
+                    <h3>Admissions</h3>
+
+                    <p>
+                        Admission notifications, application updates and
+                        important educational announcements.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="sr-category-card">
+
+                <div class="sr-category-icon">&#128218;</div>
+
+                <div>
+
+                    <h3>Syllabus &amp; Exam Information</h3>
+
+                    <p>
+                        Syllabus, examination schedules and other useful
+                        preparation-related information.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <section class="sr-about-section">
+
+        <div class="sr-section-heading">
+
+            <h2>Our Approach</h2>
+
+            <p>
+                We try to keep the information journey simple from
+                discovery to official verification.
+            </p>
+
+        </div>
+
+
+        <div class="sr-approach">
+
+            <article class="sr-approach-card">
+
+                <div class="sr-approach-number">01</div>
+
+                <h3>Discover</h3>
+
+                <p>
+                    Find recruitment, examination, result, admission and
+                    other educational updates through the relevant website
+                    categories.
+                </p>
+
+            </article>
+
+
+            <article class="sr-approach-card">
+
+                <div class="sr-approach-number">02</div>
+
+                <h3>Understand</h3>
+
+                <p>
+                    Review the important information presented on the page,
+                    including dates, eligibility, application details and
+                    other relevant instructions.
+                </p>
+
+            </article>
+
+
+            <article class="sr-approach-card">
+
+                <div class="sr-approach-number">03</div>
+
+                <h3>Verify</h3>
+
+                <p>
+                    Before taking any important action, always check the
+                    original notification and official website of the
+                    concerned authority.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <section class="sr-founder-note">
+
+        <div class="sr-founder-label">
+            Website Note
+        </div>
+
+        <h2>
+            Built with a Focus on Useful Information
+        </h2>
+
+        <p>
+            SarkariResultess.Com is developed and maintained with the goal
+            of creating a simple and accessible platform for students and
+            job aspirants. The website focuses on organizing important
+            public information into useful categories and presenting it
+            in a straightforward way.
+        </p>
+
+        <div class="sr-founder-name">
+            Manish Prajapati
+            <span> — Website Creator &amp; Developer</span>
+        </div>
+
+    </section>
+
+
+    <div class="sr-about-notice">
+
+        <strong>Important:</strong>
+
+        <%= (site_setting && site_setting.site_title) || "SarkariResultess.Com" %>
+        is an independent informational website and is not a government
+        website unless specifically stated on a particular page.
+
+        Recruitment, examination, result, admission and other important
+        details may change according to the concerned authority.
+
+        Always verify final information through the relevant official
+        notification or official website before applying or taking any
+        important action.
+
     </div>
-  </div>
+
+
+    <nav
+        class="sr-policy-links"
+        aria-label="Website policies"
+    >
+
+        <a href="/privacy-policy">
+            Privacy Policy
+        </a>
+
+        <a href="/terms">
+            Terms &amp; Conditions
+        </a>
+
+        <a href="/disclaimer">
+            Disclaimer
+        </a>
+
+        <a href="/contact">
+            Contact Us
+        </a>
+
+    </nav>
+
+
+    <section class="sr-about-final-cta">
+
+        <h2>
+            Looking for the Latest Update?
+        </h2>
+
+        <p>
+            Explore the latest government jobs, results, admit cards,
+            answer keys, admissions and other important updates available
+            on SarkariResultess.Com.
+        </p>
+
+        <a
+            href="/"
+            class="sr-about-btn sr-about-btn-primary"
+        >
+            Browse Latest Updates
+        </a>
+
+    </section>
+
+
 </div>
 
-<div class="container about-container">
-  <div class="grid-2 gap-lg">
-    <section class="card about-card">
-      <h2>Who We Are</h2>
-      <p class="muted"><%= (site_setting && site_setting.site_title) || 'Sarkari Result' %> is India's trusted platform for government exam updates. Since inception we have focused on delivering timely and verified information - Latest Job openings, Admit Cards, Results, Answer Keys, Syllabus updates and helpful guides to help aspirants prepare and apply with confidence.</p>
-      <h3>Our Mission</h3>
-      <p>Deliver correct and timely information to every exam aspirant across India - simplifying the search, saving time and removing confusion around official notices.</p>
-      <h3>Our Vision</h3>
-      <p>To become the single most reliable hub for government exam information in India, while remaining lightweight and mobile-first.</p>
-    </section>
 
-    <aside class="card stats-card">
-      <div class="stat"><div class="stat-value">+5M</div><div class="stat-label">Monthly Visits</div></div>
-      <div class="stat"><div class="stat-value">120k</div><div class="stat-label">Published Notices</div></div>
-      <div class="stat"><div class="stat-value">99.9%</div><div class="stat-label">Uptime</div></div>
-      <div class="cta-box">
-        <h4>Get daily updates</h4>
-        <p class="small">Subscribe to our WhatsApp channel or newsletter for instant notifications.</p>
-        <a class="btn btn-outline" href="#">Join WhatsApp</a>
-      </div>
-    </aside>
-  </div>
-
-  <div class="section-title-large">
-    <h2>Why Choose <%= (site_setting && site_setting.site_title) || 'Sarkari Result' %></h2>
-    <p class="muted">We keep it simple, reliable and fast - made for aspirants.</p>
-  </div>
-
-  <div class="features-grid">
-    <div class="feature"><div class="feature-icon">&#128226;</div><h4>Real-time Updates</h4><p>We monitor official sources and publish updates within minutes.</p></div>
-    <div class="feature"><div class="feature-icon">&#128737;</div><h4>Verified Notices</h4><p>Only verified and sourced information, no rumors.</p></div>
-    <div class="feature"><div class="feature-icon">&#128241;</div><h4>Mobile Friendly</h4><p>Our pages are optimized for mobile devices and low bandwidth.</p></div>
-    <div class="feature"><div class="feature-icon">&#128269;</div><h4>Searchable Database</h4><p>Quick search, filters and categories make finding notices easy.</p></div>
-  </div>
-
-  <div class="grid-2 gap-lg mt-30">
-    <section class="card team-card">
-      <h3>Meet the Team</h3>
-      <div class="team-grid">
-        <div class="member"><img src="/images/team-avatar.jpg" alt="Team member" class="avatar"><div><strong>Amit Kumar</strong><div class="muted small">Founder & Editor</div></div></div>
-        <div class="member"><img src="/images/team-avatar.jpg" alt="Team member" class="avatar"><div><strong>Neha Sharma</strong><div class="muted small">Content Lead</div></div></div>
-        <div class="member"><img src="/images/team-avatar.jpg" alt="Team member" class="avatar"><div><strong>Rohit Singh</strong><div class="muted small">Tech & Ops</div></div></div>
-      </div>
-    </section>
-
-    <section class="card timeline-card">
-      <h3>Our Journey</h3>
-      <ol class="timeline">
-        <li><strong>2010</strong><div class="muted small">Site launched - basic job listings</div></li>
-        <li><strong>2015</strong><div class="muted small">Expanded to admit cards and results aggregation</div></li>
-        <li><strong>2020</strong><div class="muted small">Mobile first redesign and WhatsApp alerts</div></li>
-        <li><strong>2024</strong><div class="muted small">Scalable backend, faster publication workflow</div></li>
-      </ol>
-    </section>
-  </div>
-
-  <div class="cta-hero">
-    <div class="cta-inner">
-      <h3>Want to stay ahead?</h3>
-      <p class="muted">Subscribe to our alerts and never miss an important notification.</p>
-      <a href="/contact" class="btn btn-primary-cta">Contact & Subscribe</a>
-    </div>
-  </div>
-</div>
-
-<%- include('../weblayout/layout-bottom') %>
+<%- include("../weblayout/layout-bottom") %>
