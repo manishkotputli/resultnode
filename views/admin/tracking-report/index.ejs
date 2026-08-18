@@ -1,0 +1,522 @@
+<%- include('../../adminlayout/admin-layout-top') %>
+
+<div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+    <div>
+        <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold mb-1">Tracking Report</h1>
+        <p class="text-sm text-gray-500 mb-0">Showing: <span id="rangeLabel" class="font-medium text-gray-700"><%= data.range.label %></span></p>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="flex items-center flex-wrap gap-2">
+        <select id="filterType" class="form-select bg-white border border-border-color text-sm font-medium text-gray-900 rounded-full py-2 px-3 focus:ring-0">
+            <option value="today" <%= data.range.filter === 'today' ? 'selected' : '' %>>Today</option>
+            <option value="last_7_days" <%= data.range.filter === 'last_7_days' ? 'selected' : '' %>>Last 7 Days</option>
+            <option value="last_30_days" <%= data.range.filter === 'last_30_days' ? 'selected' : '' %>>Last 30 Days</option>
+            <option value="this_month" <%= data.range.filter === 'this_month' ? 'selected' : '' %>>This Month</option>
+            <option value="previous_month" <%= data.range.filter === 'previous_month' ? 'selected' : '' %>>Previous Month</option>
+            <option value="month" <%= data.range.filter === 'month' ? 'selected' : '' %>>Month</option>
+            <option value="year" <%= data.range.filter === 'year' ? 'selected' : '' %>>Year</option>
+            <option value="custom" <%= data.range.filter === 'custom' ? 'selected' : '' %>>Custom Range</option>
+        </select>
+
+        <select id="filterMonth" class="hidden form-select bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0">
+            <% ['January','February','March','April','May','June','July','August','September','October','November','December'].forEach(function(m, i) { %>
+                <option value="<%= i + 1 %>"><%= m %></option>
+            <% }) %>
+        </select>
+        <input type="number" id="filterYear" placeholder="Year" class="hidden form-input w-24 bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0" value="<%= new Date().getFullYear() %>">
+
+        <input type="date" id="filterFrom" class="hidden form-input bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0">
+        <input type="date" id="filterTo" class="hidden form-input bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0">
+
+        <button type="button" id="applyFilterBtn" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition">
+            <i class="icon-filter"></i> Apply
+        </button>
+        <span id="filterSpinner" class="hidden animate-spin text-primary"><i class="icon-loader-2"></i></span>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="statCardsGrid">
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Users</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-users"><%= data.stats.totalUsers %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">New Users</p>
+        <h3 class="text-2xl font-bold text-primary mb-0" id="stat-new-users"><%= data.stats.newUsers %></h3>
+        <p class="text-xs mb-0 <%= data.stats.userGrowth >= 0 ? 'text-success' : 'text-danger' %>" id="stat-user-growth"><%= data.stats.userGrowth >= 0 ? '+' : '' %><%= data.stats.userGrowth %>% vs prev</p>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Active Users</p>
+        <h3 class="text-2xl font-bold text-success mb-0" id="stat-active-users"><%= data.stats.activeUsers %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Posts</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-posts"><%= data.stats.totalPosts %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Blogs</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-blogs"><%= data.stats.totalBlogs %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Courses</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-courses"><%= data.stats.totalCourses %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Test Series</p>
+        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-testseries"><%= data.stats.totalTestSeries %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Revenue</p>
+        <h3 class="text-2xl font-bold text-primary mb-0" id="stat-total-revenue">₹<%= Number(data.stats.totalRevenue).toLocaleString('en-IN') %></h3>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Income <span class="text-[10px] text-gray-400">(your own)</span></p>
+        <h3 class="text-2xl font-bold text-success mb-0" id="stat-total-income">₹<%= Number(data.stats.totalIncome).toLocaleString('en-IN') %></h3>
+        <p class="text-xs mb-0 <%= data.stats.incomeGrowth >= 0 ? 'text-success' : 'text-danger' %>" id="stat-income-growth"><%= data.stats.incomeGrowth >= 0 ? '+' : '' %><%= data.stats.incomeGrowth %>% vs prev</p>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Total Expense <span class="text-[10px] text-gray-400">(your own)</span></p>
+        <h3 class="text-2xl font-bold text-danger mb-0" id="stat-total-expense">₹<%= Number(data.stats.totalExpense).toLocaleString('en-IN') %></h3>
+        <p class="text-xs mb-0 <%= data.stats.expenseGrowth >= 0 ? 'text-danger' : 'text-success' %>" id="stat-expense-growth"><%= data.stats.expenseGrowth >= 0 ? '+' : '' %><%= data.stats.expenseGrowth %>% vs prev</p>
+    </div>
+    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
+        <p class="text-xs font-medium text-gray-500 mb-1">Net Income <span class="text-[10px] text-gray-400">(your own)</span></p>
+        <h3 class="text-2xl font-bold <%= data.stats.netIncome >= 0 ? 'text-success' : 'text-danger' %> mb-0" id="stat-net-income">₹<%= Number(data.stats.netIncome).toLocaleString('en-IN') %></h3>
+        <p class="text-xs mb-0 <%= data.stats.netIncomeGrowth >= 0 ? 'text-success' : 'text-danger' %>" id="stat-net-growth"><%= data.stats.netIncomeGrowth >= 0 ? '+' : '' %><%= data.stats.netIncomeGrowth %>% vs prev</p>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+    <div class="col-span-12 xxl:col-span-8">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Income / Expense / Net Income</h2>
+            <div id="chartIncomeExpense"></div>
+        </div>
+    </div>
+    <div class="col-span-12 xxl:col-span-4">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Revenue Split</h2>
+            <div id="chartRevenue"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Income / Expense Category tables -->
+<div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+    <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Income by Category</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Amount</th><th class="py-2 pr-3">%</th><th class="py-2">Txns</th></tr></thead>
+                    <tbody id="tbody-income-category"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Expense by Category</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Amount</th><th class="py-2 pr-3">%</th><th class="py-2">Txns</th></tr></thead>
+                    <tbody id="tbody-expense-category"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Transactions -->
+<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mb-6">
+    <h2 class="text-gray-900 text-lg font-bold mb-1">Top 5 Recent Transactions</h2>
+    <p class="text-xs text-gray-400 mb-4">Your own income/expense entries only.</p>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Type</th><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Description</th><th class="py-2 pr-3">Amount</th><th class="py-2">Date</th></tr></thead>
+            <tbody id="tbody-top-transactions"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Posts -->
+<div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+    <div class="col-span-12 lg:col-span-4">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-base font-bold mb-4">Top 5 Posts — Views</h2>
+            <table class="w-full text-sm"><tbody id="tbody-top-posts-views"></tbody></table>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-base font-bold mb-4">Top 5 Posts — Clicks <span class="text-xs font-normal text-gray-400">(CTR: <span id="posts-ctr"><%= data.posts.ctr %></span>%)</span></h2>
+            <table class="w-full text-sm"><tbody id="tbody-top-posts-clicks"></tbody></table>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-base font-bold mb-4">Top 5 Posts — Likes</h2>
+            <table class="w-full text-sm"><tbody id="tbody-top-posts-likes"></tbody></table>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mb-6">
+    <h2 class="text-gray-900 text-lg font-bold mb-4">Category-wise Post Analytics</h2>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Posts</th><th class="py-2 pr-3">Views</th><th class="py-2 pr-3">Clicks</th><th class="py-2">CTR</th></tr></thead>
+            <tbody id="tbody-category-posts"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Blogs -->
+<div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+    <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-0">Top 5 Blogs</h2>
+                <span class="text-xs text-gray-400">All-time totals · <%= data.blogs.total %> blogs, <%= data.blogs.views %> views, <%= data.blogs.likes %> likes</span>
+            </div>
+            <table class="w-full text-sm"><tbody id="tbody-top-blogs"></tbody></table>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <h2 class="text-gray-900 text-lg font-bold mb-4">Blog Category Performance</h2>
+            <table class="w-full text-sm">
+                <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Blogs</th><th class="py-2 pr-3">Views</th><th class="py-2">Likes</th></tr></thead>
+                <tbody id="tbody-blog-category"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Courses / Test Series -->
+<div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+    <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-0">Top 5 Courses by Revenue</h2>
+                <span class="text-xs text-gray-400"><%= data.courses.total %> total · <%= data.courses.active %> active</span>
+            </div>
+            <table class="w-full text-sm">
+                <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Course</th><th class="py-2 pr-3">Revenue</th><th class="py-2">Enrollments</th></tr></thead>
+                <tbody id="tbody-top-courses"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-gray-900 text-lg font-bold mb-0">Top 5 Test Series by Revenue</h2>
+                <span class="text-xs text-gray-400"><%= data.testSeries.total %> total · <%= data.testSeries.active %> active</span>
+            </div>
+            <table class="w-full text-sm">
+                <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Test Series</th><th class="py-2 pr-3">Revenue</th><th class="py-2">Enrollments</th></tr></thead>
+                <tbody id="tbody-top-testseries"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Site Health -->
+<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mb-6">
+    <h2 class="text-gray-900 text-lg font-bold mb-4">Site Health</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-3" id="siteHealthGrid"></div>
+</div>
+
+<!-- Server Configuration -->
+<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+    <h2 class="text-gray-900 text-lg font-bold mb-4">Server Configuration</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3" id="serverConfigGrid"></div>
+</div>
+
+<%
+// Escape backticks, ${ sequences, and </script breakouts before embedding
+// this JSON inside a backtick-delimited JS string below — titles can come
+// from scraped/user content and may contain any character.
+const dashboardJson = JSON.stringify(data)
+  .replace(/\\/g, '\\\\')
+  .replace(/`/g, '\\`')
+  .replace(/\$\{/g, '\\${')
+  .replace(/</g, '\\u003c');
+%>
+<%
+pageScripts = `
+var __apex = window.ApexCharts;
+var chartIncomeExpense = null;
+var chartRevenue = null;
+var INR = new Intl.NumberFormat('en-IN');
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s == null ? '' : String(s);
+  return d.innerHTML;
+}
+function money(n) { return '₹' + INR.format(Math.round(Number(n) || 0)); }
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
+function growthClass(n) { return n >= 0 ? 'text-success' : 'text-danger'; }
+function healthClass(status) {
+  if (status === 'connected' || status === 'operational' || status === 'writable') return 'text-success border-success';
+  if (status === 'error') return 'text-danger border-danger';
+  if (status === 'not_configured') return 'text-gray-500 border-gray-300';
+  return 'text-primary border-primary';
+}
+function healthLabel(status) {
+  var map = { connected: 'Connected', operational: 'Operational', writable: 'Writable', error: 'Error', not_configured: 'Not Configured', available_manual_trigger: 'Manual Trigger' };
+  return map[status] || status;
+}
+
+function updateFilterVisibility() {
+  var type = document.getElementById('filterType').value;
+  document.getElementById('filterMonth').classList.toggle('hidden', type !== 'month');
+  document.getElementById('filterYear').classList.toggle('hidden', type !== 'month' && type !== 'year');
+  document.getElementById('filterFrom').classList.toggle('hidden', type !== 'custom');
+  document.getElementById('filterTo').classList.toggle('hidden', type !== 'custom');
+}
+
+function buildQuery() {
+  var type = document.getElementById('filterType').value;
+  var params = new URLSearchParams();
+  params.set('filter', type);
+  if (type === 'month') {
+    params.set('month', document.getElementById('filterMonth').value);
+    params.set('year', document.getElementById('filterYear').value);
+  } else if (type === 'year') {
+    params.set('year', document.getElementById('filterYear').value);
+  } else if (type === 'custom') {
+    params.set('from', document.getElementById('filterFrom').value);
+    params.set('to', document.getElementById('filterTo').value);
+  }
+  return params.toString();
+}
+
+function renderStatCards(d) {
+  document.getElementById('stat-total-users').textContent = d.stats.totalUsers;
+  document.getElementById('stat-new-users').textContent = d.stats.newUsers;
+  var ug = document.getElementById('stat-user-growth');
+  ug.textContent = (d.stats.userGrowth >= 0 ? '+' : '') + d.stats.userGrowth + '% vs prev';
+  ug.className = 'text-xs mb-0 ' + growthClass(d.stats.userGrowth);
+  document.getElementById('stat-active-users').textContent = d.stats.activeUsers;
+  document.getElementById('stat-total-posts').textContent = d.stats.totalPosts;
+  document.getElementById('stat-total-blogs').textContent = d.stats.totalBlogs;
+  document.getElementById('stat-total-courses').textContent = d.stats.totalCourses;
+  document.getElementById('stat-total-testseries').textContent = d.stats.totalTestSeries;
+  document.getElementById('stat-total-revenue').textContent = money(d.stats.totalRevenue);
+  document.getElementById('stat-total-income').textContent = money(d.stats.totalIncome);
+  document.getElementById('stat-total-expense').textContent = money(d.stats.totalExpense);
+  document.getElementById('stat-net-income').textContent = money(d.stats.netIncome);
+
+  var ig = document.getElementById('stat-income-growth');
+  ig.textContent = (d.stats.incomeGrowth >= 0 ? '+' : '') + d.stats.incomeGrowth + '% vs prev';
+  ig.className = 'text-xs mb-0 ' + growthClass(d.stats.incomeGrowth);
+
+  var eg = document.getElementById('stat-expense-growth');
+  eg.textContent = (d.stats.expenseGrowth >= 0 ? '+' : '') + d.stats.expenseGrowth + '% vs prev';
+  eg.className = 'text-xs mb-0 ' + growthClass(-d.stats.expenseGrowth);
+
+  var ng = document.getElementById('stat-net-growth');
+  ng.textContent = (d.stats.netIncomeGrowth >= 0 ? '+' : '') + d.stats.netIncomeGrowth + '% vs prev';
+  ng.className = 'text-xs mb-0 ' + growthClass(d.stats.netIncomeGrowth);
+}
+
+function renderIncomeExpenseTable(id, rows) {
+  var tbody = document.getElementById(id);
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-400">No data for this period</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-3">' + esc(r.name) + '</td>' +
+      '<td class="py-2 pr-3">' + money(r.total) + '</td>' +
+      '<td class="py-2 pr-3">' + r.percentage + '%</td>' +
+      '<td class="py-2">' + r.txn_count + '</td></tr>';
+  }).join('');
+}
+
+function renderTransactions(rows) {
+  var tbody = document.getElementById('tbody-top-transactions');
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-400">No transactions in this period</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    var badge = r.type === 'Income' ? 'text-success border-success' : 'text-danger border-danger';
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-3"><span class="inline-flex text-xs font-bold rounded-lg px-2 py-0.5 border ' + badge + '">' + r.type + '</span></td>' +
+      '<td class="py-2 pr-3">' + esc(r.category) + '</td>' +
+      '<td class="py-2 pr-3">' + esc(r.description) + '</td>' +
+      '<td class="py-2 pr-3">' + money(r.amount) + '</td>' +
+      '<td class="py-2">' + fmtDate(r.date) + '</td></tr>';
+  }).join('');
+}
+
+function renderTopPosts(id, rows) {
+  var tbody = document.getElementById(id);
+  if (!rows.length) { tbody.innerHTML = '<tr><td class="py-4 text-center text-gray-400">No data</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-2 text-gray-900 truncate max-w-[180px]">' + esc(r.post.title) + '</td>' +
+      '<td class="py-2 text-right font-semibold">' + r.count + '</td></tr>';
+  }).join('');
+}
+
+function renderCategoryPosts(rows) {
+  var tbody = document.getElementById('tbody-category-posts');
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-400">No categories</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-3">' + esc(r.name) + '</td>' +
+      '<td class="py-2 pr-3">' + r.postCount + '</td>' +
+      '<td class="py-2 pr-3">' + r.views + '</td>' +
+      '<td class="py-2 pr-3">' + r.clicks + '</td>' +
+      '<td class="py-2">' + r.ctr + '%</td></tr>';
+  }).join('');
+}
+
+function renderTopBlogs(rows) {
+  var tbody = document.getElementById('tbody-top-blogs');
+  if (!rows.length) { tbody.innerHTML = '<tr><td class="py-4 text-center text-gray-400">No blogs</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-2 text-gray-900 truncate max-w-[220px]">' + esc(r.title) + '</td>' +
+      '<td class="py-2 pr-2 text-gray-500">' + r.views + ' views</td>' +
+      '<td class="py-2 text-right font-semibold">' + r.likes_count + ' likes</td></tr>';
+  }).join('');
+}
+
+function renderBlogCategory(rows) {
+  var tbody = document.getElementById('tbody-blog-category');
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-400">No categories</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-3">' + esc(r.name) + '</td>' +
+      '<td class="py-2 pr-3">' + r.blogCount + '</td>' +
+      '<td class="py-2 pr-3">' + r.views + '</td>' +
+      '<td class="py-2">' + r.likes + '</td></tr>';
+  }).join('');
+}
+
+function renderTopPurchasable(id, rows, key) {
+  var tbody = document.getElementById(id);
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-gray-400">No sales in this period</td></tr>'; return; }
+  tbody.innerHTML = rows.map(function (r) {
+    var item = r[key];
+    return '<tr class="border-b border-border-color last:border-0">' +
+      '<td class="py-2 pr-3">' + esc(item.title) + '</td>' +
+      '<td class="py-2 pr-3">' + money(r.revenue) + '</td>' +
+      '<td class="py-2">' + r.enrollments + '</td></tr>';
+  }).join('');
+}
+
+function renderSiteHealth(h) {
+  var items = [
+    ['Application', h.application], ['Database', h.database], ['Cache', h.cache],
+    ['Storage', h.storage], ['Queue', h.queue], ['Cron', h.cron],
+  ];
+  document.getElementById('siteHealthGrid').innerHTML = items.map(function (it) {
+    return '<div class="p-3 rounded-lg border border-border-color text-center">' +
+      '<p class="text-xs text-gray-500 mb-1">' + it[0] + '</p>' +
+      '<span class="inline-flex text-xs font-bold rounded-lg px-2 py-1 border ' + healthClass(it[1]) + '">' + healthLabel(it[1]) + '</span></div>';
+  }).join('');
+}
+
+function renderServerConfig(c) {
+  var items = [
+    ['Node Version', c.nodeVersion], ['Environment', c.environment], ['Server OS', c.serverOs],
+    ['Memory', c.memoryFree + ' free / ' + c.memoryTotal], ['Heap', c.heapUsed + ' / ' + c.heapTotal],
+    ['Uptime', c.uptime], ['Disk', c.diskFree + ' free / ' + c.diskTotal], ['Timezone', c.timezone],
+  ];
+  document.getElementById('serverConfigGrid').innerHTML = items.map(function (it) {
+    return '<div class="p-3 rounded-lg border border-border-color">' +
+      '<p class="text-xs text-gray-500 mb-1">' + it[0] + '</p>' +
+      '<p class="text-sm font-semibold text-gray-900 mb-0 truncate">' + esc(it[1]) + '</p></div>';
+  }).join('');
+}
+
+function renderCharts(d) {
+  var dates = d.incomeExpense.series.length ? [...new Set(d.incomeExpense.series.map(function (s) { return s.date; }))].sort() : [];
+  var incomeMap = {}, expenseMap = {};
+  d.incomeExpense.series.forEach(function (s) {
+    if (s.type === 'income') incomeMap[s.date] = s.total; else expenseMap[s.date] = s.total;
+  });
+  var incomeData = dates.map(function (dt) { return incomeMap[dt] || 0; });
+  var expenseData = dates.map(function (dt) { return expenseMap[dt] || 0; });
+  var netData = dates.map(function (dt, i) { return (incomeData[i] || 0) - (expenseData[i] || 0); });
+
+  var ieOptions = {
+    chart: { type: 'area', height: 320, toolbar: { show: false }, fontFamily: 'inherit' },
+    series: [
+      { name: 'Income', data: incomeData }, { name: 'Expense', data: expenseData }, { name: 'Net Income', data: netData },
+    ],
+    xaxis: { categories: dates.length ? dates : ['No data'], labels: { style: { fontSize: '11px' } } },
+    colors: ['#22c55e', '#ef4444', '#3b82f6'],
+    stroke: { curve: 'smooth', width: 2 },
+    dataLabels: { enabled: false },
+    legend: { position: 'top' },
+  };
+
+  if (chartIncomeExpense) { chartIncomeExpense.updateOptions(ieOptions); }
+  else if (__apex) { chartIncomeExpense = new __apex(document.querySelector('#chartIncomeExpense'), ieOptions); chartIncomeExpense.render(); }
+
+  var revOptions = {
+    chart: { type: 'donut', height: 320, fontFamily: 'inherit' },
+    series: [d.revenueBreakdown.course, d.revenueBreakdown.testSeries, d.revenueBreakdown.other],
+    labels: ['Course Revenue', 'Test Series Revenue', 'Other'],
+    colors: ['#3b82f6', '#f97316', '#a3a3a3'],
+    legend: { position: 'bottom' },
+  };
+
+  if (chartRevenue) { chartRevenue.updateOptions(revOptions); }
+  else if (__apex) { chartRevenue = new __apex(document.querySelector('#chartRevenue'), revOptions); chartRevenue.render(); }
+}
+
+function renderDashboard(d) {
+  document.getElementById('rangeLabel').textContent = d.range.label;
+  renderStatCards(d);
+  renderIncomeExpenseTable('tbody-income-category', d.incomeExpense.incomeByCategory);
+  renderIncomeExpenseTable('tbody-expense-category', d.incomeExpense.expenseByCategory);
+  renderTransactions(d.incomeExpense.topTransactions);
+  renderTopPosts('tbody-top-posts-views', d.posts.topByViews);
+  renderTopPosts('tbody-top-posts-clicks', d.posts.topByClicks);
+  renderTopPosts('tbody-top-posts-likes', d.posts.topByLikes);
+  document.getElementById('posts-ctr').textContent = d.posts.ctr;
+  renderCategoryPosts(d.posts.byCategory);
+  renderTopBlogs(d.blogs.topByViews);
+  renderBlogCategory(d.blogs.byCategory);
+  renderTopPurchasable('tbody-top-courses', d.courses.top, 'course');
+  renderTopPurchasable('tbody-top-testseries', d.testSeries.top, 'testSeries');
+  renderSiteHealth(d.siteHealth);
+  renderServerConfig(d.serverConfig);
+  renderCharts(d);
+}
+
+async function applyFilter() {
+  var btn = document.getElementById('applyFilterBtn');
+  var spinner = document.getElementById('filterSpinner');
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+  try {
+    var qs = buildQuery();
+    var res = await fetch('/admin/tracking-report/data?' + qs, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    var json = await res.json();
+    if (json.ok) {
+      renderDashboard(json.data);
+      try { history.replaceState(null, '', '/admin/tracking-report?' + qs); } catch (e2) { /* non-critical */ }
+    }
+  } catch (e) {
+    console.error('Tracking report refresh failed:', e);
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+  }
+}
+
+document.getElementById('filterType').addEventListener('change', function () { updateFilterVisibility(); });
+document.getElementById('applyFilterBtn').addEventListener('click', applyFilter);
+updateFilterVisibility();
+renderDashboard(${dashboardJson});
+`;
+%>
+
+<%- include('../../adminlayout/admin-layout-bottom') %>

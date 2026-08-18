@@ -1,238 +1,196 @@
 <%
 var pageStyles = `
-.category-header {
-    margin: 0 0 8px;
-    padding: 0;
-}
-
-.category-header h1 {
-    font-size: 30px;
-    line-height: 1.25;
-    color: #0000a0;
-    font-weight: 500;
-    margin: 0 0 20px;
-        margin-left: 22px;
-}
-
-.category-header p.subtitle {
-    font-size: 14px;
-    line-height: 1.55;
+/* BASE CLEAN STYLES */
+.category-wrapper {
+    width: 100%;
+    max-width: 1150px;
+    margin: 10px auto;
+    padding: 0 15px;
+    display: flex;
+    gap: 30px;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     color: #111;
-    margin: 0 0 2px;
-        margin-left: 22px;
 }
 
-.category-header p.subtitle a {
-    color: #0000ee;
-    text-decoration: none;
-    font-weight: 600;
+.category-main { flex: 1; min-width: 0; }
+
+/* HEADER SECTION */
+.category-header h1 {
+    font-size: 28px;
+    line-height: 1.2;
+    color: #ff00ff;
+    font-weight: 700;
+    margin: 0 0 10px 0;
 }
 
-.category-header p.subtitle a:hover {
-    text-decoration: underline;
-}
+.category-header p.subtitle { font-size: 14px; line-height: 1.6; color: #222; margin: 0 0 8px 0; }
+.category-header p.subtitle a { color: #0000ee; text-decoration: none; font-weight: 600; }
+.category-header p.subtitle a:hover { text-decoration: underline; }
 
 .category-header p.hindi-info {
     font-size: 14px;
-    line-height: 1.55;
-    color: #111;
-    margin: 0 0 8px;
-        margin-left: 22px;
+    line-height: 1.6;
+    color: #222;
+    margin: 0 0 15px 0;
+    border-left: 3px solid #6a1b9a;
+    padding-left: 10px;
 }
 
-.category-header p.hindi-info strong {
-    color: #000;
+/* LIVE TICKER */
+.live-ticker-box {
+    background: #fff0f0;
+    border: 1px solid #ff4d4d;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
 }
+.ticker-badge {
+    background: #d84315;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    animation: blink 1.2s infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.ticker-text { font-size: 13px; color: #b40000; font-weight: 600; }
 
+/* POST LIST STYLING */
 .latest-title {
     background: #b40000;
     color: #fff;
     text-align: center;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 700;
-    line-height: 27px;
-    height: 27px;
-    margin: 0 0 5px;
+    line-height: 28px;
+    height: 28px;
+    margin: 0 0 8px;
 }
 
-.latest-list {
-    margin: 0 0 15px;
-    padding-left: 30px;
-}
+.latest-list { margin: 0 0 20px; padding-left: 25px; }
+.latest-list li { margin: 0; padding: 3px 0; line-height: 20px; font-size: 13.5px; color: #111; }
+.latest-list li a { color: #0000ee; text-decoration: none; }
+.latest-list li a:hover { text-decoration: underline; }
+.latest-list .post-date { color: #111; font-weight: 500; }
 
-.latest-list li {
-    margin: 0;
-    padding: 0;
-    line-height: 20px;
+/* QUICK SEARCH */
+.quick-search-bar { margin: 15px 0; display: flex; align-items: center; gap: 10px; }
+.quick-search-bar input { width: 100%; padding: 8px 12px; border: 1px solid #ccc; font-size: 14px; outline: none; border-radius: 2px; }
+
+/* PEOPLE ALSO VIEWED */
+.people-viewed-box {
+    background-color: #fffde7;
+    border: 2px solid #fbc02d;
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin: 20px 0;
+}
+.people-viewed-title { color: #d84315; font-size: 18px; font-weight: 700; margin: 0 0 10px 0; }
+.people-viewed-list { list-style-type: disc; padding-left: 20px; margin: 0; }
+.people-viewed-list li { margin-bottom: 8px; }
+.people-viewed-list a { color: #0277bd; font-weight: 600; text-decoration: none; font-size: 14px; }
+.people-viewed-list a:hover { text-decoration: underline; }
+
+/* CONTENT BLOCKS & HEADINGS */
+.content-block { margin: 25px 0; }
+.content-block h2, .content-block h3 { font-size: 20px; margin: 0 0 10px 0; font-weight: 600; }
+.content-block p { font-size: 14px; line-height: 1.65; color: #333; margin: 0 0 10px 0; }
+
+.heading-blue { color: #0000a0; }
+.heading-magenta { color: #ff00ff; }
+.heading-green { color: #008000; }
+.heading-purple { color: #6a1b9a; }
+.heading-orange { color: #d84315; }
+
+/* TABLES & LISTS */
+.simple-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+.simple-table th, .simple-table td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+.simple-table th { background: #f4f4f4; color: #111; font-weight: 600; }
+
+.simple-bullet-list { padding-left: 20px; margin: 0 0 12px 0; }
+.simple-bullet-list li { font-size: 14px; line-height: 1.6; color: #333; margin-bottom: 5px; }
+
+/* TRAFFIC LOOP BOX */
+.traffic-loop-box {
+    background: #eef6ff;
+    border: 1px solid #b6d4fe;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 25px 0;
+    text-align: center;
+}
+.loop-btn {
+    display: inline-block;
+    background: #0000a0;
+    color: #fff !important;
+    padding: 8px 16px;
+    margin: 4px;
     font-size: 13px;
-    color: #111;
-}
-
-.latest-list li a {
-    color: #0000ee;
-    text-decoration: none;
-}
-
-.latest-list li a:hover {
-    text-decoration: underline;
-}
-
-.latest-list .post-date {
-    color: #111;
-}
-
-.category-wrapper {
-    width: 100%;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.category-main {
-    width: 100%;
-}
-
-.info-box {
-    background: transparent;
-    border: 0;
-    padding: 0;
-    margin: 0 0 5px;
-    font-size: 14px;
-    line-height: 1.55;
-    color: #111;
-}
-
-.info-box strong {
-    color: #000;
-}
-
-.about-section {
-    background: #fff;
-    border: 0;
-    border-radius: 0;
-    padding: 10px 0;
-    margin-top: 15px;
-}
-
-.about-section h2 {
-    color: #0000a0;
-    font-size: 22px;
-    margin: 0 0 8px;
-        margin-left: 22px;
-}
-
-.about-section p {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #333;
-    margin: 0 0 8px;
-        margin-left: 22px;
-}
-
-.faq-section {
-    margin-top: 15px;
-    background: #fff;
-    padding: 10px 0;
-    border: 0;
-    border-radius: 0;
-}
-
-.faq-section > h3 {
-    color: #0000a0;
-    font-size: 22px;
-    margin: 0 0 10px;
-        margin-left: 22px;
-}
-
-.faq-item {
-    margin-bottom: 5px;
-}
-
-.faq-question {
-    width: 100%;
-    text-align: left;
-    background: #f8f8f8;
-    border: 1px solid #ddd;
-    padding: 10px;
-    font-size: 15px;
     font-weight: 600;
-    cursor: pointer;
-    color: #111;
+    border-radius: 4px;
+    text-decoration: none !important;
 }
 
-.faq-question:hover {
-    background: #f1f1f1;
+/* POPUP MODAL STYLES */
+.ad-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    display: none; justify-content: center; align-items: center;
+    z-index: 99999;
+}
+.ad-modal-content {
+    background: #fff; width: 90%; max-width: 420px;
+    padding: 20px; border-radius: 8px; position: relative;
+    text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.ad-modal-close {
+    position: absolute; top: 8px; right: 12px;
+    font-size: 22px; cursor: pointer; color: #333; font-weight: bold;
 }
 
-.faq-answer {
-    display: none;
-    padding: 12px;
-    border: 1px solid #eee;
-    border-top: 0;
+/* FAQ & SIDEBAR */
+.about-section, .faq-section { margin-top: 20px; }
+.faq-item { margin-bottom: 6px; }
+.faq-question {
+    width: 100%; text-align: left; background: #f8f8f8;
+    border: 1px solid #ddd; padding: 10px 12px;
+    font-size: 14.5px; font-weight: 600; cursor: pointer; color: #111;
 }
-
-.faq-item.active .faq-answer {
-    display: block;
-}
-
-.faq-step {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
+.faq-answer { display: none; padding: 12px; border: 1px solid #eee; border-top: 0; }
+.faq-item.active .faq-answer { display: block; }
+.faq-step { display: flex; gap: 12px; margin-bottom: 12px; }
 .step-number {
-    width: 35px;
-    height: 35px;
-    min-width: 35px;
-    background: #c00;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
+    width: 30px; height: 30px; min-width: 30px;
+    background: #c00; color: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 13px;
 }
+.step-details { flex: 1; }
 
-.step-details {
-    flex: 1;
-}
+.category-sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+.side-widget { border: 1px solid #ddd; }
+.side-widget-header { background: #0000a0; color: #fff; padding: 6px 12px; font-size: 14px; font-weight: 600; }
+.side-widget-header.red { background: #b40000; }
+.side-widget-header.purple { background: #6a1b9a; }
+.side-widget-body { padding: 10px 12px; }
+.side-links { list-style: none; padding: 0; margin: 0; }
+.side-links li { border-bottom: 1px solid #f1f1f1; padding: 5px 0; }
+.side-links a { color: #0000ee; font-size: 13px; text-decoration: none; }
+.side-links a:hover { text-decoration: underline; }
+.side-btn { display: block; text-align: center; padding: 8px; color: #fff; font-weight: 600; font-size: 13px; text-decoration: none; margin-bottom: 6px; border-radius: 2px; }
+.side-btn.telegram { background: #0088cc; }
+.side-btn.whatsapp { background: #25d366; }
 
-.faq-step-img {
-    margin-top: 10px;
-    max-width: 100%;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-/* Pagination */
-.pagination {
-    margin: 15px 0;
-}
-
-/* Mobile */
-@media(max-width: 768px) {
-    .category-header h1 {
-        font-size: 26px;
-    }
-
-    .category-header p.subtitle,
-    .category-header p.hindi-info,
-    .info-box {
-        font-size: 13px;
-    }
-
-    .latest-title {
-        font-size: 18px;
-    }
-
-    .latest-list {
-        padding-left: 18px;
-    }
-
-    .latest-list li {
-        font-size: 13px;
-        line-height: 19px;
-    }
+@media(max-width: 800px) {
+    .category-wrapper { flex-direction: column; }
+    .category-sidebar { width: 100%; }
 }
 `;
 
@@ -242,173 +200,553 @@ document.querySelectorAll(".faq-question").forEach(function(btn){
         btn.parentElement.classList.toggle("active");
     });
 });
+
+function filterPosts() {
+    var input = document.getElementById('postSearchInput');
+    var filter = input.value.toLowerCase();
+    var ul = document.querySelector('.latest-list');
+    var li = ul.getElementsByTagName('li');
+
+    for (var i = 0; i < li.length; i++) {
+        var a = li[i].getElementsByTagName("a")[0];
+        if (a) {
+            var txtValue = a.textContent || a.innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+}
+
+/* POPUP DELAY LOGIC */
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        var modal = document.getElementById('autoAdModal');
+        if(modal) modal.style.display = 'flex';
+    }, 2000);
+});
+
+function closeAdModal() {
+    document.getElementById('autoAdModal').style.display = 'none';
+}
 `;
 %>
 
-<%- include('../weblayout/layout-top', { 
-    title: title, 
-    pageStyles: pageStyles 
-}) %>
+<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+<!-- AUTOMATIC POPUP AD MODAL -->
+<div id="autoAdModal" class="ad-modal-overlay">
+    <div class="ad-modal-content">
+        <span class="ad-modal-close" onclick="closeAdModal()">&times;</span>
+        <span style="font-size: 10px; color: #888; text-transform: uppercase;">Direct Alert</span>
+        <h3 style="color: #b40000; margin: 10px 0 5px;">🔥 Fresh Updates Released!</h3>
+        <p style="font-size: 13px; color: #333;">Important admit cards, result links, and new notifications updated today.</p>
+        <div style="margin: 15px 0;">
+            <a href="/category/results" class="loop-btn" style="background: #d84315; width: 80%;">Check Latest Results &raquo;</a>
+            <a href="/category/admit-card" class="loop-btn" style="background: #0000a0; width: 80%;">Download Admit Cards &raquo;</a>
+        </div>
+    </div>
+</div>
 
 <div class="category-wrapper">
 
+    <!-- MAIN CONTENT AREA -->
     <div class="category-main">
 
-        <!-- CATEGORY TITLE -->
+        <!-- CATEGORY HEADER -->
         <div class="category-header">
-
             <h1><%= category.name %></h1>
 
+            <div class="live-ticker-box">
+                <span class="ticker-badge">LIVE UPDATES</span>
+                <span class="ticker-text">Latest <%= category.name %> published today - Verification verified via Official Websites.</span>
+            </div>
+
             <p class="subtitle">
-                Welcome to <a href="/">official Sarkari Result</a> since 2009.
-                Stay informed about the Latest Jobs of various competitive exams
-                conducted by government bodies across India, whether you are waiting
-                for the Job Notification of any recruitment exam, entrance exam or
-                any other government exam then we update the Latest Job from time
-                to time to keep you informed.
-                <a href="/">Let's update.</a>
-            </p>
+    Welcome to the <strong>Sarkari Result</strong> Official Portal. Your trusted source for all authentic updates regarding <strong><%= category.name %></strong>. Here, candidates can explore official notifications, exam schedules, key eligibility criteria, and direct application links. Stay ahead with real-time updates on upcoming vacancies, hall tickets, answer keys, and final merit lists. 
+    <a href="/category/latest-jobs">View All Latest Jobs &raquo;</a>
+</p>
 
-            <p class="hindi-info">
-                <strong>● Sarkari Result</strong> में आपका स्वागत है। अगर आप सरकारी
-                नौकरी, सरकारी रिजल्ट, एडमिट कार्ड, प्रवेश परीक्षा या किसी अन्य सरकारी
-                परीक्षा की नौकरी की अधिसूचना की प्रतीक्षा कर रहे हैं, तो हम आपको
-                सूचित रखने के लिए समय-समय पर नवीनतम नौकरी अपडेट करते हैं।
-            </p>
-
+<p class="hindi-info">
+    <strong>● Sarkari Result</strong> ऑफिशियल पोर्टल पर आपका स्वागत है। <strong><%= category.name %></strong> से सम्बंधित सभी नवीनतम एवं आधिकारिक सूचनाएं, जैसे कि आवेदन की अंतिम तिथि, आयु सीमा, शैक्षणिक योग्यता, एडमिट कार्ड डाउनलोड लिंक, उत्तर कुंजी और परीक्षा परिणाम (Result) सबसे पहले यहाँ उपलब्ध कराए जाते हैं। सभी अभ्यर्थियों से अनुरोध है कि अपडेटेड जानकारी के लिए इस पेज को नियमित रूप से चेक करते रहें।
+</p>
         </div>
 
-
-        <!-- LATEST POSTS -->
+        <!-- POST LIST SECTION -->
         <div class="latest-title">
             All <%= category.name %>
         </div>
 
         <ul class="latest-list">
-
             <% if (posts && posts.length) { %>
-
                 <% posts.forEach(function(post) { %>
-
                     <li>
-                        <a href="/post/<%= post.slug %>">
-                            <%= post.title %>
-                        </a>
-
-                      <% if (post.lastDate) { %>
-    <span class="post-date">
-        – Last Date:
-        <%= formatDate(post.lastDate, 'DD MMMM YYYY') %>
-    </span>
-<% } %>
+                        <a href="/post/<%= post.slug %>"><%= post.title %></a>
+                        <% if (post.lastDate) { %>
+                            <span class="post-date">– Last Date: <%= formatDate(post.lastDate, 'DD MMMM YYYY') %></span>
+                        <% } %>
                     </li>
-
                 <% }) %>
-
             <% } else { %>
-
-                <li>No latest updates available.</li>
-
+                <li>No updates found in <%= category.name %>.</li>
             <% } %>
-
         </ul>
 
-
-        <!-- PAGINATION -->
         <%- include('../partials/pagination', { pagination: pagination }) %>
 
-
-        <!-- ABOUT -->
-        <div class="about-section">
-
-            <h2>
-                About <%= category.name %>
-            </h2>
-
-            <p>
-                <%= category.name %> section helps candidates to find the latest
-                openings, eligibility, important dates, notifications and
-                application details for government exams.
-            </p>
-
-            <p>
-                We update this page regularly so you get accurate and fast
-                government job and examination updates.
-            </p>
-
+        <!-- SEARCH FILTER -->
+        <div class="quick-search-bar">
+            <input type="text" id="postSearchInput" onkeyup="filterPosts()" placeholder="🔍 Quick Filter in <%= category.name %>...">
         </div>
 
+        <!-- Dynamic Slug Detection Variable -->
+        <% var slug = category.slug ? category.slug.toLowerCase() : ''; %>
 
-        <!-- FAQ -->
+        <!-- =================================================================== -->
+        <!-- 1. UNIQUE SECTIONS FOR "LATEST JOBS" CATEGORY                      -->
+        <!-- =================================================================== -->
+        <% if (slug.includes('job') || slug.includes('latest-jobs')) { %>
+            
+            <div class="content-block">
+                <h3 class="heading-blue">📋 Standard Educational & Eligibility Criteria</h3>
+                <p>Check minimum qualification guidelines and standard requirements before applying for government jobs:</p>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Job Category / Level</th>
+                            <th>Minimum Qualification</th>
+                            <th>General Age Limit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10th / 12th Pass Recruitment</td>
+                            <td>High School / Intermediate Certificate from recognized board</td>
+                            <td>18 - 25 Years</td>
+                        </tr>
+                        <tr>
+                            <td>Graduate Level Posts (SSC CGL, UPSC, State PSC)</td>
+                            <td>Bachelor's Degree in any discipline</td>
+                            <td>18 - 30 Years</td>
+                        </tr>
+                        <tr>
+                            <td>Technical / Engineering / Diploma</td>
+                            <td>ITI / Polytechnic Diploma / B.Tech Degree</td>
+                            <td>18 - 35 Years</td>
+                        </tr>
+                        <tr>
+                            <td>Defence & Police Services</td>
+                            <td>10th / 12th Pass + Physical Standards (PST/PET)</td>
+                            <td>18 - 23 Years</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-purple">📂 Mandatory Documents for Online Form Submission</h3>
+                <p>Ensure you have scanned copies of the following documents ready before applying online:</p>
+                <ul class="simple-bullet-list">
+                    <li><strong>Educational Certificates:</strong> Class 10th & 12th Marksheets, Graduation Degrees, or Diploma certificates.</li>
+                    <li><strong>Identity Proof:</strong> Valid Photo ID proof (e.g., Voter ID, PAN Card, Passport, or Driving License).</li>
+                    <li><strong>Photograph & Signature:</strong> Recent passport-size photograph with light background and clear signature on white paper.</li>
+                    <li><strong>Category Certificate:</strong> Reservation Certificate for SC/ST/OBC (NCL)/EWS, if applicable.</li>
+                    <li><strong>Domicile & Residence:</strong> State residence certificate where required for state-level recruitments.</li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-orange">📌 Standard Upper Age Relaxation Norms</h3>
+                <ul class="simple-bullet-list">
+                    <li><strong>OBC (Non-Creamy Layer):</strong> 3 Years Relaxation in Upper Age Limit.</li>
+                    <li><strong>SC / ST Candidates:</strong> 5 Years Relaxation in Upper Age Limit.</li>
+                    <li><strong>PwD Candidates:</strong> 10 to 15 Years Relaxation as per Central/State government norms.</li>
+                    <li><strong>Ex-Servicemen (ESM):</strong> As per applicable Defense rules & services rendered.</li>
+                </ul>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box">
+                <h4 style="margin:0 0 8px 0; color:#0000a0;">⚡ Applied for these Jobs? Next Steps:</h4>
+                <a href="/category/admit-card" class="loop-btn">Check Release Date of Admit Cards</a>
+                <a href="/category/syllabus" class="loop-btn">Download Updated Syllabus & Pattern</a>
+            </div>
+
+        <!-- =================================================================== -->
+        <!-- 2. UNIQUE SECTIONS FOR "RESULTS" CATEGORY                          -->
+        <!-- =================================================================== -->
+        <% } else if (slug.includes('result')) { %>
+
+            <div class="content-block">
+                <h3 class="heading-magenta">🔍 Step-By-Step Guide to Check Online Results & Scorecards</h3>
+                <p>Follow this standard step-by-step procedure to access your scorecards and download merit lists safely:</p>
+                <ul class="simple-bullet-list">
+                    <li><strong>Step 1:</strong> Select your respective recruitment exam link from the updated list above.</li>
+                    <li><strong>Step 2:</strong> Click on the official "Download Result / Scorecard" link provided on the post page.</li>
+                    <li><strong>Step 3:</strong> Enter your Registration Number, Roll Number, and Password or Date of Birth.</li>
+                    <li><strong>Step 4:</strong> Verify the Security Captcha Code and click the "Submit" button.</li>
+                    <li><strong>Step 5:</strong> Use <kbd>Ctrl + F</kbd> on desktop or "Find in Page" on mobile to search your Roll Number in Merit List PDFs.</li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-purple">📊 Merit List Types & Tie-Breaking Resolution Rules</h3>
+                <p>Understand the standard criteria used by exam boards when candidates achieve equal marks:</p>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Criteria / Tie Condition</th>
+                            <th>Resolution & Priority Rule</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Main / Core Subject Marks</td>
+                            <td>Candidate with higher marks in Core or Domain Subject gets higher rank.</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Birth (Seniority)</td>
+                            <td>Older candidate is prioritized higher in the merit list.</td>
+                        </tr>
+                        <tr>
+                            <td>Alphabetical Order</td>
+                            <td>First letter of candidate's name as per 10th Certificate is used as final tie-breaker.</td>
+                        </tr>
+                        <tr>
+                            <td>Provisional Merit List</td>
+                            <td>Issued for Document Verification (DV) subject to final verification.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-green">📝 Document Verification (DV) Checklist</h3>
+                <p>Candidates shortlisted in the final merit list must carry the following original documents for DV:</p>
+                <ul class="simple-bullet-list">
+                    <li>Printed copy of the Online Application Form and Result/Scorecard.</li>
+                    <li>Original Class 10th Certificate for Date of Birth verification.</li>
+                    <li>Degree / Diploma marksheets and passing certificates for all semesters.</li>
+                    <li>Category & Caste Certificate issued by competent authority in prescribed format.</li>
+                    <li>No Objection Certificate (NOC) if currently employed in government organization.</li>
+                </ul>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box" style="background:#fef3e6; border-color:#fcd2a4;">
+                <h4 style="margin:0 0 8px 0; color:#d84315;">🎯 Didn't Qualify or Waiting for Answer Sheet?</h4>
+                <a href="/category/answer-key" class="loop-btn" style="background:#d84315;">Check Official Answer Keys</a>
+                <a href="/category/latest-jobs" class="loop-btn" style="background:#0000a0;">Apply For New Recruitment Forms</a>
+            </div>
+
+        <!-- =================================================================== -->
+        <!-- 3. UNIQUE SECTIONS FOR "ADMIT CARD" CATEGORY                       -->
+        <!-- =================================================================== -->
+        <% } else if (slug.includes('admit') || slug.includes('hall-ticket')) { %>
+
+            <div class="content-block">
+                <h3 class="heading-blue">🪪 Exam Hall Mandatory Entry Checklist</h3>
+                <p>Ensure you carry all mandatory items to the examination center to prevent entry denial:</p>
+                <ul class="simple-bullet-list">
+                    <li><strong>Admit Card Printout:</strong> Clear printout of Hall Ticket (preferably color print) showing clear photo and signature.</li>
+                    <li><strong>Original Photo ID Proof:</strong> Valid Government ID Card (PAN Card, Voter ID, Driving License, Passport, etc.).</li>
+                    <li><strong>Passport Photos:</strong> At least 2 recent color photographs identical to the application upload.</li>
+                    <li><strong>Stationery:</strong> Transparent ballpoint pen (Black/Blue) as specified in exam instructions.</li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-orange">🚫 Strictly Banned Items in Exam Centers</h3>
+                <ul class="simple-bullet-list">
+                    <li>Electronic devices like mobile phones, smartwatches, Bluetooth devices, and calculators.</li>
+                    <li>Study materials, books, loose paper sheets, or notebooks.</li>
+                    <li>Wallets, metal ornaments, belts with large buckles, and sunglasses.</li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-green">⚙️ Troubleshooting Common Login & Download Issues</h3>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Problem Faced</th>
+                            <th>Recommended Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Forgot Registration Number</td>
+                            <td>Click "Forgot Registration ID" link on login portal; check registered email/SMS for details.</td>
+                        </tr>
+                        <tr>
+                            <td>Invalid DOB Error</td>
+                            <td>Enter Date of Birth in exact prescribed format (e.g., DD/MM/YYYY or DDMMYYYY).</td>
+                        </tr>
+                        <tr>
+                            <td>Server / Slow Loading</td>
+                            <td>Clear browser cache/cookies, try incognito mode, or access during off-peak hours.</td>
+                        </tr>
+                        <tr>
+                            <td>Photo / Signature Missing</td>
+                            <td>Contact exam board helpdesk immediately via official helpline or email before exam date.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box">
+                <h4 style="margin:0 0 8px 0; color:#0000a0;">📚 Preparing for Exam Day?</h4>
+                <a href="/category/syllabus" class="loop-btn">Verify Last-Minute Exam Pattern & Syllabus</a>
+            </div>
+
+        <!-- =================================================================== -->
+        <!-- 4. UNIQUE SECTIONS FOR "ANSWER KEY" CATEGORY                       -->
+        <!-- =================================================================== -->
+        <% } else if (slug.includes('answer') || slug.includes('key')) { %>
+
+            <div class="content-block">
+                <h3 class="heading-purple">📝 How to Submit Objections Against Provisional Answer Keys</h3>
+                <p>If you identify discrepancies in the provisional answer key, follow the official objection procedure:</p>
+                <ul class="simple-bullet-list">
+                    <li><strong>Step 1:</strong> Log in to candidate portal using Roll Number and Date of Birth / Password.</li>
+                    <li><strong>Step 2:</strong> Open "Response Sheet & Question Paper" tab to match your recorded answers.</li>
+                    <li><strong>Step 3:</strong> Select Question ID and correct Option ID you wish to challenge.</li>
+                    <li><strong>Step 4:</strong> Upload supporting reference documents (Standard textbooks/Official sources only).</li>
+                    <li><strong>Step 5:</strong> Pay required objection fee online (Usually ₹50 to ₹100 per question).</li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-blue">📊 Difference Between Provisional & Final Answer Key</h3>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Provisional Answer Key</th>
+                            <th>Final Answer Key</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Released immediately after exam for feedback.</td>
+                            <td>Released after reviewing candidate objections.</td>
+                        </tr>
+                        <tr>
+                            <td>Open for challenge by paying a fee per question.</td>
+                            <td>Cannot be challenged under any circumstances.</td>
+                        </tr>
+                        <tr>
+                            <td>Used only for candidate self-assessment.</td>
+                            <td>Used directly by system to calculate final score & results.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box" style="background:#f3e5f5; border-color:#e1bee7;">
+                <h4 style="margin:0 0 8px 0; color:#6a1b9a;">🏆 Expected Cut-off & Final Scores</h4>
+                <a href="/category/results" class="loop-btn" style="background:#6a1b9a;">Check Final Exam Results Page</a>
+            </div>
+
+        <!-- =================================================================== -->
+        <!-- 5. UNIQUE SECTIONS FOR "SYLLABUS" CATEGORY                        -->
+        <!-- =================================================================== -->
+        <% } else if (slug.includes('syllabus') || slug.includes('pattern')) { %>
+
+            <div class="content-block">
+                <h3 class="heading-blue">📖 How to Utilize Exam Syllabus & Pattern Effectively</h3>
+                <p>Maximize your exam preparation strategy by understanding standard exam structures:</p>
+                <ul class="simple-bullet-list">
+                    <li><strong>Examine Tier-Wise Breakdown:</strong> Understand Tier 1 (Screening), Tier 2 (Mains), and Tier 3 (Skill Test/Interview) structures.</li>
+                    <li><strong>Identify Subject Weightage:</strong> Allocate extra study time to high-weightage subjects like General Awareness, Quantitative Aptitude, and Reasoning.</li>
+                    <li><strong>Understand Marking Scheme:</strong> Note positive marks per question and negative marking penalty (usually 0.25 or 0.33 marks per wrong answer).</li>
+                    <li><strong>Download PDF Curriculum:</strong> Save official PDF syllabus directly from links provided on individual post pages.</li>
+                </ul>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-green">💡 Generic Competitive Exam Structure</h3>
+                <table class="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Subject / Section</th>
+                            <th>Standard No. of Questions</th>
+                            <th>Time Allocation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>General Knowledge & Current Affairs</td>
+                            <td>25 - 50 Questions</td>
+                            <td>Combined / Sectional Timing</td>
+                        </tr>
+                        <tr>
+                            <td>Reasoning & General Intelligence</td>
+                            <td>25 - 50 Questions</td>
+                            <td>Combined / Sectional Timing</td>
+                        </tr>
+                        <tr>
+                            <td>Quantitative Aptitude / Mathematics</td>
+                            <td>25 - 50 Questions</td>
+                            <td>Combined / Sectional Timing</td>
+                        </tr>
+                        <tr>
+                            <td>English Language / Hindi Comprehension</td>
+                            <td>25 - 50 Questions</td>
+                            <td>Combined / Sectional Timing</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box">
+                <h4 style="margin:0 0 8px 0; color:#0000a0;">🚀 Ready with Syllabus? Next Step:</h4>
+                <a href="/category/latest-jobs" class="loop-btn">Explore Active Form Registrations</a>
+                <a href="/category/admit-card" class="loop-btn">Check Exam Date & Admit Cards</a>
+            </div>
+
+        <!-- =================================================================== -->
+        <!-- 6. UNIQUE SECTIONS FOR "ADMISSION" CATEGORY                       -->
+        <!-- =================================================================== -->
+        <% } else if (slug.includes('admission')) { %>
+
+            <div class="content-block">
+                <h3 class="heading-purple">🎓 General Admission & Counseling Process</h3>
+                <p>Standard guidelines for university, diploma, and competitive course admissions:</p>
+                <ul class="simple-bullet-list">
+                    <li><strong>Online Registration:</strong> Submit admission form with personal academic details before deadline.</li>
+                    <li><strong>Entrance Exam / Merit List:</strong> Admission is finalized either via entrance test ranks or 10th/12th qualifying merit percentage.</li>
+                    <li><strong>Counseling & Choice Filling:</strong> Lock preferred colleges and courses during online counseling rounds.</li>
+                    <li><strong>Seat Allotment Letter:</strong> Download seat allocation letter and pay token admission confirmation fee online.</li>
+                    <li><strong>College Reporting:</strong> Visit allotted institution with original documents for physical verification.</li>
+                </ul>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box">
+                <h4 style="margin:0 0 8px 0; color:#0000a0;">🔗 Explore Portal Sections:</h4>
+                <a href="/category/latest-jobs" class="loop-btn">Latest Jobs</a>
+                <a href="/category/results" class="loop-btn">Entrance Results</a>
+            </div>
+
+        <!-- =================================================================== -->
+        <!-- 7. DEFAULT / OTHER CATEGORIES                                      -->
+        <!-- =================================================================== -->
+        <% } else { %>
+
+            <div class="content-block">
+                <h3 class="heading-blue">📌 Comprehensive Guidelines & Instructions</h3>
+                <p>Ensure you regularly check official notices published under <%= category.name %>. Always download original documents directly from official portal server links provided here.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="heading-green">⭐ Key Features of Sarkari Result Updates</h3>
+                <ul class="simple-bullet-list">
+                    <li>100% verified links sourced directly from official government gazettes & commission portals.</li>
+                    <li>Fast server direct download links for Admit Cards, Merit Lists, and Notifications.</li>
+                    <li>Step-by-step guides for filling out online applications and handling login issues.</li>
+                </ul>
+            </div>
+
+            <!-- TRAFFIC LOOP -->
+            <div class="traffic-loop-box">
+                <h4 style="margin:0 0 8px 0; color:#0000a0;">🔗 Quick Website Navigation Links</h4>
+                <a href="/category/latest-jobs" class="loop-btn">Latest Jobs</a>
+                <a href="/category/results" class="loop-btn">Exam Results</a>
+                <a href="/category/admit-card" class="loop-btn">Admit Cards</a>
+            </div>
+
+        <% } %>
+
+
+        <!-- PEOPLE ALSO VIEWED SECTION -->
+        <div class="people-viewed-box">
+            <div class="people-viewed-title">🔥 Trending Updates across Portal</div>
+            <ul class="people-viewed-list">
+                <% if (typeof trendingPosts !== 'undefined' && trendingPosts.length) { %>
+                    <% trendingPosts.forEach(function(tPost) { %>
+                        <li><a href="/post/<%= tPost.slug %>"><%= tPost.title %></a></li>
+                    <% }) %>
+                <% } else { %>
+                    <li><a href="/category/latest-jobs">SSC CGL Online Form Update 2026</a></li>
+                    <li><a href="/category/results">UPSSSC VDO Final Merit Scorecard 2026</a></li>
+                    <li><a href="/category/admit-card">Railway RRB NTPC Admit Card Download</a></li>
+                <% } %>
+            </ul>
+        </div>
+
+        <!-- FAQ SECTION -->
         <div class="faq-section">
-
-            <h3>
-                Frequently Asked Questions
-            </h3>
-
+            <h3 class="heading-magenta">Frequently Asked Questions</h3>
             <% if (faqs && faqs.length) { %>
-
                 <% faqs.forEach(function(faq) { %>
-
                     <div class="faq-item">
-
-                        <button class="faq-question">
-                            &#10003; <%= faq.question %>
-                        </button>
-
+                        <button class="faq-question" type="button">&#10003; <%= faq.question %></button>
                         <div class="faq-answer">
-
                             <% (faq.answers || []).forEach(function(ans, index) { %>
-
                                 <div class="faq-step">
-
-                                    <div class="step-number">
-                                        <%= index + 1 %>
-                                    </div>
-
+                                    <div class="step-number"><%= index + 1 %></div>
                                     <div class="step-details">
-
-                                        <p>
-                                            <%- (ans.answer || '').replace(/\n/g, '<br>') %>
-                                        </p>
-
-                                        <% if (ans.image) { %>
-
-                                            <img
-                                                src="/uploads/faq/<%= ans.image %>"
-                                                class="faq-step-img"
-                                                alt="<%= faq.question %>"
-                                                loading="lazy"
-                                            >
-
-                                        <% } %>
-
+                                        <p><%- (ans.answer || '').replace(/\n/g, '<br>') %></p>
                                     </div>
-
                                 </div>
-
                             <% }) %>
-
                         </div>
-
                     </div>
-
                 <% }) %>
-
             <% } else { %>
-
-                <p>
-                    No FAQs found for this category.
-                </p>
-
+                <p>No FAQs available for this category.</p>
             <% } %>
-
         </div>
 
     </div>
 
+    <!-- RIGHT SIDEBAR -->
+    <aside class="category-sidebar">
+
+        <!-- Social Media Widget -->
+        <div class="side-widget">
+            <div class="side-widget-header red">Direct Channel Alerts</div>
+            <div class="side-widget-body">
+                <a href="https://t.me/" target="_blank" class="side-btn telegram">Join Telegram Channel</a>
+                <a href="https://whatsapp.com/" target="_blank" class="side-btn whatsapp">Join WhatsApp Group</a>
+            </div>
+        </div>
+
+        <!-- Category Links Navigation -->
+        <div class="side-widget">
+            <div class="side-widget-header">Explore Categories</div>
+            <div class="side-widget-body">
+                <ul class="side-links">
+                    <li><a href="/category/latest-jobs">► Latest Online Forms</a></li>
+                    <li><a href="/category/results">► Examination Results</a></li>
+                    <li><a href="/category/admit-card">► Download Hall Tickets</a></li>
+                    <li><a href="/category/answer-key">► Official Answer Keys</a></li>
+                    <li><a href="/category/syllabus">► Exam Syllabus & Pattern</a></li>
+                    <li><a href="/category/admission">► Admission Notifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Official Govt Portals Navigation -->
+        <div class="side-widget">
+            <div class="side-widget-header purple">Official Commission Links</div>
+            <div class="side-widget-body">
+                <ul class="side-links">
+                    <li><a href="/category/latest-jobs">● SSC Official Website</a></li>
+                    <li><a href="/category/latest-jobs">● UPSC Recruitment Portal</a></li>
+                    <li><a href="/category/latest-jobs">● Railway RRB Official Page</a></li>
+                    <li><a href="/category/latest-jobs">● IBPS Banking Portal</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </aside>
+
 </div>
 
-<%- include('../weblayout/layout-bottom', { 
-    pageScripts: pageScripts 
-}) %>
+<%- include('../weblayout/layout-bottom', { pageScripts: pageScripts }) %>
