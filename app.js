@@ -110,7 +110,7 @@ app.use(
 
 let uploadsPath;
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.ENV === 'production') {
     // Hostinger:
     // hbuilds/uploads
     // app: hbuilds/current/nodejs
