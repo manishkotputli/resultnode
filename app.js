@@ -102,9 +102,31 @@ app.use(
     )
 );
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+/* ---------------------------------------
+   Uploads Storage
+---------------------------------------- */
 
+let uploadsPath;
+
+if (process.env.NODE_ENV === 'production') {
+    // Hostinger:
+    // hbuilds/uploads
+    // app: hbuilds/current/nodejs
+    uploadsPath = path.resolve(__dirname, '../../uploads');
+} else {
+    // Local / development:
+    // project/uploads
+    uploadsPath = path.join(__dirname, 'uploads');
+}
+
+console.log('📁 Uploads Path:', uploadsPath);
+
+app.use(
+    '/uploads',
+    express.static(uploadsPath)
+);
 /* ---------------------------------------
    Robots.txt
 ---------------------------------------- */
