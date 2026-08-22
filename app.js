@@ -123,6 +123,7 @@ if (process.env.ENV === 'production') {
 
 console.log('📁 Uploads Path:', uploadsPath);
 
+
 app.use(
     '/uploads',
     express.static(uploadsPath)
