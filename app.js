@@ -104,6 +104,21 @@ app.use(
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+
+/* ---------------------------------------
+   Robots.txt
+---------------------------------------- */
+
+app.get('/robots.txt', (req, res) => {
+    res.type('text/plain');
+
+    res.send(
+`User-agent: *
+Allow: /
+
+Sitemap: https://sarkariresultess.com/sitemap.xml`
+    );
+});
 /* ---------------------------------------
    Session
 ---------------------------------------- */
