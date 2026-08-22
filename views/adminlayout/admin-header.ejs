@@ -27,15 +27,18 @@
         <div class="flex items-center justify-between gap-3 lg:w-full">
 
             <!-- Search -->
-            <div class="header-search hidden md:flex">
-                <div class="relative w-full">
-                    <input type="text" class="ps-3 pe-13 py-2 bg-(--topbar-input-bg) shadow border border-(--topbar-input-border) text-(--topbar-input-color) focus:border-(--topbar-input-border) placeholder:(--topbar-input-placeholder) focus:ring-0 w-full max-w-full rounded-full placeholder:text-gray-400" placeholder="Search Jobs, Results, Admit Cards" autocomplete="off" id="searchInput">
-                    <button type="button" class="cursor-pointer w-10 py-1 px-2 text-xs gap-1 bg-primary border border-(--topbar-input-border) text-(--topbar-input-icon) flex items-center justify-center absolute end-2 top-1/2 -translate-y-1/2 rounded-full dark:text-dark-white!">
-                        <i class="icon-command"></i>K
-                    </button>
-                </div>
-            </div>
+           <!-- Welcome User -->
+<div class="hidden md:flex items-center">
+    <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-500">Welcome,</span>
 
+        <span class="text-[17px] font-bold text-title">
+            <%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name)
+                ? currentUser.name
+                : 'Admin' %>
+        </span>
+    </div>
+</div>
             <!-- Quick Links -->
             <div class="m-auto hidden lg:flex items-center gap-2">
                 <a href="/admin/posts/create?category=job" class="header-nav-link bg-white border border-border-color text-dark text-sm font-medium rounded-full py-2 px-4 flex items-center gap-1 hover:bg-light transition"><i class="iconoir-media-video-folder"></i>New Job Post</a>
