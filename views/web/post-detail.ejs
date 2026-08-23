@@ -1,226 +1,1107 @@
 <%
 var pageStyles = `
-.sr-container{ max-width: 820px; margin: 20px auto; font-size: 13px; font-family: "Times New Roman", serif; }
-.sr-title{ text-align:center; font-weight:700; text-transform:uppercase; font-size:18px; }
-.sr-subtitle{ text-align:center; margin-bottom:5px; }
-.sr-brand{ text-align:center; font-weight:700; color:#cc0000; margin-bottom:10px; }
-.sr-breadcrumb{ font-size:13px; margin-bottom:10px; color:#555; }
-.sr-breadcrumb a{ color:#0033cc; text-decoration:none; }
-.sr-main-table{ width: 100%; max-width: 830px; margin: 0 auto; border-collapse: collapse; font-size: 15px; background: #fff; margin-bottom: 15px; padding: 0; }
-.sr-main-table td{ border:1px solid #000; padding: 6px 10px; }
-.sr-red-head{ background:#cc0000; color:#fff; text-align:center; }
-.sr-green-head{ background:#008000; color:#fff; text-align:center; }
-.sr-blue-head{ background:#0033cc; color:#fff; text-align:center; }
-.sr-purple-head{ background:#800080; color:#fff; text-align:center; }
-.sr-yellow-head{ background:#f2b300; color:#000; font-weight:700; text-align:center; }
-.sr-list{ margin:0; padding-left:14px; }
-.sr-list li{ margin:2px 0; }
-.sr-important-links{ width:100%; border-collapse:collapse; background:#fffbe6; }
-.sr-important-links td, .sr-important-links th{ border:1px solid #000; padding:5px; }
-.sr-link-cell{ background:#fff091; text-align:center; }
-.sr-link{ color:#0000ee; text-decoration:underline; }
-.sr-link:hover{ color:#cc0000; }
-.sr-faq-item{ padding:8px 0; border-bottom:1px solid #ddd; }
-.sr-faq-item:last-child{ border-bottom:none; }
-.sr-faq-q{ font-weight:700; color:#0033cc; margin:0 0 4px; }
-.sr-faq-a{ color:#222; }
-.sr-related-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; }
-.sr-related-item{ display:block; padding:3px 0; }
-@media (max-width:600px){ .sr-related-grid{ grid-template-columns:1fr; } }
-.sr-disclaimer{ font-size:12px; padding:6px; line-height:1.5; }
-/* ==========================================
-   CUSTOM HTML POST CONTENT
-========================================== */
 
-.sr-post-content {
+/* =========================================================
+   MAIN POST CONTAINER
+========================================================= */
+
+.sr-container {
     width: 100%;
-    margin: 15px auto;
-    background: #fff;
-    font-family: Arial, sans-serif;
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 0 10px;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     line-height: 1.6;
+    color: #222;
 }
 
-.sr-post-content img {
-    max-width: 100%;
-    height: auto;
-}
-
-.sr-post-content table {
-    max-width: 100%;
-}
-
-.sr-post-content a {
-    cursor: pointer;
-}
-
-.sr-post-content * {
+.sr-container *,
+.sr-container *::before,
+.sr-container *::after {
     box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
+
+.sr-breadcrumb {
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: #555;
+}
+
+.sr-breadcrumb a {
+    color: #0033cc;
+    text-decoration: none;
+}
+
+.sr-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   POST TITLE
+========================================================= */
+
+.sr-title {
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 22px;
+    line-height: 1.35;
+    margin: 8px 0 8px;
+    color: #111;
+}
+
+.sr-subtitle {
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #333;
+}
+
+.sr-brand {
+    text-align: center;
+    font-weight: 700;
+    color: #cc0000;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   OLD / DYNAMIC TABLE SYSTEM
+========================================================= */
+
+.sr-main-table {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto 15px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 14px;
+    background: #fff;
+}
+
+.sr-main-table td,
+.sr-main-table th {
+    border: 1px solid #000;
+    padding: 7px 10px;
+    vertical-align: top;
+}
+
+.sr-red-head {
+    background: #cc0000;
+    color: #fff;
+    text-align: center;
+}
+
+.sr-green-head {
+    background: #008000;
+    color: #fff;
+    text-align: center;
+}
+
+.sr-blue-head {
+    background: #0033cc;
+    color: #fff;
+    text-align: center;
+}
+
+.sr-purple-head {
+    background: #800080;
+    color: #fff;
+    text-align: center;
+}
+
+.sr-yellow-head {
+    background: #f2b300;
+    color: #000;
+    font-weight: 700;
+    text-align: center;
+}
+
+.sr-list {
+    margin: 5px 0;
+    padding-left: 22px;
+}
+
+.sr-list li {
+    margin: 3px 0;
+}
+
+
+/* =========================================================
+   IMPORTANT LINKS
+========================================================= */
+
+.sr-important-links {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: #fffbe6;
+    margin: 15px 0;
+}
+
+.sr-important-links td,
+.sr-important-links th {
+    border: 1px solid #000;
+    padding: 8px;
+}
+
+.sr-link-cell {
+    background: #fff091;
+    text-align: center;
+}
+
+.sr-link {
+    color: #0000ee;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.sr-link:hover {
+    color: #cc0000;
+}
+
+
+/* =========================================================
+   FAQ
+========================================================= */
+
+.sr-faq-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.sr-faq-item:last-child {
+    border-bottom: none;
+}
+
+.sr-faq-q {
+    font-weight: 700;
+    color: #0033cc;
+    margin: 0 0 4px;
+}
+
+.sr-faq-a {
+    color: #222;
+}
+
+
+/* =========================================================
+   RELATED POSTS
+========================================================= */
+
+.sr-related-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+}
+
+.sr-related-item {
+    display: block;
+    padding: 3px 0;
+}
+
+
+/* =========================================================
+   DISCLAIMER
+========================================================= */
+
+.sr-disclaimer {
+    font-size: 12px;
+    padding: 8px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CUSTOM HTML CONTENT
+   THIS IS THE IMPORTANT PART
+========================================================= */
+
+.sr-post-content {
+    width: 100%;
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 0;
+    background: #fff;
+
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    color: #222 !important;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.sr-post-content *,
+.sr-post-content *::before,
+.sr-post-content *::after {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CONTENT HEADINGS
+========================================================= */
+
+.sr-post-content h1 {
+    width: 100%;
+    margin: 20px 0 15px;
+    padding: 12px 15px;
+    background: #b40000;
+    color: #fff;
+    text-align: center;
+    font-size: 25px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.sr-post-content h2 {
+    width: 100%;
+    margin: 20px 0 15px;
+    padding: 11px 15px;
+    background: #b40000;
+    color: #fff;
+    text-align: center;
+    font-size: 23px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.sr-post-content h3 {
+    width: 100%;
+    margin: 22px 0 12px;
+    padding: 9px 12px;
+    background: #74c9ef;
+    color: #000;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.sr-post-content h4 {
+    margin: 18px 0 8px;
+    color: #b40000;
+    font-size: 17px;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   PARAGRAPH
+========================================================= */
+
+.sr-post-content p {
+    margin: 10px 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.sr-post-content strong,
+.sr-post-content b {
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   LISTS
+========================================================= */
+
+.sr-post-content ul {
+    margin: 10px 0 15px;
+    padding-left: 30px;
+    list-style-type: disc;
+}
+
+.sr-post-content ol {
+    margin: 10px 0 15px;
+    padding-left: 30px;
+    list-style-type: decimal;
+}
+
+.sr-post-content li {
+    margin: 4px 0;
+    padding-left: 3px;
+}
+
+.sr-post-content ul ul {
+    list-style-type: circle;
+}
+
+.sr-post-content ul ul ul {
+    list-style-type: square;
+}
+
+
+/* =========================================================
+   TABLES
+========================================================= */
+
+.sr-post-content table {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 15px 0 !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 14px !important;
+}
+
+.sr-post-content table th,
+.sr-post-content table td {
+    border: 1px solid #999 !important;
+    padding: 8px 10px !important;
+    vertical-align: top !important;
+    text-align: left;
+    line-height: 1.5;
+}
+
+.sr-post-content table th {
+    background: #f1f1f1;
+    color: #111;
+    font-weight: 700;
+}
+
+.sr-post-content table tr:nth-child(even) td {
+    background: #fafafa;
+}
+
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+.sr-post-content a {
+    color: #0645ad;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.sr-post-content a:hover {
+    color: #cc0000;
+}
+
+
+/* =========================================================
+   IMAGES
+========================================================= */
+
+.sr-post-content img {
+    display: block;
+    max-width: 100% !important;
+    width: auto;
+    height: auto !important;
+    margin: 12px auto;
+}
+
+.sr-post-content figure {
+    max-width: 100%;
+    margin: 15px auto;
+}
+
+.sr-post-content figure img {
+    margin: 0 auto;
+}
+
+.sr-post-content figcaption {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   BLOCKQUOTE
+========================================================= */
+
+.sr-post-content blockquote {
+    margin: 15px 0;
+    padding: 12px 15px;
+    border-left: 4px solid #74c9ef;
+    background: #f5f5f5;
+    color: #333;
+}
+
+
+/* =========================================================
+   CODE / PRE
+========================================================= */
+
+.sr-post-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 12px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.sr-post-content code {
+    font-family: Consolas, Monaco, monospace;
+}
+
+
+/* =========================================================
+   CUSTOM BOXES
+========================================================= */
+
+.sr-post-content .info-box {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+}
+
+.sr-post-content .highlight-box {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    background: #fff3cd;
+    border: 1px solid #e0c36d;
+}
+
+.sr-post-content .warning-box {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    background: #fff1f1;
+    border: 1px solid #e0a0a0;
+}
+
+.sr-post-content .success-box {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    background: #edfff1;
+    border: 1px solid #9bd3a5;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .sr-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 8px;
+        font-size: 14px;
+    }
+
+    .sr-title {
+        font-size: 19px;
+    }
 
     .sr-post-content {
-        font-size: 13px;
-        overflow-x: auto;
+        width: 100%;
+        max-width: 100%;
+        font-size: 14px !important;
+    }
+
+    .sr-post-content h1 {
+        font-size: 21px;
+    }
+
+    .sr-post-content h2 {
+        font-size: 20px;
+    }
+
+    .sr-post-content h3 {
+        font-size: 17px;
     }
 
     .sr-post-content table {
-        width: 100% !important;
+        font-size: 13px !important;
     }
 
+    .sr-post-content table th,
+    .sr-post-content table td {
+        padding: 7px !important;
+    }
 }
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .sr-container {
+        padding: 0 5px;
+    }
+
+    .sr-title {
+        font-size: 17px;
+    }
+
+    .sr-post-content {
+        font-size: 13px !important;
+    }
+
+    .sr-post-content h1 {
+        font-size: 19px;
+    }
+
+    .sr-post-content h2 {
+        font-size: 18px;
+    }
+
+    .sr-post-content h3 {
+        font-size: 16px;
+    }
+
+    .sr-post-content table {
+        font-size: 12px !important;
+    }
+
+    .sr-post-content table th,
+    .sr-post-content table td {
+        padding: 6px !important;
+    }
+
+    .sr-post-content ul,
+    .sr-post-content ol {
+        padding-left: 24px;
+    }
+}
+
 `;
+
 var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
 %>
-<%- include('../weblayout/layout-top', { title: title, pageStyles: pageStyles }) %>
+
+
+<%- include('../weblayout/layout-top', {
+    title: title,
+    pageStyles: pageStyles
+}) %>
+
 
 <div class="sr-container">
-  <div class="sr-breadcrumb">
-    <a href="/">Home</a> &rsaquo;
-    <% if (post.Category) { %>
-      <a href="/category/<%= post.Category.slug %>"><%= post.Category.name %></a> &rsaquo;
-    <% } %>
-    <span><%= post.title %></span>
-  </div>
 
-  <h1 class="sr-title"><%= post.title %></h1>
+    <!-- =====================================================
+         BREADCRUMB
+    ====================================================== -->
 
-  <div class="sr-subtitle">
-    <b>Published:</b> <%= post.post_date ? formatDate(post.post_date, 'DD MMM YYYY') : '' %>
-    <% if (post.updated_date) { %>
-      <b style="color:blue;"> | Updated:</b> <%= formatDate(post.updated_date, 'DD MMM YYYY') %>
-    <% } %>
-  </div>
-  <div class="sr-brand"><%= (site_setting && site_setting.site_title) || 'SARKARI RESULT' %></div>
+    <div class="sr-breadcrumb">
 
-  <table class="sr-main-table">
-    <tr>
-      <td colspan="2" class="sr-red-head" align="center">
-        <b><%= post.title %> &ndash; Short Details</b><br>
-        <%= (site_setting && site_setting.site_title) || 'Sarkari Result' %>
-      </td>
-    </tr>
-  </table>
+        <a href="/">Home</a>
+        &rsaquo;
 
-  <% if (post.short_description) { %>
-    <table class="sr-main-table"><tr><td><%= post.short_description %></td></tr></table>
-  <% } %>
+        <% if (post.Category) { %>
 
-  <%# Dynamic fields (EAV), grouped - replaces the old hardcoded organization/dates/fee/age columns %>
-  <%
-    var richGroups = [];
-    var listGroups = [];
-    (fieldGroups || []).forEach(function (g) {
-      if (g.fields.length === 1 && g.fields[0].field_type === 'richtext') richGroups.push(g);
-      else listGroups.push(g);
-    });
-  %>
-  <% for (var i = 0; i < listGroups.length; i += 2) { %>
-    <table class="sr-main-table">
-      <tr>
-        <td width="50%" valign="top">
-          <b><%= listGroups[i].group_name.toUpperCase() %></b>
-          <ul class="sr-list">
-            <% listGroups[i].fields.forEach(function(f) { %>
-              <li><%= f.field_label %>: <b><%= f.field_type === 'date' ? formatDate(f.field_value, 'DD MMM YYYY') : f.field_value %></b></li>
-            <% }) %>
-          </ul>
-        </td>
-        <% if (listGroups[i + 1]) { %>
-          <td width="50%" valign="top">
-            <b><%= listGroups[i + 1].group_name.toUpperCase() %></b>
-            <ul class="sr-list">
-              <% listGroups[i + 1].fields.forEach(function(f) { %>
-                <li><%= f.field_label %>: <b><%= f.field_type === 'date' ? formatDate(f.field_value, 'DD MMM YYYY') : f.field_value %></b></li>
-              <% }) %>
-            </ul>
-          </td>
-        <% } else { %>
-          <td width="50%">&nbsp;</td>
+            <a href="/category/<%= post.Category.slug %>">
+                <%= post.Category.name %>
+            </a>
+
+            &rsaquo;
+
         <% } %>
-      </tr>
-    </table>
-  <% } %>
 
-  <% richGroups.forEach(function(g, idx) { %>
-    <table class="sr-main-table">
-      <tr><td class="<%= headCycle[idx % headCycle.length] %>"><b><%= g.group_name %></b></td></tr>
-      <tr><td><%- g.fields[0].field_value %></td></tr>
-    </table>
-  <% }) %>
+        <span>
+            <%= post.title %>
+        </span>
 
-  <!-- <% if (post.full_description) { %>
-    <table class="sr-main-table">
-      <tr><td class="sr-yellow-head"><b>Full Notification</b></td></tr>
-      <tr><td><%- post.full_description %></td></tr>
-    </table>
-  <% } %> -->
-
-  <% if (post.full_description) { %>
-
-    <div class="sr-post-content">
-        <%- post.full_description %>
     </div>
 
-<% } %>
 
-  <table class="sr-important-links">
-    <tr><th colspan="2" class="sr-yellow-head">Important Links</th></tr>
-    <% if (post.links && post.links.length) { %>
-      <% post.links.forEach(function(link) { %>
+    <!-- =====================================================
+         POST HEADER
+    ====================================================== -->
+
+    <h1 class="sr-title">
+        <%= post.title %>
+    </h1>
+
+
+    <div class="sr-subtitle">
+
+        <b>Published:</b>
+
+        <%= post.post_date
+            ? formatDate(post.post_date, 'DD MMM YYYY')
+            : ''
+        %>
+
+
+        <% if (post.updated_date) { %>
+
+            <b style="color:blue;">
+                | Updated:
+            </b>
+
+            <%= formatDate(post.updated_date, 'DD MMM YYYY') %>
+
+        <% } %>
+
+    </div>
+
+
+    <div class="sr-brand">
+
+        <%= (site_setting && site_setting.site_title)
+            || 'SARKARI RESULT'
+        %>
+
+    </div>
+
+
+    <!-- =====================================================
+         SHORT DETAILS HEADER
+    ====================================================== -->
+
+    <table class="sr-main-table">
+
         <tr>
-          <td class="sr-link-cell"><%= link.label %></td>
-          <td class="sr-link-cell"><a href="/go/<%= link.id %>" class="sr-link" target="_blank">Click Here</a></td>
+
+            <td colspan="2" class="sr-red-head">
+
+                <b>
+                    <%= post.title %> – Short Details
+                </b>
+
+                <br>
+
+                <%= (site_setting && site_setting.site_title)
+                    || 'Sarkari Result'
+                %>
+
+            </td>
+
         </tr>
-      <% }) %>
-    <% } else { %>
-      <tr><td colspan="2" class="sr-link-cell">No links added yet.</td></tr>
+
+    </table>
+
+
+    <!-- =====================================================
+         SHORT DESCRIPTION
+    ====================================================== -->
+
+    <% if (post.short_description) { %>
+
+        <table class="sr-main-table">
+
+            <tr>
+
+                <td>
+
+                    <%= post.short_description %>
+
+                </td>
+
+            </tr>
+
+        </table>
+
     <% } %>
-  </table>
 
-  <% if (faqs && faqs.length) { %>
-    <table class="sr-main-table">
-      <tr><td class="sr-yellow-head"><b>Important Questions</b></td></tr>
-      <tr>
-        <td>
-          <% faqs.forEach(function(f) { %>
-            <div class="sr-faq-item">
-              <p class="sr-faq-q">Q: <%= f.question %></p>
-              <% (f.answers || []).forEach(function(a) { %>
-                <div class="sr-faq-a"><%- a.answer %></div>
-              <% }) %>
-            </div>
-          <% }) %>
-        </td>
-      </tr>
-    </table>
-  <% } %>
 
-  <table class="sr-main-table">
-    <tr><td class="sr-red-head"><b>Disclaimer</b></td></tr>
-    <tr>
-      <td class="sr-disclaimer">
-        <%= (site_setting && site_setting.site_title) || 'This website' %> is not responsible for any error in this information.
-        Please verify details from the official website before applying.
-      </td>
-    </tr>
-  </table>
+    <!-- =====================================================
+         DYNAMIC FIELDS
+    ====================================================== -->
 
-  <% if (relatedPosts && relatedPosts.length) { %>
-    <table class="sr-main-table">
-      <tr><td class="sr-green-head"><b>Related Posts</b></td></tr>
-      <tr>
-        <td>
-          <div class="sr-related-grid">
-            <% relatedPosts.forEach(function(rp) { %>
-              <a href="/post/<%= rp.slug %>" class="sr-link sr-related-item"><%= rp.title %></a>
+    <%
+        var richGroups = [];
+        var listGroups = [];
+
+        (fieldGroups || []).forEach(function (g) {
+
+            if (
+                g.fields &&
+                g.fields.length === 1 &&
+                g.fields[0].field_type === 'richtext'
+            ) {
+
+                richGroups.push(g);
+
+            } else {
+
+                listGroups.push(g);
+
+            }
+
+        });
+    %>
+
+
+    <% for (var i = 0; i < listGroups.length; i += 2) { %>
+
+        <table class="sr-main-table">
+
+            <tr>
+
+                <!-- LEFT -->
+
+                <td width="50%" valign="top">
+
+                    <b>
+                        <%= listGroups[i].group_name.toUpperCase() %>
+                    </b>
+
+                    <ul class="sr-list">
+
+                        <% listGroups[i].fields.forEach(function(f) { %>
+
+                            <li>
+
+                                <%= f.field_label %>:
+
+                                <b>
+
+                                    <%= f.field_type === 'date'
+                                        ? formatDate(
+                                            f.field_value,
+                                            'DD MMM YYYY'
+                                        )
+                                        : f.field_value
+                                    %>
+
+                                </b>
+
+                            </li>
+
+                        <% }) %>
+
+                    </ul>
+
+                </td>
+
+
+                <!-- RIGHT -->
+
+                <% if (listGroups[i + 1]) { %>
+
+                    <td width="50%" valign="top">
+
+                        <b>
+                            <%= listGroups[i + 1].group_name.toUpperCase() %>
+                        </b>
+
+                        <ul class="sr-list">
+
+                            <% listGroups[i + 1].fields.forEach(function(f) { %>
+
+                                <li>
+
+                                    <%= f.field_label %>:
+
+                                    <b>
+
+                                        <%= f.field_type === 'date'
+                                            ? formatDate(
+                                                f.field_value,
+                                                'DD MMM YYYY'
+                                            )
+                                            : f.field_value
+                                        %>
+
+                                    </b>
+
+                                </li>
+
+                            <% }) %>
+
+                        </ul>
+
+                    </td>
+
+                <% } else { %>
+
+                    <td width="50%">
+                        &nbsp;
+                    </td>
+
+                <% } %>
+
+            </tr>
+
+        </table>
+
+    <% } %>
+
+
+    <!-- =====================================================
+         RICH TEXT DYNAMIC FIELDS
+    ====================================================== -->
+
+    <% richGroups.forEach(function(g, idx) { %>
+
+        <table class="sr-main-table">
+
+            <tr>
+
+                <td class="<%= headCycle[idx % headCycle.length] %>">
+
+                    <b>
+                        <%= g.group_name %>
+                    </b>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+
+                    <%- g.fields[0].field_value %>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    <% }) %>
+
+
+    <!-- =====================================================
+         CUSTOM HTML CONTENT FROM CKEDITOR
+         
+         IMPORTANT:
+         post.full_description is rendered RAW intentionally
+         because admin saves HTML content.
+    ====================================================== -->
+
+    <% if (post.full_description) { %>
+
+        <div class="sr-post-content">
+
+            <%- post.full_description %>
+
+        </div>
+
+    <% } %>
+
+
+    <!-- =====================================================
+         IMPORTANT LINKS
+    ====================================================== -->
+
+    <table class="sr-important-links">
+
+        <tr>
+
+            <th colspan="2" class="sr-yellow-head">
+
+                Important Links
+
+            </th>
+
+        </tr>
+
+
+        <% if (post.links && post.links.length) { %>
+
+            <% post.links.forEach(function(link) { %>
+
+                <tr>
+
+                    <td class="sr-link-cell">
+
+                        <%= link.label %>
+
+                    </td>
+
+                    <td class="sr-link-cell">
+
+                        <a
+                            href="/go/<%= link.id %>"
+                            class="sr-link"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            Click Here
+                        </a>
+
+                    </td>
+
+                </tr>
+
             <% }) %>
-          </div>
-        </td>
-      </tr>
+
+        <% } else { %>
+
+            <tr>
+
+                <td
+                    colspan="2"
+                    class="sr-link-cell"
+                >
+                    No links added yet.
+                </td>
+
+            </tr>
+
+        <% } %>
+
     </table>
-  <% } %>
+
+
+    <!-- =====================================================
+         FAQ
+    ====================================================== -->
+
+    <% if (faqs && faqs.length) { %>
+
+        <table class="sr-main-table">
+
+            <tr>
+
+                <td class="sr-yellow-head">
+
+                    <b>
+                        Important Questions
+                    </b>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+
+                    <% faqs.forEach(function(f) { %>
+
+                        <div class="sr-faq-item">
+
+                            <p class="sr-faq-q">
+
+                                Q: <%= f.question %>
+
+                            </p>
+
+
+                            <% (f.answers || []).forEach(function(a) { %>
+
+                                <div class="sr-faq-a">
+
+                                    <%- a.answer %>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    <% }) %>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    <% } %>
+
+
+    <!-- =====================================================
+         DISCLAIMER
+    ====================================================== -->
+
+    <table class="sr-main-table">
+
+        <tr>
+
+            <td class="sr-red-head">
+
+                <b>
+                    Disclaimer
+                </b>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td class="sr-disclaimer">
+
+                <%= (site_setting && site_setting.site_title)
+                    || 'This website'
+                %>
+
+                is not responsible for any error in this information.
+
+                Please verify all details from the official website
+                before applying.
+
+            </td>
+
+        </tr>
+
+    </table>
+
+
+    <!-- =====================================================
+         RELATED POSTS
+    ====================================================== -->
+
+    <% if (relatedPosts && relatedPosts.length) { %>
+
+        <table class="sr-main-table">
+
+            <tr>
+
+                <td class="sr-green-head">
+
+                    <b>
+                        Related Posts
+                    </b>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+
+                    <div class="sr-related-grid">
+
+                        <% relatedPosts.forEach(function(rp) { %>
+
+                            <a
+                                href="/post/<%= rp.slug %>"
+                                class="sr-link sr-related-item"
+                            >
+
+                                <%= rp.title %>
+
+                            </a>
+
+                        <% }) %>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    <% } %>
+
+
 </div>
+
 
 <%- include('../weblayout/layout-bottom') %>
