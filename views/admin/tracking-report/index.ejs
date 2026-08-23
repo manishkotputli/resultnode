@@ -1,522 +1,3911 @@
 <%- include('../../adminlayout/admin-layout-top') %>
 
+<style>
+/* =========================================================
+   TRACKING REPORT
+========================================================= */
+
+.tracking-stat-card {
+    position: relative;
+    min-height: 126px;
+    background: #ffffff;
+    border: 1px solid #e7ebf0;
+    border-radius: 6px;
+    padding: 17px 17px 15px 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .025);
+    transition: all .2s ease;
+}
+
+.tracking-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .06);
+}
+
+.tracking-stat-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+}
+
+.stat-blue::before {
+    background: #3b82f6;
+}
+
+.stat-green::before {
+    background: #22c55e;
+}
+
+.stat-yellow::before {
+    background: #f59e0b;
+}
+
+.stat-red::before {
+    background: #ef4444;
+}
+
+.tracking-stat-content {
+    min-width: 0;
+}
+
+.tracking-stat-title {
+    margin: 0 0 7px;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.tracking-stat-value {
+    margin: 0 0 7px;
+    color: #111827;
+    font-size: 22px;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -.35px;
+}
+
+.tracking-stat-growth {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+.tracking-stat-growth.positive {
+    color: #16a34a;
+}
+
+.tracking-stat-growth.negative {
+    color: #dc2626;
+}
+
+.tracking-stat-growth span:first-child {
+    font-weight: 700;
+}
+
+.tracking-stat-growth small {
+    color: #9ca3af;
+    font-size: 10px;
+}
+
+.tracking-stat-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.tracking-stat-icon img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+.tracking-filter-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.tracking-filter {
+    min-height: 42px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .03);
+}
+
+.tracking-select,
+.tracking-date,
+.tracking-year {
+    height: 32px;
+    border: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.tracking-select {
+    min-width: 125px;
+    padding: 0 25px 0 5px;
+}
+
+.tracking-year {
+    width: 72px;
+    padding: 0 4px;
+}
+
+.tracking-date {
+    width: 125px;
+    padding: 0 5px;
+}
+
+.tracking-extra {
+    border-left: 1px solid #e5e7eb !important;
+    padding-left: 10px !important;
+}
+
+.tracking-date-arrow {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.tracking-filter-spinner {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    animation: trackingSpin .8s linear infinite;
+}
+
+@keyframes trackingSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   CHART CARDS
+========================================================= */
+
+.tracking-chart-card {
+    background: #ffffff;
+    border: 1px solid #e7ebf0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .025);
+    padding: 18px;
+}
+
+.tracking-chart-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 5px;
+}
+
+.tracking-chart-title {
+    margin: 0;
+    color: #111827;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.tracking-chart-subtitle {
+    margin: 4px 0 0;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+#chartIncomeExpense,
+#chartRevenue {
+    min-height: 320px;
+}
+
+
+/* =========================================================
+   COMMON DASHBOARD CARDS
+========================================================= */
+
+.tracking-dashboard-card {
+    background: #fff;
+    border: 1px solid #e7ebf0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .025);
+    padding: 18px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.tracking-dashboard-card table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.tracking-dashboard-card table td {
+    font-size: 12px;
+    color: #374151;
+}
+
+.tracking-dashboard-card table tbody tr:last-child {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .tracking-filter-wrap {
+        width: 100%;
+    }
+
+    .tracking-filter {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .tracking-stat-card {
+        min-height: 118px;
+    }
+
+    .tracking-stat-value {
+        font-size: 20px;
+    }
+
+    .tracking-select {
+        min-width: 115px;
+    }
+
+    .tracking-date {
+        width: 115px;
+    }
+}
+</style>
+
+
+<!-- =========================================================
+     PAGE HEADER + FILTER
+========================================================= -->
+
 <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+
     <div>
-        <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold mb-1">Tracking Report</h1>
-        <p class="text-sm text-gray-500 mb-0">Showing: <span id="rangeLabel" class="font-medium text-gray-700"><%= data.range.label %></span></p>
+        <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold mb-1">
+            Tracking Report
+        </h1>
+
+        <p class="text-sm text-gray-500 mb-0">
+            Showing:
+            <span id="rangeLabel" class="font-medium text-gray-700">
+                <%= data.range.label %>
+            </span>
+        </p>
     </div>
 
-    <!-- Date Filter -->
-    <div class="flex items-center flex-wrap gap-2">
-        <select id="filterType" class="form-select bg-white border border-border-color text-sm font-medium text-gray-900 rounded-full py-2 px-3 focus:ring-0">
-            <option value="today" <%= data.range.filter === 'today' ? 'selected' : '' %>>Today</option>
-            <option value="last_7_days" <%= data.range.filter === 'last_7_days' ? 'selected' : '' %>>Last 7 Days</option>
-            <option value="last_30_days" <%= data.range.filter === 'last_30_days' ? 'selected' : '' %>>Last 30 Days</option>
-            <option value="this_month" <%= data.range.filter === 'this_month' ? 'selected' : '' %>>This Month</option>
-            <option value="previous_month" <%= data.range.filter === 'previous_month' ? 'selected' : '' %>>Previous Month</option>
-            <option value="month" <%= data.range.filter === 'month' ? 'selected' : '' %>>Month</option>
-            <option value="year" <%= data.range.filter === 'year' ? 'selected' : '' %>>Year</option>
-            <option value="custom" <%= data.range.filter === 'custom' ? 'selected' : '' %>>Custom Range</option>
-        </select>
 
-        <select id="filterMonth" class="hidden form-select bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0">
-            <% ['January','February','March','April','May','June','July','August','September','October','November','December'].forEach(function(m, i) { %>
-                <option value="<%= i + 1 %>"><%= m %></option>
-            <% }) %>
-        </select>
-        <input type="number" id="filterYear" placeholder="Year" class="hidden form-input w-24 bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0" value="<%= new Date().getFullYear() %>">
+    <!-- Automatic Date Filter -->
+    <div class="tracking-filter-wrap">
 
-        <input type="date" id="filterFrom" class="hidden form-input bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0">
-        <input type="date" id="filterTo" class="hidden form-input bg-white border border-border-color text-sm rounded-full py-2 px-3 focus:ring-0">
+        <div class="tracking-filter">
 
-        <button type="button" id="applyFilterBtn" class="btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium inline-flex items-center gap-2 hover:bg-primary-hover transition">
-            <i class="icon-filter"></i> Apply
-        </button>
-        <span id="filterSpinner" class="hidden animate-spin text-primary"><i class="icon-loader-2"></i></span>
+            <i class="icon-calendar text-gray-500"></i>
+
+
+            <!-- Main Filter -->
+
+            <select
+                id="filterType"
+                class="tracking-select"
+            >
+
+                <option
+                    value="today"
+                    <%= data.range.filter === 'today' ? 'selected' : '' %>
+                >
+                    Today
+                </option>
+
+                <option
+                    value="last_7_days"
+                    <%= data.range.filter === 'last_7_days' ? 'selected' : '' %>
+                >
+                    Last 7 Days
+                </option>
+
+                <option
+                    value="last_30_days"
+                    <%= data.range.filter === 'last_30_days' ? 'selected' : '' %>
+                >
+                    Last 30 Days
+                </option>
+
+                <option
+                    value="this_month"
+                    <%= data.range.filter === 'this_month' ? 'selected' : '' %>
+                >
+                    This Month
+                </option>
+
+                <option
+                    value="previous_month"
+                    <%= data.range.filter === 'previous_month' ? 'selected' : '' %>
+                >
+                    Previous Month
+                </option>
+
+                <option
+                    value="month"
+                    <%= data.range.filter === 'month' ? 'selected' : '' %>
+                >
+                    Month
+                </option>
+
+                <option
+                    value="year"
+                    <%= data.range.filter === 'year' ? 'selected' : '' %>
+                >
+                    Year
+                </option>
+
+                <option
+                    value="custom"
+                    <%= data.range.filter === 'custom' ? 'selected' : '' %>
+                >
+                    Custom Range
+                </option>
+
+            </select>
+
+
+            <!-- Month -->
+
+            <select
+                id="filterMonth"
+                class="tracking-select tracking-extra hidden"
+            >
+
+                <% [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December'
+                ].forEach(function(m, i) { %>
+
+                    <option value="<%= i + 1 %>">
+                        <%= m %>
+                    </option>
+
+                <% }) %>
+
+            </select>
+
+
+            <!-- Year -->
+
+            <input
+                type="number"
+                id="filterYear"
+                min="2000"
+                max="2100"
+                value="<%= new Date().getFullYear() %>"
+                class="tracking-year tracking-extra hidden"
+            >
+
+
+            <!-- Custom From -->
+
+            <input
+                type="date"
+                id="filterFrom"
+                class="tracking-date tracking-extra hidden"
+            >
+
+
+            <span
+                id="filterDateArrow"
+                class="tracking-date-arrow hidden"
+            >
+                →
+            </span>
+
+
+            <!-- Custom To -->
+
+            <input
+                type="date"
+                id="filterTo"
+                class="tracking-date tracking-extra hidden"
+            >
+
+
+            <!-- Loading -->
+
+            <span
+                id="filterSpinner"
+                class="hidden tracking-filter-spinner"
+            >
+                <i class="icon-loader-2"></i>
+            </span>
+
+        </div>
+
     </div>
+
 </div>
 
-<!-- Stat Cards -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="statCardsGrid">
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Users</p>
-        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-users"><%= data.stats.totalUsers %></h3>
+
+
+<!-- =========================================================
+     STAT CARDS
+========================================================= -->
+
+<div
+    class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6"
+    id="statCardsGrid"
+>
+
+
+    <!-- Total Users -->
+
+    <div class="tracking-stat-card stat-blue">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Users
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-users"
+            >
+                <%= Number(data.stats.totalUsers || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p
+                class="tracking-stat-growth <%= data.stats.userGrowth >= 0 ? 'positive' : 'negative' %>"
+                id="stat-user-growth"
+            >
+                <span>
+                    <%= data.stats.userGrowth >= 0 ? '↗' : '↘' %>
+                </span>
+
+                <span>
+                    <%= data.stats.userGrowth >= 0 ? '+' : '' %><%= data.stats.userGrowth %>%
+                </span>
+
+                <small>
+                    from last month
+                </small>
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-01.svg"
+                alt="Total Users"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">New Users</p>
-        <h3 class="text-2xl font-bold text-primary mb-0" id="stat-new-users"><%= data.stats.newUsers %></h3>
-        <p class="text-xs mb-0 <%= data.stats.userGrowth >= 0 ? 'text-success' : 'text-danger' %>" id="stat-user-growth"><%= data.stats.userGrowth >= 0 ? '+' : '' %><%= data.stats.userGrowth %>% vs prev</p>
+
+
+    <!-- Active Users -->
+
+    <div class="tracking-stat-card stat-green">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Active Users
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-active-users"
+            >
+                <%= Number(data.stats.activeUsers || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p class="tracking-stat-growth positive">
+
+                <span>↗</span>
+
+                <span>
+                    Active users
+                </span>
+
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-02.svg"
+                alt="Active Users"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Active Users</p>
-        <h3 class="text-2xl font-bold text-success mb-0" id="stat-active-users"><%= data.stats.activeUsers %></h3>
+
+
+    <!-- Total Revenue -->
+
+    <div class="tracking-stat-card stat-yellow">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Revenue
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-revenue"
+            >
+                ₹<%= Number(data.stats.totalRevenue || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p class="tracking-stat-growth positive">
+
+                <span>↗</span>
+
+                <span>
+                    Revenue generated
+                </span>
+
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-03.svg"
+                alt="Total Revenue"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Posts</p>
-        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-posts"><%= data.stats.totalPosts %></h3>
+
+
+    <!-- Net Income -->
+
+    <div class="tracking-stat-card stat-red">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Net Income
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-net-income"
+            >
+                ₹<%= Number(data.stats.netIncome || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p
+                class="tracking-stat-growth <%= data.stats.netIncomeGrowth >= 0 ? 'positive' : 'negative' %>"
+                id="stat-net-growth"
+            >
+
+                <span>
+                    <%= data.stats.netIncomeGrowth >= 0 ? '↗' : '↘' %>
+                </span>
+
+                <span>
+                    <%= data.stats.netIncomeGrowth >= 0 ? '+' : '' %><%= data.stats.netIncomeGrowth %>%
+                </span>
+
+                <small>
+                    from last month
+                </small>
+
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-04.svg"
+                alt="Net Income"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Blogs</p>
-        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-blogs"><%= data.stats.totalBlogs %></h3>
+
+
+    <!-- Total Posts -->
+
+    <div class="tracking-stat-card stat-blue">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Posts
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-posts"
+            >
+                <%= Number(data.stats.totalPosts || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p class="tracking-stat-growth">
+                Content published
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-01.svg"
+                alt="Total Posts"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Courses</p>
-        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-courses"><%= data.stats.totalCourses %></h3>
+
+
+    <!-- Total Blogs -->
+
+    <div class="tracking-stat-card stat-green">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Blogs
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-blogs"
+            >
+                <%= Number(data.stats.totalBlogs || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p class="tracking-stat-growth">
+                Published blogs
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-02.svg"
+                alt="Total Blogs"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Test Series</p>
-        <h3 class="text-2xl font-bold text-gray-900 mb-0" id="stat-total-testseries"><%= data.stats.totalTestSeries %></h3>
+
+
+    <!-- Total Courses -->
+
+    <div class="tracking-stat-card stat-yellow">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Courses
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-courses"
+            >
+                <%= Number(data.stats.totalCourses || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p class="tracking-stat-growth">
+                Available courses
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-03.svg"
+                alt="Total Courses"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Revenue</p>
-        <h3 class="text-2xl font-bold text-primary mb-0" id="stat-total-revenue">₹<%= Number(data.stats.totalRevenue).toLocaleString('en-IN') %></h3>
+
+
+    <!-- Total Test Series -->
+
+    <div class="tracking-stat-card stat-red">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Test Series
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-testseries"
+            >
+                <%= Number(data.stats.totalTestSeries || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p class="tracking-stat-growth">
+                Available test series
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-04.svg"
+                alt="Total Test Series"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Income <span class="text-[10px] text-gray-400">(your own)</span></p>
-        <h3 class="text-2xl font-bold text-success mb-0" id="stat-total-income">₹<%= Number(data.stats.totalIncome).toLocaleString('en-IN') %></h3>
-        <p class="text-xs mb-0 <%= data.stats.incomeGrowth >= 0 ? 'text-success' : 'text-danger' %>" id="stat-income-growth"><%= data.stats.incomeGrowth >= 0 ? '+' : '' %><%= data.stats.incomeGrowth %>% vs prev</p>
+
+
+    <!-- Total Income -->
+
+    <div class="tracking-stat-card stat-green">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Income
+                <span class="text-[10px] text-gray-400">
+                    (your own)
+                </span>
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-income"
+            >
+                ₹<%= Number(data.stats.totalIncome || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p
+                class="tracking-stat-growth <%= data.stats.incomeGrowth >= 0 ? 'positive' : 'negative' %>"
+                id="stat-income-growth"
+            >
+                <%= data.stats.incomeGrowth >= 0 ? '+' : '' %><%= data.stats.incomeGrowth %>%
+                from last month
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-02.svg"
+                alt="Income"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Total Expense <span class="text-[10px] text-gray-400">(your own)</span></p>
-        <h3 class="text-2xl font-bold text-danger mb-0" id="stat-total-expense">₹<%= Number(data.stats.totalExpense).toLocaleString('en-IN') %></h3>
-        <p class="text-xs mb-0 <%= data.stats.expenseGrowth >= 0 ? 'text-danger' : 'text-success' %>" id="stat-expense-growth"><%= data.stats.expenseGrowth >= 0 ? '+' : '' %><%= data.stats.expenseGrowth %>% vs prev</p>
+
+
+    <!-- Total Expense -->
+
+    <div class="tracking-stat-card stat-red">
+
+        <div class="tracking-stat-content">
+
+            <p class="tracking-stat-title">
+                Total Expense
+                <span class="text-[10px] text-gray-400">
+                    (your own)
+                </span>
+            </p>
+
+            <h3
+                class="tracking-stat-value"
+                id="stat-total-expense"
+            >
+                ₹<%= Number(data.stats.totalExpense || 0).toLocaleString('en-IN') %>
+            </h3>
+
+            <p
+                class="tracking-stat-growth <%= data.stats.expenseGrowth >= 0 ? 'negative' : 'positive' %>"
+                id="stat-expense-growth"
+            >
+                <%= data.stats.expenseGrowth >= 0 ? '+' : '' %><%= data.stats.expenseGrowth %>%
+                from last month
+            </p>
+
+        </div>
+
+        <div class="tracking-stat-icon">
+
+            <img
+                src="https://crms.dreamstechnologies.com/html/assets/img/icons/elemnt-04.svg"
+                alt="Expense"
+            >
+
+        </div>
+
     </div>
-    <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-4">
-        <p class="text-xs font-medium text-gray-500 mb-1">Net Income <span class="text-[10px] text-gray-400">(your own)</span></p>
-        <h3 class="text-2xl font-bold <%= data.stats.netIncome >= 0 ? 'text-success' : 'text-danger' %> mb-0" id="stat-net-income">₹<%= Number(data.stats.netIncome).toLocaleString('en-IN') %></h3>
-        <p class="text-xs mb-0 <%= data.stats.netIncomeGrowth >= 0 ? 'text-success' : 'text-danger' %>" id="stat-net-growth"><%= data.stats.netIncomeGrowth >= 0 ? '+' : '' %><%= data.stats.netIncomeGrowth %>% vs prev</p>
-    </div>
+
 </div>
 
-<!-- Charts -->
+
+
+<!-- =========================================================
+     CHARTS
+========================================================= -->
+
 <div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+
+
+    <!-- Income / Expense -->
+
     <div class="col-span-12 xxl:col-span-8">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-lg font-bold mb-4">Income / Expense / Net Income</h2>
+
+        <div class="tracking-chart-card">
+
+            <div class="tracking-chart-header">
+
+                <div>
+
+                    <h2 class="tracking-chart-title">
+                        Revenue Performance Trend
+                    </h2>
+
+                    <p class="tracking-chart-subtitle">
+                        Comparing income, expense and net income for the selected period
+                    </p>
+
+                </div>
+
+            </div>
+
             <div id="chartIncomeExpense"></div>
+
         </div>
+
     </div>
+
+
+    <!-- Revenue Split -->
+
     <div class="col-span-12 xxl:col-span-4">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-lg font-bold mb-4">Revenue Split</h2>
+
+        <div class="tracking-chart-card">
+
+            <div class="tracking-chart-header">
+
+                <div>
+
+                    <h2 class="tracking-chart-title">
+                        Revenue Split
+                    </h2>
+
+                    <p class="tracking-chart-subtitle">
+                        Revenue distribution by source
+                    </p>
+
+                </div>
+
+            </div>
+
             <div id="chartRevenue"></div>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- Income / Expense Category tables -->
+
+
+<!-- =========================================================
+     INCOME / EXPENSE CATEGORY
+========================================================= -->
+
 <div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+
+
+    <!-- Income -->
+
     <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-lg font-bold mb-4">Income by Category</h2>
+
+        <div class="tracking-dashboard-card">
+
+            <h2 class="text-gray-900 text-lg font-bold mb-4">
+                Income by Category
+            </h2>
+
             <div class="overflow-x-auto">
+
                 <table class="w-full text-sm">
-                    <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Amount</th><th class="py-2 pr-3">%</th><th class="py-2">Txns</th></tr></thead>
+
+                    <thead>
+
+                        <tr class="text-left text-gray-500 border-b border-border-color">
+
+                            <th class="py-2 pr-3">
+                                Category
+                            </th>
+
+                            <th class="py-2 pr-3">
+                                Amount
+                            </th>
+
+                            <th class="py-2 pr-3">
+                                %
+                            </th>
+
+                            <th class="py-2">
+                                Txns
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
                     <tbody id="tbody-income-category"></tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
+
+
+    <!-- Expense -->
+
     <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-lg font-bold mb-4">Expense by Category</h2>
+
+        <div class="tracking-dashboard-card">
+
+            <h2 class="text-gray-900 text-lg font-bold mb-4">
+                Expense by Category
+            </h2>
+
             <div class="overflow-x-auto">
+
                 <table class="w-full text-sm">
-                    <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Amount</th><th class="py-2 pr-3">%</th><th class="py-2">Txns</th></tr></thead>
+
+                    <thead>
+
+                        <tr class="text-left text-gray-500 border-b border-border-color">
+
+                            <th class="py-2 pr-3">
+                                Category
+                            </th>
+
+                            <th class="py-2 pr-3">
+                                Amount
+                            </th>
+
+                            <th class="py-2 pr-3">
+                                %
+                            </th>
+
+                            <th class="py-2">
+                                Txns
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
                     <tbody id="tbody-expense-category"></tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- Top Transactions -->
-<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mb-6">
-    <h2 class="text-gray-900 text-lg font-bold mb-1">Top 5 Recent Transactions</h2>
-    <p class="text-xs text-gray-400 mb-4">Your own income/expense entries only.</p>
+
+
+<!-- =========================================================
+     TOP TRANSACTIONS
+========================================================= -->
+
+<div class="tracking-dashboard-card mb-6">
+
+    <h2 class="text-gray-900 text-lg font-bold mb-1">
+        Top 5 Recent Transactions
+    </h2>
+
+    <p class="text-xs text-gray-400 mb-4">
+        Your own income/expense entries only.
+    </p>
+
     <div class="overflow-x-auto">
+
         <table class="w-full text-sm">
-            <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Type</th><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Description</th><th class="py-2 pr-3">Amount</th><th class="py-2">Date</th></tr></thead>
+
+            <thead>
+
+                <tr class="text-left text-gray-500 border-b border-border-color">
+
+                    <th class="py-2 pr-3">
+                        Type
+                    </th>
+
+                    <th class="py-2 pr-3">
+                        Category
+                    </th>
+
+                    <th class="py-2 pr-3">
+                        Description
+                    </th>
+
+                    <th class="py-2 pr-3">
+                        Amount
+                    </th>
+
+                    <th class="py-2">
+                        Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
             <tbody id="tbody-top-transactions"></tbody>
+
         </table>
+
     </div>
+
 </div>
 
-<!-- Posts -->
+
+
+<!-- =========================================================
+     POSTS
+========================================================= -->
+
 <div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+
+
+    <!-- Views -->
+
     <div class="col-span-12 lg:col-span-4">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-base font-bold mb-4">Top 5 Posts — Views</h2>
-            <table class="w-full text-sm"><tbody id="tbody-top-posts-views"></tbody></table>
+
+        <div class="tracking-dashboard-card">
+
+            <h2 class="text-gray-900 text-base font-bold mb-4">
+                Top 5 Posts — Views
+            </h2>
+
+            <table class="w-full text-sm">
+
+                <tbody id="tbody-top-posts-views"></tbody>
+
+            </table>
+
         </div>
+
     </div>
+
+
+    <!-- Clicks -->
+
     <div class="col-span-12 lg:col-span-4">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-base font-bold mb-4">Top 5 Posts — Clicks <span class="text-xs font-normal text-gray-400">(CTR: <span id="posts-ctr"><%= data.posts.ctr %></span>%)</span></h2>
-            <table class="w-full text-sm"><tbody id="tbody-top-posts-clicks"></tbody></table>
+
+        <div class="tracking-dashboard-card">
+
+            <h2 class="text-gray-900 text-base font-bold mb-4">
+
+                Top 5 Posts — Clicks
+
+                <span class="text-xs font-normal text-gray-400">
+
+                    (CTR:
+                    <span id="posts-ctr">
+                        <%= data.posts.ctr %>
+                    </span>%)
+
+                </span>
+
+            </h2>
+
+            <table class="w-full text-sm">
+
+                <tbody id="tbody-top-posts-clicks"></tbody>
+
+            </table>
+
         </div>
+
     </div>
+
+
+    <!-- Likes -->
+
     <div class="col-span-12 lg:col-span-4">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-base font-bold mb-4">Top 5 Posts — Likes</h2>
-            <table class="w-full text-sm"><tbody id="tbody-top-posts-likes"></tbody></table>
+
+        <div class="tracking-dashboard-card">
+
+            <h2 class="text-gray-900 text-base font-bold mb-4">
+                Top 5 Posts — Likes
+            </h2>
+
+            <table class="w-full text-sm">
+
+                <tbody id="tbody-top-posts-likes"></tbody>
+
+            </table>
+
         </div>
+
     </div>
+
 </div>
 
-<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mb-6">
-    <h2 class="text-gray-900 text-lg font-bold mb-4">Category-wise Post Analytics</h2>
+
+
+<!-- =========================================================
+     CATEGORY POST ANALYTICS
+========================================================= -->
+
+<div class="tracking-dashboard-card mb-6">
+
+    <h2 class="text-gray-900 text-lg font-bold mb-4">
+        Category-wise Post Analytics
+    </h2>
+
     <div class="overflow-x-auto">
+
         <table class="w-full text-sm">
-            <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Posts</th><th class="py-2 pr-3">Views</th><th class="py-2 pr-3">Clicks</th><th class="py-2">CTR</th></tr></thead>
+
+            <thead>
+
+                <tr class="text-left text-gray-500 border-b border-border-color">
+
+                    <th class="py-2 pr-3">
+                        Category
+                    </th>
+
+                    <th class="py-2 pr-3">
+                        Posts
+                    </th>
+
+                    <th class="py-2 pr-3">
+                        Views
+                    </th>
+
+                    <th class="py-2 pr-3">
+                        Clicks
+                    </th>
+
+                    <th class="py-2">
+                        CTR
+                    </th>
+
+                </tr>
+
+            </thead>
+
             <tbody id="tbody-category-posts"></tbody>
+
         </table>
+
     </div>
+
 </div>
 
-<!-- Blogs -->
+
+
+<!-- =========================================================
+     BLOGS
+========================================================= -->
+
 <div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+
+
+    <!-- Top Blogs -->
+
     <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+
+        <div class="tracking-dashboard-card">
+
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-gray-900 text-lg font-bold mb-0">Top 5 Blogs</h2>
-                <span class="text-xs text-gray-400">All-time totals · <%= data.blogs.total %> blogs, <%= data.blogs.views %> views, <%= data.blogs.likes %> likes</span>
+
+                <h2 class="text-gray-900 text-lg font-bold mb-0">
+                    Top 5 Blogs
+                </h2>
+
+                <span class="text-xs text-gray-400">
+                    All-time totals ·
+                    <%= data.blogs.total %> blogs,
+                    <%= data.blogs.views %> views,
+                    <%= data.blogs.likes %> likes
+                </span>
+
             </div>
-            <table class="w-full text-sm"><tbody id="tbody-top-blogs"></tbody></table>
-        </div>
-    </div>
-    <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-            <h2 class="text-gray-900 text-lg font-bold mb-4">Blog Category Performance</h2>
+
             <table class="w-full text-sm">
-                <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Category</th><th class="py-2 pr-3">Blogs</th><th class="py-2 pr-3">Views</th><th class="py-2">Likes</th></tr></thead>
+
+                <tbody id="tbody-top-blogs"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Blog Categories -->
+
+    <div class="col-span-12 lg:col-span-6">
+
+        <div class="tracking-dashboard-card">
+
+            <h2 class="text-gray-900 text-lg font-bold mb-4">
+                Blog Category Performance
+            </h2>
+
+            <table class="w-full text-sm">
+
+                <thead>
+
+                    <tr class="text-left text-gray-500 border-b border-border-color">
+
+                        <th class="py-2 pr-3">
+                            Category
+                        </th>
+
+                        <th class="py-2 pr-3">
+                            Blogs
+                        </th>
+
+                        <th class="py-2 pr-3">
+                            Views
+                        </th>
+
+                        <th class="py-2">
+                            Likes
+                        </th>
+
+                    </tr>
+
+                </thead>
+
                 <tbody id="tbody-blog-category"></tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- Courses / Test Series -->
+
+
+<!-- =========================================================
+     COURSES / TEST SERIES
+========================================================= -->
+
 <div class="grid grid-cols-12 gap-4 lg:gap-6 mb-6">
+
+
+    <!-- Courses -->
+
     <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+
+        <div class="tracking-dashboard-card">
+
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-gray-900 text-lg font-bold mb-0">Top 5 Courses by Revenue</h2>
-                <span class="text-xs text-gray-400"><%= data.courses.total %> total · <%= data.courses.active %> active</span>
+
+                <h2 class="text-gray-900 text-lg font-bold mb-0">
+                    Top 5 Courses by Revenue
+                </h2>
+
+                <span class="text-xs text-gray-400">
+                    <%= data.courses.total %> total ·
+                    <%= data.courses.active %> active
+                </span>
+
             </div>
+
             <table class="w-full text-sm">
-                <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Course</th><th class="py-2 pr-3">Revenue</th><th class="py-2">Enrollments</th></tr></thead>
+
+                <thead>
+
+                    <tr class="text-left text-gray-500 border-b border-border-color">
+
+                        <th class="py-2 pr-3">
+                            Course
+                        </th>
+
+                        <th class="py-2 pr-3">
+                            Revenue
+                        </th>
+
+                        <th class="py-2">
+                            Enrollments
+                        </th>
+
+                    </tr>
+
+                </thead>
+
                 <tbody id="tbody-top-courses"></tbody>
+
             </table>
+
         </div>
+
     </div>
+
+
+    <!-- Test Series -->
+
     <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
+
+        <div class="tracking-dashboard-card">
+
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-gray-900 text-lg font-bold mb-0">Top 5 Test Series by Revenue</h2>
-                <span class="text-xs text-gray-400"><%= data.testSeries.total %> total · <%= data.testSeries.active %> active</span>
+
+                <h2 class="text-gray-900 text-lg font-bold mb-0">
+                    Top 5 Test Series by Revenue
+                </h2>
+
+                <span class="text-xs text-gray-400">
+                    <%= data.testSeries.total %> total ·
+                    <%= data.testSeries.active %> active
+                </span>
+
             </div>
+
             <table class="w-full text-sm">
-                <thead><tr class="text-left text-gray-500 border-b border-border-color"><th class="py-2 pr-3">Test Series</th><th class="py-2 pr-3">Revenue</th><th class="py-2">Enrollments</th></tr></thead>
+
+                <thead>
+
+                    <tr class="text-left text-gray-500 border-b border-border-color">
+
+                        <th class="py-2 pr-3">
+                            Test Series
+                        </th>
+
+                        <th class="py-2 pr-3">
+                            Revenue
+                        </th>
+
+                        <th class="py-2">
+                            Enrollments
+                        </th>
+
+                    </tr>
+
+                </thead>
+
                 <tbody id="tbody-top-testseries"></tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- Site Health -->
-<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5 mb-6">
-    <h2 class="text-gray-900 text-lg font-bold mb-4">Site Health</h2>
-    <div class="grid grid-cols-2 lg:grid-cols-6 gap-3" id="siteHealthGrid"></div>
+
+
+<!-- =========================================================
+     SITE HEALTH
+========================================================= -->
+
+<div class="tracking-dashboard-card mb-6">
+
+    <h2 class="text-gray-900 text-lg font-bold mb-4">
+        Site Health
+    </h2>
+
+    <div
+        class="grid grid-cols-2 lg:grid-cols-6 gap-3"
+        id="siteHealthGrid"
+    ></div>
+
 </div>
 
-<!-- Server Configuration -->
-<div class="bg-white-50 rounded-lg border border-border-color shadow-xs p-5">
-    <h2 class="text-gray-900 text-lg font-bold mb-4">Server Configuration</h2>
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3" id="serverConfigGrid"></div>
+
+
+<!-- =========================================================
+     SERVER CONFIGURATION
+========================================================= -->
+
+<div class="tracking-dashboard-card">
+
+    <h2 class="text-gray-900 text-lg font-bold mb-4">
+        Server Configuration
+    </h2>
+
+    <div
+        class="grid grid-cols-2 lg:grid-cols-5 gap-3"
+        id="serverConfigGrid"
+    ></div>
+
 </div>
+
+
 
 <%
-// Escape backticks, ${ sequences, and </script breakouts before embedding
-// this JSON inside a backtick-delimited JS string below — titles can come
-// from scraped/user content and may contain any character.
+/*
+ * Escape JSON before embedding into JavaScript.
+ */
 const dashboardJson = JSON.stringify(data)
-  .replace(/\\/g, '\\\\')
-  .replace(/`/g, '\\`')
-  .replace(/\$\{/g, '\\${')
-  .replace(/</g, '\\u003c');
+    .replace(/\\/g, '\\\\')
+    .replace(/`/g, '\\`')
+    .replace(/\$\{/g, '\\${')
+    .replace(/</g, '\\u003c');
 %>
+
+
+
 <%
+
 pageScripts = `
+
+/* =========================================================
+   APEX
+========================================================= */
+
 var __apex = window.ApexCharts;
+
 var chartIncomeExpense = null;
 var chartRevenue = null;
+
 var INR = new Intl.NumberFormat('en-IN');
 
+var filterRequestController = null;
+var filterTimer = null;
+
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
 function esc(s) {
-  var d = document.createElement('div');
-  d.textContent = s == null ? '' : String(s);
-  return d.innerHTML;
+
+    var d = document.createElement('div');
+
+    d.textContent =
+        s == null ? '' : String(s);
+
+    return d.innerHTML;
 }
-function money(n) { return '₹' + INR.format(Math.round(Number(n) || 0)); }
-function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'; }
-function growthClass(n) { return n >= 0 ? 'text-success' : 'text-danger'; }
+
+
+function money(n) {
+
+    return '₹' +
+        INR.format(
+            Math.round(
+                Number(n) || 0
+            )
+        );
+}
+
+
+function fmtDate(d) {
+
+    return d
+        ? new Date(d).toLocaleDateString(
+            'en-IN',
+            {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            }
+        )
+        : '-';
+}
+
+
+function growthClass(n) {
+
+    return Number(n) >= 0
+        ? 'positive'
+        : 'negative';
+}
+
+
 function healthClass(status) {
-  if (status === 'connected' || status === 'operational' || status === 'writable') return 'text-success border-success';
-  if (status === 'error') return 'text-danger border-danger';
-  if (status === 'not_configured') return 'text-gray-500 border-gray-300';
-  return 'text-primary border-primary';
+
+    if (
+        status === 'connected' ||
+        status === 'operational' ||
+        status === 'writable'
+    ) {
+
+        return 'text-success border-success';
+
+    }
+
+    if (status === 'error') {
+
+        return 'text-danger border-danger';
+
+    }
+
+    if (status === 'not_configured') {
+
+        return 'text-gray-500 border-gray-300';
+
+    }
+
+    return 'text-primary border-primary';
 }
+
+
 function healthLabel(status) {
-  var map = { connected: 'Connected', operational: 'Operational', writable: 'Writable', error: 'Error', not_configured: 'Not Configured', available_manual_trigger: 'Manual Trigger' };
-  return map[status] || status;
+
+    var map = {
+
+        connected: 'Connected',
+
+        operational: 'Operational',
+
+        writable: 'Writable',
+
+        error: 'Error',
+
+        not_configured: 'Not Configured',
+
+        available_manual_trigger:
+            'Manual Trigger'
+
+    };
+
+    return map[status] || status;
 }
+
+
+
+/* =========================================================
+   FILTER VISIBILITY
+========================================================= */
 
 function updateFilterVisibility() {
-  var type = document.getElementById('filterType').value;
-  document.getElementById('filterMonth').classList.toggle('hidden', type !== 'month');
-  document.getElementById('filterYear').classList.toggle('hidden', type !== 'month' && type !== 'year');
-  document.getElementById('filterFrom').classList.toggle('hidden', type !== 'custom');
-  document.getElementById('filterTo').classList.toggle('hidden', type !== 'custom');
+
+    var type =
+        document.getElementById('filterType').value;
+
+    var month =
+        document.getElementById('filterMonth');
+
+    var year =
+        document.getElementById('filterYear');
+
+    var from =
+        document.getElementById('filterFrom');
+
+    var to =
+        document.getElementById('filterTo');
+
+    var arrow =
+        document.getElementById('filterDateArrow');
+
+
+    month.classList.add('hidden');
+    year.classList.add('hidden');
+    from.classList.add('hidden');
+    to.classList.add('hidden');
+    arrow.classList.add('hidden');
+
+
+    if (type === 'month') {
+
+        month.classList.remove('hidden');
+        year.classList.remove('hidden');
+
+    }
+
+    else if (type === 'year') {
+
+        year.classList.remove('hidden');
+
+    }
+
+    else if (type === 'custom') {
+
+        from.classList.remove('hidden');
+        arrow.classList.remove('hidden');
+        to.classList.remove('hidden');
+
+    }
 }
+
+
+
+/* =========================================================
+   BUILD FILTER QUERY
+========================================================= */
 
 function buildQuery() {
-  var type = document.getElementById('filterType').value;
-  var params = new URLSearchParams();
-  params.set('filter', type);
-  if (type === 'month') {
-    params.set('month', document.getElementById('filterMonth').value);
-    params.set('year', document.getElementById('filterYear').value);
-  } else if (type === 'year') {
-    params.set('year', document.getElementById('filterYear').value);
-  } else if (type === 'custom') {
-    params.set('from', document.getElementById('filterFrom').value);
-    params.set('to', document.getElementById('filterTo').value);
-  }
-  return params.toString();
+
+    var type =
+        document.getElementById('filterType').value;
+
+    var params =
+        new URLSearchParams();
+
+    params.set(
+        'filter',
+        type
+    );
+
+
+    if (type === 'month') {
+
+        params.set(
+            'month',
+            document.getElementById('filterMonth').value
+        );
+
+        params.set(
+            'year',
+            document.getElementById('filterYear').value
+        );
+
+    }
+
+
+    else if (type === 'year') {
+
+        params.set(
+            'year',
+            document.getElementById('filterYear').value
+        );
+
+    }
+
+
+    else if (type === 'custom') {
+
+        var from =
+            document.getElementById('filterFrom').value;
+
+        var to =
+            document.getElementById('filterTo').value;
+
+
+        if (from) {
+
+            params.set(
+                'from',
+                from
+            );
+
+        }
+
+
+        if (to) {
+
+            params.set(
+                'to',
+                to
+            );
+
+        }
+
+    }
+
+
+    return params.toString();
 }
 
-function renderStatCards(d) {
-  document.getElementById('stat-total-users').textContent = d.stats.totalUsers;
-  document.getElementById('stat-new-users').textContent = d.stats.newUsers;
-  var ug = document.getElementById('stat-user-growth');
-  ug.textContent = (d.stats.userGrowth >= 0 ? '+' : '') + d.stats.userGrowth + '% vs prev';
-  ug.className = 'text-xs mb-0 ' + growthClass(d.stats.userGrowth);
-  document.getElementById('stat-active-users').textContent = d.stats.activeUsers;
-  document.getElementById('stat-total-posts').textContent = d.stats.totalPosts;
-  document.getElementById('stat-total-blogs').textContent = d.stats.totalBlogs;
-  document.getElementById('stat-total-courses').textContent = d.stats.totalCourses;
-  document.getElementById('stat-total-testseries').textContent = d.stats.totalTestSeries;
-  document.getElementById('stat-total-revenue').textContent = money(d.stats.totalRevenue);
-  document.getElementById('stat-total-income').textContent = money(d.stats.totalIncome);
-  document.getElementById('stat-total-expense').textContent = money(d.stats.totalExpense);
-  document.getElementById('stat-net-income').textContent = money(d.stats.netIncome);
 
-  var ig = document.getElementById('stat-income-growth');
-  ig.textContent = (d.stats.incomeGrowth >= 0 ? '+' : '') + d.stats.incomeGrowth + '% vs prev';
-  ig.className = 'text-xs mb-0 ' + growthClass(d.stats.incomeGrowth);
 
-  var eg = document.getElementById('stat-expense-growth');
-  eg.textContent = (d.stats.expenseGrowth >= 0 ? '+' : '') + d.stats.expenseGrowth + '% vs prev';
-  eg.className = 'text-xs mb-0 ' + growthClass(-d.stats.expenseGrowth);
+/* =========================================================
+   CUSTOM RANGE CHECK
+========================================================= */
 
-  var ng = document.getElementById('stat-net-growth');
-  ng.textContent = (d.stats.netIncomeGrowth >= 0 ? '+' : '') + d.stats.netIncomeGrowth + '% vs prev';
-  ng.className = 'text-xs mb-0 ' + growthClass(d.stats.netIncomeGrowth);
+function customRangeReady() {
+
+    var from =
+        document.getElementById('filterFrom').value;
+
+    var to =
+        document.getElementById('filterTo').value;
+
+    return !!from && !!to;
 }
 
-function renderIncomeExpenseTable(id, rows) {
-  var tbody = document.getElementById(id);
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-400">No data for this period</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-3">' + esc(r.name) + '</td>' +
-      '<td class="py-2 pr-3">' + money(r.total) + '</td>' +
-      '<td class="py-2 pr-3">' + r.percentage + '%</td>' +
-      '<td class="py-2">' + r.txn_count + '</td></tr>';
-  }).join('');
+
+
+/* =========================================================
+   AUTO FILTER
+========================================================= */
+
+function scheduleFilterApply() {
+
+    clearTimeout(filterTimer);
+
+
+    filterTimer =
+        setTimeout(
+            function () {
+
+                var type =
+                    document.getElementById('filterType').value;
+
+
+                /*
+                 * Custom range only executes
+                 * after both dates are selected.
+                 */
+
+                if (
+                    type === 'custom' &&
+                    !customRangeReady()
+                ) {
+
+                    return;
+
+                }
+
+
+                applyFilter();
+
+            },
+            120
+        );
 }
 
-function renderTransactions(rows) {
-  var tbody = document.getElementById('tbody-top-transactions');
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-400">No transactions in this period</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    var badge = r.type === 'Income' ? 'text-success border-success' : 'text-danger border-danger';
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-3"><span class="inline-flex text-xs font-bold rounded-lg px-2 py-0.5 border ' + badge + '">' + r.type + '</span></td>' +
-      '<td class="py-2 pr-3">' + esc(r.category) + '</td>' +
-      '<td class="py-2 pr-3">' + esc(r.description) + '</td>' +
-      '<td class="py-2 pr-3">' + money(r.amount) + '</td>' +
-      '<td class="py-2">' + fmtDate(r.date) + '</td></tr>';
-  }).join('');
-}
 
-function renderTopPosts(id, rows) {
-  var tbody = document.getElementById(id);
-  if (!rows.length) { tbody.innerHTML = '<tr><td class="py-4 text-center text-gray-400">No data</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-2 text-gray-900 truncate max-w-[180px]">' + esc(r.post.title) + '</td>' +
-      '<td class="py-2 text-right font-semibold">' + r.count + '</td></tr>';
-  }).join('');
-}
 
-function renderCategoryPosts(rows) {
-  var tbody = document.getElementById('tbody-category-posts');
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-400">No categories</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-3">' + esc(r.name) + '</td>' +
-      '<td class="py-2 pr-3">' + r.postCount + '</td>' +
-      '<td class="py-2 pr-3">' + r.views + '</td>' +
-      '<td class="py-2 pr-3">' + r.clicks + '</td>' +
-      '<td class="py-2">' + r.ctr + '%</td></tr>';
-  }).join('');
-}
-
-function renderTopBlogs(rows) {
-  var tbody = document.getElementById('tbody-top-blogs');
-  if (!rows.length) { tbody.innerHTML = '<tr><td class="py-4 text-center text-gray-400">No blogs</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-2 text-gray-900 truncate max-w-[220px]">' + esc(r.title) + '</td>' +
-      '<td class="py-2 pr-2 text-gray-500">' + r.views + ' views</td>' +
-      '<td class="py-2 text-right font-semibold">' + r.likes_count + ' likes</td></tr>';
-  }).join('');
-}
-
-function renderBlogCategory(rows) {
-  var tbody = document.getElementById('tbody-blog-category');
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-400">No categories</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-3">' + esc(r.name) + '</td>' +
-      '<td class="py-2 pr-3">' + r.blogCount + '</td>' +
-      '<td class="py-2 pr-3">' + r.views + '</td>' +
-      '<td class="py-2">' + r.likes + '</td></tr>';
-  }).join('');
-}
-
-function renderTopPurchasable(id, rows, key) {
-  var tbody = document.getElementById(id);
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-gray-400">No sales in this period</td></tr>'; return; }
-  tbody.innerHTML = rows.map(function (r) {
-    var item = r[key];
-    return '<tr class="border-b border-border-color last:border-0">' +
-      '<td class="py-2 pr-3">' + esc(item.title) + '</td>' +
-      '<td class="py-2 pr-3">' + money(r.revenue) + '</td>' +
-      '<td class="py-2">' + r.enrollments + '</td></tr>';
-  }).join('');
-}
-
-function renderSiteHealth(h) {
-  var items = [
-    ['Application', h.application], ['Database', h.database], ['Cache', h.cache],
-    ['Storage', h.storage], ['Queue', h.queue], ['Cron', h.cron],
-  ];
-  document.getElementById('siteHealthGrid').innerHTML = items.map(function (it) {
-    return '<div class="p-3 rounded-lg border border-border-color text-center">' +
-      '<p class="text-xs text-gray-500 mb-1">' + it[0] + '</p>' +
-      '<span class="inline-flex text-xs font-bold rounded-lg px-2 py-1 border ' + healthClass(it[1]) + '">' + healthLabel(it[1]) + '</span></div>';
-  }).join('');
-}
-
-function renderServerConfig(c) {
-  var items = [
-    ['Node Version', c.nodeVersion], ['Environment', c.environment], ['Server OS', c.serverOs],
-    ['Memory', c.memoryFree + ' free / ' + c.memoryTotal], ['Heap', c.heapUsed + ' / ' + c.heapTotal],
-    ['Uptime', c.uptime], ['Disk', c.diskFree + ' free / ' + c.diskTotal], ['Timezone', c.timezone],
-  ];
-  document.getElementById('serverConfigGrid').innerHTML = items.map(function (it) {
-    return '<div class="p-3 rounded-lg border border-border-color">' +
-      '<p class="text-xs text-gray-500 mb-1">' + it[0] + '</p>' +
-      '<p class="text-sm font-semibold text-gray-900 mb-0 truncate">' + esc(it[1]) + '</p></div>';
-  }).join('');
-}
-
-function renderCharts(d) {
-  var dates = d.incomeExpense.series.length ? [...new Set(d.incomeExpense.series.map(function (s) { return s.date; }))].sort() : [];
-  var incomeMap = {}, expenseMap = {};
-  d.incomeExpense.series.forEach(function (s) {
-    if (s.type === 'income') incomeMap[s.date] = s.total; else expenseMap[s.date] = s.total;
-  });
-  var incomeData = dates.map(function (dt) { return incomeMap[dt] || 0; });
-  var expenseData = dates.map(function (dt) { return expenseMap[dt] || 0; });
-  var netData = dates.map(function (dt, i) { return (incomeData[i] || 0) - (expenseData[i] || 0); });
-
-  var ieOptions = {
-    chart: { type: 'area', height: 320, toolbar: { show: false }, fontFamily: 'inherit' },
-    series: [
-      { name: 'Income', data: incomeData }, { name: 'Expense', data: expenseData }, { name: 'Net Income', data: netData },
-    ],
-    xaxis: { categories: dates.length ? dates : ['No data'], labels: { style: { fontSize: '11px' } } },
-    colors: ['#22c55e', '#ef4444', '#3b82f6'],
-    stroke: { curve: 'smooth', width: 2 },
-    dataLabels: { enabled: false },
-    legend: { position: 'top' },
-  };
-
-  if (chartIncomeExpense) { chartIncomeExpense.updateOptions(ieOptions); }
-  else if (__apex) { chartIncomeExpense = new __apex(document.querySelector('#chartIncomeExpense'), ieOptions); chartIncomeExpense.render(); }
-
-  var revOptions = {
-    chart: { type: 'donut', height: 320, fontFamily: 'inherit' },
-    series: [d.revenueBreakdown.course, d.revenueBreakdown.testSeries, d.revenueBreakdown.other],
-    labels: ['Course Revenue', 'Test Series Revenue', 'Other'],
-    colors: ['#3b82f6', '#f97316', '#a3a3a3'],
-    legend: { position: 'bottom' },
-  };
-
-  if (chartRevenue) { chartRevenue.updateOptions(revOptions); }
-  else if (__apex) { chartRevenue = new __apex(document.querySelector('#chartRevenue'), revOptions); chartRevenue.render(); }
-}
-
-function renderDashboard(d) {
-  document.getElementById('rangeLabel').textContent = d.range.label;
-  renderStatCards(d);
-  renderIncomeExpenseTable('tbody-income-category', d.incomeExpense.incomeByCategory);
-  renderIncomeExpenseTable('tbody-expense-category', d.incomeExpense.expenseByCategory);
-  renderTransactions(d.incomeExpense.topTransactions);
-  renderTopPosts('tbody-top-posts-views', d.posts.topByViews);
-  renderTopPosts('tbody-top-posts-clicks', d.posts.topByClicks);
-  renderTopPosts('tbody-top-posts-likes', d.posts.topByLikes);
-  document.getElementById('posts-ctr').textContent = d.posts.ctr;
-  renderCategoryPosts(d.posts.byCategory);
-  renderTopBlogs(d.blogs.topByViews);
-  renderBlogCategory(d.blogs.byCategory);
-  renderTopPurchasable('tbody-top-courses', d.courses.top, 'course');
-  renderTopPurchasable('tbody-top-testseries', d.testSeries.top, 'testSeries');
-  renderSiteHealth(d.siteHealth);
-  renderServerConfig(d.serverConfig);
-  renderCharts(d);
-}
+/* =========================================================
+   APPLY FILTER AJAX
+========================================================= */
 
 async function applyFilter() {
-  var btn = document.getElementById('applyFilterBtn');
-  var spinner = document.getElementById('filterSpinner');
-  btn.disabled = true;
-  spinner.classList.remove('hidden');
-  try {
-    var qs = buildQuery();
-    var res = await fetch('/admin/tracking-report/data?' + qs, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-    var json = await res.json();
-    if (json.ok) {
-      renderDashboard(json.data);
-      try { history.replaceState(null, '', '/admin/tracking-report?' + qs); } catch (e2) { /* non-critical */ }
+
+    var spinner =
+        document.getElementById('filterSpinner');
+
+
+    /*
+     * Cancel old request.
+     */
+
+    if (filterRequestController) {
+
+        filterRequestController.abort();
+
     }
-  } catch (e) {
-    console.error('Tracking report refresh failed:', e);
-  } finally {
-    btn.disabled = false;
-    spinner.classList.add('hidden');
-  }
+
+
+    filterRequestController =
+        new AbortController();
+
+
+    spinner.classList.remove('hidden');
+
+
+    var qs =
+        buildQuery();
+
+
+    try {
+
+        var res =
+            await fetch(
+                '/admin/tracking-report/data?' + qs,
+                {
+                    headers: {
+                        'X-Requested-With':
+                            'XMLHttpRequest'
+                    },
+
+                    signal:
+                        filterRequestController.signal
+                }
+            );
+
+
+        if (!res.ok) {
+
+            throw new Error(
+                'HTTP ' + res.status
+            );
+
+        }
+
+
+        var json =
+            await res.json();
+
+
+        if (json.ok) {
+
+            renderDashboard(
+                json.data
+            );
+
+
+            /*
+             * Update URL without page reload.
+             */
+
+            try {
+
+                history.replaceState(
+                    null,
+                    '',
+                    '/admin/tracking-report?' + qs
+                );
+
+            }
+
+            catch (e2) {
+
+                console.warn(
+                    'URL update failed',
+                    e2
+                );
+
+            }
+
+        }
+
+
+    }
+
+    catch (e) {
+
+        /*
+         * AbortError is normal when
+         * user changes filter quickly.
+         */
+
+        if (
+            e.name !== 'AbortError'
+        ) {
+
+            console.error(
+                'Tracking report refresh failed:',
+                e
+            );
+
+        }
+
+    }
+
+    finally {
+
+        spinner.classList.add('hidden');
+
+    }
 }
 
-document.getElementById('filterType').addEventListener('change', function () { updateFilterVisibility(); });
-document.getElementById('applyFilterBtn').addEventListener('click', applyFilter);
+
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
+
+function renderStatCards(d) {
+
+
+    /*
+     * Total Users
+     */
+
+    document.getElementById(
+        'stat-total-users'
+    ).textContent =
+        Number(
+            d.stats.totalUsers || 0
+        ).toLocaleString('en-IN');
+
+
+    /*
+     * Active Users
+     */
+
+    document.getElementById(
+        'stat-active-users'
+    ).textContent =
+        Number(
+            d.stats.activeUsers || 0
+        ).toLocaleString('en-IN');
+
+
+    /*
+     * Posts
+     */
+
+    document.getElementById(
+        'stat-total-posts'
+    ).textContent =
+        Number(
+            d.stats.totalPosts || 0
+        ).toLocaleString('en-IN');
+
+
+    /*
+     * Blogs
+     */
+
+    document.getElementById(
+        'stat-total-blogs'
+    ).textContent =
+        Number(
+            d.stats.totalBlogs || 0
+        ).toLocaleString('en-IN');
+
+
+    /*
+     * Courses
+     */
+
+    document.getElementById(
+        'stat-total-courses'
+    ).textContent =
+        Number(
+            d.stats.totalCourses || 0
+        ).toLocaleString('en-IN');
+
+
+    /*
+     * Test Series
+     */
+
+    document.getElementById(
+        'stat-total-testseries'
+    ).textContent =
+        Number(
+            d.stats.totalTestSeries || 0
+        ).toLocaleString('en-IN');
+
+
+    /*
+     * Revenue
+     */
+
+    document.getElementById(
+        'stat-total-revenue'
+    ).textContent =
+        money(
+            d.stats.totalRevenue
+        );
+
+
+    /*
+     * Income
+     */
+
+    document.getElementById(
+        'stat-total-income'
+    ).textContent =
+        money(
+            d.stats.totalIncome
+        );
+
+
+    /*
+     * Expense
+     */
+
+    document.getElementById(
+        'stat-total-expense'
+    ).textContent =
+        money(
+            d.stats.totalExpense
+        );
+
+
+    /*
+     * Net Income
+     */
+
+    document.getElementById(
+        'stat-net-income'
+    ).textContent =
+        money(
+            d.stats.netIncome
+        );
+
+
+    /*
+     * User Growth
+     */
+
+    var ug =
+        document.getElementById(
+            'stat-user-growth'
+        );
+
+    var userGrowth =
+        Number(
+            d.stats.userGrowth || 0
+        );
+
+
+    ug.innerHTML =
+
+        '<span>' +
+        (userGrowth >= 0 ? '↗' : '↘') +
+        '</span> ' +
+
+        '<span>' +
+        (userGrowth >= 0 ? '+' : '') +
+        userGrowth +
+        '%</span> ' +
+
+        '<small>from last month</small>';
+
+
+    ug.className =
+        'tracking-stat-growth ' +
+        (
+            userGrowth >= 0
+                ? 'positive'
+                : 'negative'
+        );
+
+
+    /*
+     * Income Growth
+     */
+
+    var ig =
+        document.getElementById(
+            'stat-income-growth'
+        );
+
+
+    var incomeGrowth =
+        Number(
+            d.stats.incomeGrowth || 0
+        );
+
+
+    ig.innerHTML =
+
+        '<span>' +
+        (incomeGrowth >= 0 ? '↗' : '↘') +
+        '</span> ' +
+
+        '<span>' +
+        (incomeGrowth >= 0 ? '+' : '') +
+        incomeGrowth +
+        '%</span> ' +
+
+        '<small>from last month</small>';
+
+
+    ig.className =
+        'tracking-stat-growth ' +
+        (
+            incomeGrowth >= 0
+                ? 'positive'
+                : 'negative'
+        );
+
+
+    /*
+     * Expense Growth
+     */
+
+    var eg =
+        document.getElementById(
+            'stat-expense-growth'
+        );
+
+
+    var expenseGrowth =
+        Number(
+            d.stats.expenseGrowth || 0
+        );
+
+
+    eg.innerHTML =
+
+        '<span>' +
+        (expenseGrowth >= 0 ? '↗' : '↘') +
+        '</span> ' +
+
+        '<span>' +
+        (expenseGrowth >= 0 ? '+' : '') +
+        expenseGrowth +
+        '%</span> ' +
+
+        '<small>from last month</small>';
+
+
+    eg.className =
+        'tracking-stat-growth ' +
+        (
+            expenseGrowth >= 0
+                ? 'negative'
+                : 'positive'
+        );
+
+
+    /*
+     * Net Growth
+     */
+
+    var ng =
+        document.getElementById(
+            'stat-net-growth'
+        );
+
+
+    var netGrowth =
+        Number(
+            d.stats.netIncomeGrowth || 0
+        );
+
+
+    ng.innerHTML =
+
+        '<span>' +
+        (netGrowth >= 0 ? '↗' : '↘') +
+        '</span> ' +
+
+        '<span>' +
+        (netGrowth >= 0 ? '+' : '') +
+        netGrowth +
+        '%</span> ' +
+
+        '<small>from last month</small>';
+
+
+    ng.className =
+        'tracking-stat-growth ' +
+        (
+            netGrowth >= 0
+                ? 'positive'
+                : 'negative'
+        );
+}
+
+
+
+/* =========================================================
+   INCOME / EXPENSE TABLE
+========================================================= */
+
+function renderIncomeExpenseTable(
+    id,
+    rows
+) {
+
+    var tbody =
+        document.getElementById(id);
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="4" class="py-4 text-center text-gray-400">' +
+            'No data for this period' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-3">' +
+                    esc(r.name) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    money(r.total) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    r.percentage +
+                    '%' +
+                    '</td>' +
+
+                    '<td class="py-2">' +
+                    r.txn_count +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+function renderTransactions(rows) {
+
+    var tbody =
+        document.getElementById(
+            'tbody-top-transactions'
+        );
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="5" class="py-4 text-center text-gray-400">' +
+            'No transactions in this period' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                var badge =
+                    r.type === 'Income'
+                        ? 'text-success border-success'
+                        : 'text-danger border-danger';
+
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-3">' +
+
+                    '<span class="inline-flex text-xs font-bold rounded-lg px-2 py-0.5 border ' +
+                    badge +
+                    '">' +
+
+                    esc(r.type) +
+
+                    '</span>' +
+
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    esc(r.category) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    esc(r.description) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    money(r.amount) +
+                    '</td>' +
+
+                    '<td class="py-2">' +
+                    fmtDate(r.date) +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   TOP POSTS
+========================================================= */
+
+function renderTopPosts(
+    id,
+    rows
+) {
+
+    var tbody =
+        document.getElementById(id);
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td class="py-4 text-center text-gray-400">' +
+            'No data' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-2 text-gray-900 truncate max-w-[180px]">' +
+                    esc(
+                        r.post &&
+                        r.post.title
+                            ? r.post.title
+                            : ''
+                    ) +
+                    '</td>' +
+
+                    '<td class="py-2 text-right font-semibold">' +
+                    r.count +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   CATEGORY POSTS
+========================================================= */
+
+function renderCategoryPosts(rows) {
+
+    var tbody =
+        document.getElementById(
+            'tbody-category-posts'
+        );
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="5" class="py-4 text-center text-gray-400">' +
+            'No categories' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-3">' +
+                    esc(r.name) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    r.postCount +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    r.views +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    r.clicks +
+                    '</td>' +
+
+                    '<td class="py-2">' +
+                    r.ctr +
+                    '%' +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   TOP BLOGS
+========================================================= */
+
+function renderTopBlogs(rows) {
+
+    var tbody =
+        document.getElementById(
+            'tbody-top-blogs'
+        );
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td class="py-4 text-center text-gray-400">' +
+            'No blogs' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-2 text-gray-900 truncate max-w-[220px]">' +
+                    esc(r.title) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-2 text-gray-500">' +
+                    r.views +
+                    ' views' +
+                    '</td>' +
+
+                    '<td class="py-2 text-right font-semibold">' +
+                    r.likes_count +
+                    ' likes' +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   BLOG CATEGORY
+========================================================= */
+
+function renderBlogCategory(rows) {
+
+    var tbody =
+        document.getElementById(
+            'tbody-blog-category'
+        );
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="4" class="py-4 text-center text-gray-400">' +
+            'No categories' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-3">' +
+                    esc(r.name) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    r.blogCount +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    r.views +
+                    '</td>' +
+
+                    '<td class="py-2">' +
+                    r.likes +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   COURSES / TEST SERIES
+========================================================= */
+
+function renderTopPurchasable(
+    id,
+    rows,
+    key
+) {
+
+    var tbody =
+        document.getElementById(id);
+
+
+    if (
+        !rows ||
+        !rows.length
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="3" class="py-4 text-center text-gray-400">' +
+            'No sales in this period' +
+            '</td>' +
+            '</tr>';
+
+        return;
+    }
+
+
+    tbody.innerHTML =
+        rows.map(
+            function (r) {
+
+                var item =
+                    r[key] || {};
+
+
+                return (
+
+                    '<tr class="border-b border-border-color last:border-0">' +
+
+                    '<td class="py-2 pr-3">' +
+                    esc(item.title) +
+                    '</td>' +
+
+                    '<td class="py-2 pr-3">' +
+                    money(r.revenue) +
+                    '</td>' +
+
+                    '<td class="py-2">' +
+                    r.enrollments +
+                    '</td>' +
+
+                    '</tr>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   SITE HEALTH
+========================================================= */
+
+function renderSiteHealth(h) {
+
+    var items = [
+
+        [
+            'Application',
+            h.application
+        ],
+
+        [
+            'Database',
+            h.database
+        ],
+
+        [
+            'Cache',
+            h.cache
+        ],
+
+        [
+            'Storage',
+            h.storage
+        ],
+
+        [
+            'Queue',
+            h.queue
+        ],
+
+        [
+            'Cron',
+            h.cron
+        ]
+
+    ];
+
+
+    document.getElementById(
+        'siteHealthGrid'
+    ).innerHTML =
+
+        items.map(
+            function (it) {
+
+                return (
+
+                    '<div class="p-3 rounded-lg border border-border-color text-center">' +
+
+                    '<p class="text-xs text-gray-500 mb-1">' +
+                    it[0] +
+                    '</p>' +
+
+                    '<span class="inline-flex text-xs font-bold rounded-lg px-2 py-1 border ' +
+                    healthClass(it[1]) +
+                    '">' +
+
+                    healthLabel(it[1]) +
+
+                    '</span>' +
+
+                    '</div>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   SERVER CONFIG
+========================================================= */
+
+function renderServerConfig(c) {
+
+    var items = [
+
+        [
+            'Node Version',
+            c.nodeVersion
+        ],
+
+        [
+            'Environment',
+            c.environment
+        ],
+
+        [
+            'Server OS',
+            c.serverOs
+        ],
+
+        [
+            'Memory',
+            c.memoryFree +
+            ' free / ' +
+            c.memoryTotal
+        ],
+
+        [
+            'Heap',
+            c.heapUsed +
+            ' / ' +
+            c.heapTotal
+        ],
+
+        [
+            'Uptime',
+            c.uptime
+        ],
+
+        [
+            'Disk',
+            c.diskFree +
+            ' free / ' +
+            c.diskTotal
+        ],
+
+        [
+            'Timezone',
+            c.timezone
+        ]
+
+    ];
+
+
+    document.getElementById(
+        'serverConfigGrid'
+    ).innerHTML =
+
+        items.map(
+            function (it) {
+
+                return (
+
+                    '<div class="p-3 rounded-lg border border-border-color">' +
+
+                    '<p class="text-xs text-gray-500 mb-1">' +
+                    it[0] +
+                    '</p>' +
+
+                    '<p class="text-sm font-semibold text-gray-900 mb-0 truncate">' +
+                    esc(it[1]) +
+                    '</p>' +
+
+                    '</div>'
+
+                );
+
+            }
+        ).join('');
+
+}
+
+
+
+/* =========================================================
+   CHARTS
+========================================================= */
+
+function renderCharts(d) {
+
+    if (!__apex) {
+
+        console.warn(
+            'ApexCharts is not loaded.'
+        );
+
+        return;
+    }
+
+
+    /* =====================================================
+       INCOME / EXPENSE AREA CHART
+    ===================================================== */
+
+    var dates =
+        d.incomeExpense.series.length
+
+            ? [
+                ...new Set(
+                    d.incomeExpense.series.map(
+                        function (s) {
+                            return s.date;
+                        }
+                    )
+                )
+            ].sort()
+
+            : [];
+
+
+    var incomeMap = {};
+    var expenseMap = {};
+
+
+    d.incomeExpense.series.forEach(
+        function (s) {
+
+            var value =
+                Number(s.total || 0);
+
+
+            if (
+                s.type === 'income'
+            ) {
+
+                incomeMap[s.date] =
+                    value;
+
+            }
+
+            else {
+
+                expenseMap[s.date] =
+                    value;
+
+            }
+
+        }
+    );
+
+
+    var incomeData =
+        dates.map(
+            function (date) {
+
+                return incomeMap[date] || 0;
+
+            }
+        );
+
+
+    var expenseData =
+        dates.map(
+            function (date) {
+
+                return expenseMap[date] || 0;
+
+            }
+        );
+
+
+    var netData =
+        dates.map(
+            function (date, index) {
+
+                return (
+
+                    Number(
+                        incomeData[index] || 0
+                    ) -
+
+                    Number(
+                        expenseData[index] || 0
+                    )
+
+                );
+
+            }
+        );
+
+
+    var chartCategories =
+        dates.length
+            ? dates
+            : ['No Data'];
+
+
+    var ieOptions = {
+
+        chart: {
+
+            type: 'area',
+
+            height: 330,
+
+            toolbar: {
+                show: false
+            },
+
+            zoom: {
+                enabled: false
+            },
+
+            fontFamily: 'inherit',
+
+            animations: {
+
+                enabled: true,
+
+                easing: 'easeinout',
+
+                speed: 500
+
+            }
+
+        },
+
+
+        series: [
+
+            {
+                name: 'Income',
+                data: dates.length
+                    ? incomeData
+                    : [0]
+            },
+
+            {
+                name: 'Expense',
+                data: dates.length
+                    ? expenseData
+                    : [0]
+            },
+
+            {
+                name: 'Net Income',
+                data: dates.length
+                    ? netData
+                    : [0]
+            }
+
+        ],
+
+
+        colors: [
+
+            '#2563eb',
+
+            '#ef4444',
+
+            '#22c55e'
+
+        ],
+
+
+        stroke: {
+
+            curve: 'smooth',
+
+            width: 2
+
+        },
+
+
+        fill: {
+
+            type: 'gradient',
+
+            gradient: {
+
+                shadeIntensity: 1,
+
+                opacityFrom: 0.20,
+
+                opacityTo: 0.02,
+
+                stops: [
+                    0,
+                    90,
+                    100
+                ]
+
+            }
+
+        },
+
+
+        markers: {
+
+            size: 0,
+
+            strokeWidth: 2,
+
+            hover: {
+
+                size: 5
+
+            }
+
+        },
+
+
+        dataLabels: {
+
+            enabled: false
+
+        },
+
+
+        grid: {
+
+            borderColor: '#e5e7eb',
+
+            strokeDashArray: 4,
+
+            padding: {
+
+                left: 5,
+
+                right: 10
+
+            }
+
+        },
+
+
+        xaxis: {
+
+            categories:
+                chartCategories,
+
+            axisBorder: {
+
+                show: false
+
+            },
+
+            axisTicks: {
+
+                show: false
+
+            },
+
+            labels: {
+
+                style: {
+
+                    colors:
+                        '#6b7280',
+
+                    fontSize:
+                        '10px'
+
+                },
+
+                formatter:
+                    function (value) {
+
+                        if (
+                            !value ||
+                            value === 'No Data'
+                        ) {
+
+                            return value;
+
+                        }
+
+
+                        var date =
+                            new Date(value);
+
+
+                        if (
+                            isNaN(
+                                date.getTime()
+                            )
+                        ) {
+
+                            return value;
+
+                        }
+
+
+                        return date.toLocaleDateString(
+                            'en-IN',
+                            {
+                                day: '2-digit',
+                                month: 'short'
+                            }
+                        );
+
+                    }
+
+            }
+
+        },
+
+
+        yaxis: {
+
+            labels: {
+
+                style: {
+
+                    colors:
+                        '#6b7280',
+
+                    fontSize:
+                        '10px'
+
+                },
+
+                formatter:
+                    function (value) {
+
+                        return money(value);
+
+                    }
+
+            }
+
+        },
+
+
+        legend: {
+
+            position:
+                'top',
+
+            horizontalAlign:
+                'right',
+
+            fontSize:
+                '11px',
+
+            markers: {
+
+                width:
+                    7,
+
+                height:
+                    7,
+
+                radius:
+                    50
+
+            },
+
+            itemMargin: {
+
+                horizontal:
+                    8
+
+            }
+
+        },
+
+
+        tooltip: {
+
+            shared:
+                true,
+
+            intersect:
+                false,
+
+            y: {
+
+                formatter:
+                    function (value) {
+
+                        return money(value);
+
+                    }
+
+            }
+
+        },
+
+
+        noData: {
+
+            text:
+                'No data available',
+
+            align:
+                'center',
+
+            verticalAlign:
+                'middle',
+
+            style: {
+
+                color:
+                    '#9ca3af',
+
+                fontSize:
+                    '13px'
+
+            }
+
+        }
+
+    };
+
+
+    if (chartIncomeExpense) {
+
+        chartIncomeExpense.updateOptions(
+            ieOptions,
+            true,
+            true
+        );
+
+    }
+
+    else {
+
+        chartIncomeExpense =
+            new __apex(
+                document.querySelector(
+                    '#chartIncomeExpense'
+                ),
+                ieOptions
+            );
+
+        chartIncomeExpense.render();
+
+    }
+
+
+
+    /* =====================================================
+       REVENUE DONUT
+    ===================================================== */
+
+    var courseRevenue =
+        Number(
+            d.revenueBreakdown.course || 0
+        );
+
+
+    var testSeriesRevenue =
+        Number(
+            d.revenueBreakdown.testSeries || 0
+        );
+
+
+    var otherRevenue =
+        Number(
+            d.revenueBreakdown.other || 0
+        );
+
+
+    var revenueTotal =
+        courseRevenue +
+        testSeriesRevenue +
+        otherRevenue;
+
+
+    var revOptions = {
+
+        chart: {
+
+            type: 'donut',
+
+            height: 330,
+
+            fontFamily:
+                'inherit',
+
+            animations: {
+
+                enabled:
+                    true,
+
+                speed:
+                    500
+
+            }
+
+        },
+
+
+        series: [
+
+            courseRevenue,
+
+            testSeriesRevenue,
+
+            otherRevenue
+
+        ],
+
+
+        labels: [
+
+            'Course Revenue',
+
+            'Test Series',
+
+            'Other Revenue'
+
+        ],
+
+
+        colors: [
+
+            '#3b82f6',
+
+            '#f59e0b',
+
+            '#8b5cf6'
+
+        ],
+
+
+        stroke: {
+
+            width:
+                4,
+
+            colors:
+                ['#ffffff']
+
+        },
+
+
+        dataLabels: {
+
+            enabled:
+                true,
+
+            style: {
+
+                fontSize:
+                    '11px',
+
+                fontWeight:
+                    600
+
+            },
+
+            dropShadow: {
+
+                enabled:
+                    false
+
+            },
+
+            formatter:
+                function (value) {
+
+                    return Math.round(
+                        value
+                    ) + '%';
+
+                }
+
+        },
+
+
+        plotOptions: {
+
+            pie: {
+
+                expandOnClick:
+                    false,
+
+                donut: {
+
+                    size:
+                        '68%',
+
+                    labels: {
+
+                        show:
+                            true,
+
+
+                        name: {
+
+                            show:
+                                true,
+
+                            color:
+                                '#6b7280',
+
+                            fontSize:
+                                '11px',
+
+                            offsetY:
+                                -5
+
+                        },
+
+
+                        value: {
+
+                            show:
+                                true,
+
+                            color:
+                                '#111827',
+
+                            fontSize:
+                                '22px',
+
+                            fontWeight:
+                                700,
+
+                            offsetY:
+                                8,
+
+                            formatter:
+                                function (value) {
+
+                                    return money(
+                                        value
+                                    );
+
+                                }
+
+                        },
+
+
+                        total: {
+
+                            show:
+                                true,
+
+                            label:
+                                'Total Revenue',
+
+                            color:
+                                '#6b7280',
+
+                            fontSize:
+                                '11px',
+
+                            formatter:
+                                function () {
+
+                                    return money(
+                                        revenueTotal
+                                    );
+
+                                }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        },
+
+
+        legend: {
+
+            position:
+                'bottom',
+
+            horizontalAlign:
+                'center',
+
+            fontSize:
+                '11px',
+
+            labels: {
+
+                colors:
+                    '#374151'
+
+            },
+
+            markers: {
+
+                width:
+                    8,
+
+                height:
+                    8,
+
+                radius:
+                    50
+
+            },
+
+            itemMargin: {
+
+                horizontal:
+                    8,
+
+                vertical:
+                    4
+
+            }
+
+        },
+
+
+        tooltip: {
+
+            y: {
+
+                formatter:
+                    function (value) {
+
+                        return money(
+                            value
+                        );
+
+                    }
+
+            }
+
+        },
+
+
+        responsive: [
+
+            {
+
+                breakpoint:
+                    640,
+
+                options: {
+
+                    chart: {
+
+                        height:
+                            300
+
+                    },
+
+                    legend: {
+
+                        fontSize:
+                            '10px'
+
+                    }
+
+                }
+
+            }
+
+        ],
+
+
+        noData: {
+
+            text:
+                'No revenue data',
+
+            align:
+                'center',
+
+            verticalAlign:
+                'middle',
+
+            style: {
+
+                color:
+                    '#9ca3af',
+
+                fontSize:
+                    '13px'
+
+            }
+
+        }
+
+    };
+
+
+    if (chartRevenue) {
+
+        chartRevenue.updateOptions(
+            revOptions,
+            true,
+            true
+        );
+
+        chartRevenue.updateSeries([
+
+            courseRevenue,
+
+            testSeriesRevenue,
+
+            otherRevenue
+
+        ]);
+
+    }
+
+    else {
+
+        chartRevenue =
+            new __apex(
+                document.querySelector(
+                    '#chartRevenue'
+                ),
+                revOptions
+            );
+
+        chartRevenue.render();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   RENDER DASHBOARD
+========================================================= */
+
+function renderDashboard(d) {
+
+    document.getElementById(
+        'rangeLabel'
+    ).textContent =
+        d.range.label;
+
+
+    renderStatCards(d);
+
+
+    renderIncomeExpenseTable(
+        'tbody-income-category',
+        d.incomeExpense.incomeByCategory
+    );
+
+
+    renderIncomeExpenseTable(
+        'tbody-expense-category',
+        d.incomeExpense.expenseByCategory
+    );
+
+
+    renderTransactions(
+        d.incomeExpense.topTransactions
+    );
+
+
+    renderTopPosts(
+        'tbody-top-posts-views',
+        d.posts.topByViews
+    );
+
+
+    renderTopPosts(
+        'tbody-top-posts-clicks',
+        d.posts.topByClicks
+    );
+
+
+    renderTopPosts(
+        'tbody-top-posts-likes',
+        d.posts.topByLikes
+    );
+
+
+    document.getElementById(
+        'posts-ctr'
+    ).textContent =
+        d.posts.ctr;
+
+
+    renderCategoryPosts(
+        d.posts.byCategory
+    );
+
+
+    renderTopBlogs(
+        d.blogs.topByViews
+    );
+
+
+    renderBlogCategory(
+        d.blogs.byCategory
+    );
+
+
+    renderTopPurchasable(
+        'tbody-top-courses',
+        d.courses.top,
+        'course'
+    );
+
+
+    renderTopPurchasable(
+        'tbody-top-testseries',
+        d.testSeries.top,
+        'testSeries'
+    );
+
+
+    renderSiteHealth(
+        d.siteHealth
+    );
+
+
+    renderServerConfig(
+        d.serverConfig
+    );
+
+
+    renderCharts(d);
+
+}
+
+
+
+/* =========================================================
+   FILTER EVENTS
+========================================================= */
+
+
+/*
+ * Main filter
+ */
+
+document
+    .getElementById('filterType')
+    .addEventListener(
+        'change',
+        function () {
+
+            updateFilterVisibility();
+
+            scheduleFilterApply();
+
+        }
+    );
+
+
+/*
+ * Month
+ */
+
+document
+    .getElementById('filterMonth')
+    .addEventListener(
+        'change',
+        function () {
+
+            scheduleFilterApply();
+
+        }
+    );
+
+
+/*
+ * Year
+ */
+
+document
+    .getElementById('filterYear')
+    .addEventListener(
+        'change',
+        function () {
+
+            scheduleFilterApply();
+
+        }
+    );
+
+
+/*
+ * Custom From
+ */
+
+document
+    .getElementById('filterFrom')
+    .addEventListener(
+        'change',
+        function () {
+
+            scheduleFilterApply();
+
+        }
+    );
+
+
+/*
+ * Custom To
+ */
+
+document
+    .getElementById('filterTo')
+    .addEventListener(
+        'change',
+        function () {
+
+            scheduleFilterApply();
+
+        }
+    );
+
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
 updateFilterVisibility();
-renderDashboard(${dashboardJson});
+
+renderDashboard(
+    ${dashboardJson}
+);
+
 `;
+
 %>
+
 
 <%- include('../../adminlayout/admin-layout-bottom') %>

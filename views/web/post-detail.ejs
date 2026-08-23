@@ -28,6 +28,48 @@ var pageStyles = `
 .sr-related-item{ display:block; padding:3px 0; }
 @media (max-width:600px){ .sr-related-grid{ grid-template-columns:1fr; } }
 .sr-disclaimer{ font-size:12px; padding:6px; line-height:1.5; }
+/* ==========================================
+   CUSTOM HTML POST CONTENT
+========================================== */
+
+.sr-post-content {
+    width: 100%;
+    margin: 15px auto;
+    background: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.sr-post-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.sr-post-content table {
+    max-width: 100%;
+}
+
+.sr-post-content a {
+    cursor: pointer;
+}
+
+.sr-post-content * {
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+
+    .sr-post-content {
+        font-size: 13px;
+        overflow-x: auto;
+    }
+
+    .sr-post-content table {
+        width: 100% !important;
+    }
+
+}
 `;
 var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
 %>
@@ -108,12 +150,20 @@ var headCycle = ['sr-blue-head', 'sr-green-head', 'sr-purple-head'];
     </table>
   <% }) %>
 
-  <% if (post.full_description) { %>
+  <!-- <% if (post.full_description) { %>
     <table class="sr-main-table">
       <tr><td class="sr-yellow-head"><b>Full Notification</b></td></tr>
       <tr><td><%- post.full_description %></td></tr>
     </table>
-  <% } %>
+  <% } %> -->
+
+  <% if (post.full_description) { %>
+
+    <div class="sr-post-content">
+        <%- post.full_description %>
+    </div>
+
+<% } %>
 
   <table class="sr-important-links">
     <tr><th colspan="2" class="sr-yellow-head">Important Links</th></tr>

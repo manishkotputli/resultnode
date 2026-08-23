@@ -1,29 +1,98 @@
 'use strict';
+
 const service = require('../../services/admin/trackingReport.service');
+
+/* ==========================================================================
+ * Helpers
+ * ========================================================================== */
+
+function getAdminId(req) {
+  return (
+    req &&
+    req.session &&
+    req.session.admin &&
+    req.session.admin.id
+  );
+}
+
+/* ==========================================================================
+ * Page
+ * ========================================================================== */
 
 async function index(req, res, next) {
   try {
-    const data = await service.getDashboardData(req.session.admin.id, req.query);
-    res.render('admin/tracking-report/index', {
-      title: 'Tracking Report',
-      active: 'tracking-report',
-      data,
-    });
-  } catch (err) {
-    next(err);
+    const adminId =
+      getAdminId(req);
+
+    if (!adminId) {
+      return res.redirect('/admin/login');
+    }
+
+    const data =
+      await service.getDashboardData(
+        adminId,
+        req.query || {}
+      );
+
+    return res.render(
+      'admin/tracking-report/index',
+      {
+        title: 'Tracking Report',
+
+        active: 'tracking-report',
+
+        data,
+      }
+    );
+  } catch (error) {
+    return next(error);
   }
 }
 
-// AJAX/data endpoint — used by the date filter to refresh the dashboard
-// without a full page reload. Returns the exact same payload shape used
-// to render the page initially.
+/* ==========================================================================
+ * AJAX / JSON endpoint
+ * ========================================================================== */
+
 async function data(req, res, next) {
   try {
-    const data = await service.getDashboardData(req.session.admin.id, req.query);
-    res.json({ ok: true, data });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
+    const adminId =
+      getAdminId(req);
+
+    if (!adminId) {
+      return res.status(401).json({
+        ok: false,
+        error: 'Admin session expired.',
+      });
+    }
+
+    const dashboardData =
+      await service.getDashboardData(
+        adminId,
+        req.query || {}
+      );
+
+    return res.json({
+      ok: true,
+      data: dashboardData,
+    });
+  } catch (error) {
+    console.error(
+      'Tracking Report AJAX Error:',
+      error
+    );
+
+    return res.status(500).json({
+      ok: false,
+
+      error:
+        process.env.NODE_ENV === 'production'
+          ? 'Unable to load tracking report.'
+          : error.message,
+    });
   }
 }
 
-module.exports = { index, data };
+module.exports = {
+  index,
+  data,
+};

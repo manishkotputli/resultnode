@@ -1,24 +1,27 @@
 <%- include('../../adminlayout/admin-layout-top') %>
 
 <style>
-  /* CKEditor Visual Content Styling */
-  .ck-editor__editable_inline {
-    min-height: 450px !important;
-    font-size: 15px;
-    line-height: 1.6;
-  }
+    .html-css-editor {
+        min-height: 650px;
+        resize: vertical;
+        font-family: "Fira Code", "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1.65;
+        background: #0f172a;
+        color: #e2e8f0;
+        tab-size: 2;
+        outline: none;
+    }
 
-  /* Code View Styling */
-  .html-code-editor {
-    font-family: 'Fira Code', 'Courier New', Courier, monospace;
-    font-size: 14px;
-    background-color: #0f172a;
-    color: #38bdf8;
-    line-height: 1.6;
-    tab-size: 2;
-  }
+    .html-css-editor:focus {
+        border-color: var(--primary-color, #6366f1);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+    }
+
+    #htmlPreviewFrame {
+        min-height: 700px;
+    }
 </style>
-
 <!-- Title -->
 <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
     <h1 class="text-gray-900 text-xl lg:text-[28px] font-bold"><%= mode === 'edit' ? 'Edit Post' : 'Add Post' %></h1>
@@ -66,30 +69,95 @@
                 </div>
 
                 <!-- FULL DESCRIPTION WITH CKEDITOR + CODE VIEW TABS -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Full Description</label>
-                    
-                    <div class="flex items-center justify-between border-b border-border-color mb-3">
-                        <div class="flex gap-2">
-                            <button type="button" id="tabVisualBtn" class="py-2 px-4 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer">
-                                <span>📝</span> Visual Editor
-                            </button>
-                            <button type="button" id="tabHtmlBtn" class="py-2 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer">
-                                <span>💻</span> HTML Code View
-                            </button>
-                        </div>
-                    </div>
+               <!-- FULL DESCRIPTION - HTML + CSS EDITOR -->
+<div class="mb-4">
 
-                    <!-- Visual Editor Box -->
-                    <div id="visualEditorPane">
-                        <textarea name="full_description" id="contentEditor"><%= post ? (post.full_description || '') : '' %></textarea>
-                    </div>
+    <div class="flex items-center justify-between mb-3">
+        <div>
+            <label class="block text-sm font-medium text-gray-900">
+                Full Description
+            </label>
+            <p class="text-xs text-gray-500 mt-1">
+                Paste complete HTML + CSS here. The preview will update automatically.
+            </p>
+        </div>
 
-                    <!-- Raw HTML Box -->
-                    <div id="htmlEditorPane" class="hidden">
-                        <textarea id="rawHtmlTextarea" class="html-code-editor w-full h-[500px] rounded-lg p-4 border border-gray-800 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Type plain text or write raw HTML code... Switching tabs auto-formats HTML."><%= post ? (post.full_description || '') : '' %></textarea>
-                    </div>
-                </div>
+        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-semibold">
+            <i class="icon-check-circle"></i>
+            HTML + CSS
+        </span>
+    </div>
+
+    <!-- Editor / Preview Tabs -->
+    <div class="flex items-center border-b border-border-color mb-3">
+
+        <button
+            type="button"
+            id="htmlEditorTab"
+            class="px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary">
+            💻 HTML + CSS
+        </button>
+
+        <button
+            type="button"
+            id="previewTab"
+            class="px-4 py-2.5 text-sm font-semibold text-gray-500 border-b-2 border-transparent">
+            👁 Live Preview
+        </button>
+
+    </div>
+
+    <!-- HTML EDITOR -->
+    <div id="htmlEditorSection">
+
+        <textarea
+            name="full_description"
+            id="htmlCssEditor"
+            class="html-css-editor w-full rounded-lg border border-gray-700 p-4"
+            placeholder="Paste your complete HTML + CSS here..."><%= post ? (post.full_description || '') : '' %></textarea>
+
+        <div class="flex items-center justify-between mt-2">
+            <p class="text-xs text-gray-400 mb-0">
+                You can paste &lt;style&gt;...&lt;/style&gt; and HTML together.
+            </p>
+
+            <button
+                type="button"
+                id="formatHtmlBtn"
+                class="text-xs px-3 py-1.5 rounded-md border border-border-color bg-white hover:bg-gray-50">
+                Format
+            </button>
+        </div>
+
+    </div>
+
+    <!-- LIVE PREVIEW -->
+    <div id="previewSection" class="hidden">
+
+        <div class="border border-border-color rounded-lg overflow-hidden bg-gray-100">
+
+            <div class="flex items-center justify-between px-3 py-2 bg-gray-50 border-b border-border-color">
+                <span class="text-xs font-semibold text-gray-600">
+                    Live Website Preview
+                </span>
+
+                <span class="text-xs text-green-600">
+                    ● Live
+                </span>
+            </div>
+
+            <iframe
+                id="htmlPreviewFrame"
+                class="w-full bg-white"
+                style="height: 700px; border: 0;"
+                sandbox="allow-same-origin">
+            </iframe>
+
+        </div>
+
+    </div>
+
+</div>
             </div>
 
             <!-- Important Links -->
@@ -311,146 +379,230 @@
 <script>
 (function () {
 
-    // ==========================================
-    // CKEDITOR & SMART IMAGE ADAPTER
-    // ==========================================
-    class SmartUploadAdapter {
-        constructor(loader) {
-            this.loader = loader;
-        }
-        upload() {
-            return this.loader.file.then((file) => new Promise((resolve, reject) => {
-                const formData = new FormData();
-                formData.append('upload', file);
+    const editor = document.getElementById('htmlCssEditor');
+    const previewFrame = document.getElementById('htmlPreviewFrame');
 
-                fetch('/admin/upload/editor-image', { method: 'POST', body: formData })
-                    .then((r) => r.json())
-                    .then((data) => {
-                        if (data && data.url) {
-                            resolve({ default: data.url });
-                        } else {
-                            throw new Error('Server upload failed');
-                        }
-                    })
-                    .catch(() => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve({ default: reader.result });
-                        reader.onerror = (err) => reject('File read error: ' + err);
-                        reader.readAsDataURL(file);
-                    });
-            }));
-        }
-        abort() {}
+    const htmlEditorTab = document.getElementById('htmlEditorTab');
+    const previewTab = document.getElementById('previewTab');
+
+    const htmlEditorSection = document.getElementById('htmlEditorSection');
+    const previewSection = document.getElementById('previewSection');
+
+    const formatHtmlBtn = document.getElementById('formatHtmlBtn');
+
+    if (!editor || !previewFrame) return;
+
+
+    // ==========================================
+    // LIVE PREVIEW
+    // ==========================================
+
+    function updatePreview() {
+
+        const content = editor.value || '';
+
+        previewFrame.srcdoc = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
+                >
+
+                <style>
+
+                    * {
+                        box-sizing: border-box;
+                    }
+
+                    html,
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        background: #ffffff;
+                    }
+
+                    body {
+                        min-height: 100vh;
+                    }
+
+                    img {
+                        max-width: 100%;
+                    }
+
+                </style>
+
+            </head>
+
+            <body>
+                ${content}
+            </body>
+
+            </html>
+        `;
     }
 
-    function SmartUploadAdapterPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => new SmartUploadAdapter(loader);
+
+    // ==========================================
+    // UPDATE PREVIEW WHILE TYPING
+    // ==========================================
+
+    let previewTimer;
+
+    editor.addEventListener('input', function () {
+
+        clearTimeout(previewTimer);
+
+        previewTimer = setTimeout(function () {
+            updatePreview();
+        }, 250);
+
+    });
+
+
+    // ==========================================
+    // HTML EDITOR TAB
+    // ==========================================
+
+    htmlEditorTab.addEventListener('click', function () {
+
+        htmlEditorSection.classList.remove('hidden');
+        previewSection.classList.add('hidden');
+
+        htmlEditorTab.className =
+            'px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary';
+
+        previewTab.className =
+            'px-4 py-2.5 text-sm font-semibold text-gray-500 border-b-2 border-transparent';
+
+    });
+
+
+    // ==========================================
+    // PREVIEW TAB
+    // ==========================================
+
+    previewTab.addEventListener('click', function () {
+
+        updatePreview();
+
+        htmlEditorSection.classList.add('hidden');
+        previewSection.classList.remove('hidden');
+
+        previewTab.className =
+            'px-4 py-2.5 text-sm font-semibold text-primary border-b-2 border-primary';
+
+        htmlEditorTab.className =
+            'px-4 py-2.5 text-sm font-semibold text-gray-500 border-b-2 border-transparent';
+
+    });
+
+
+    // ==========================================
+    // SIMPLE HTML FORMATTER
+    // ==========================================
+
+    if (formatHtmlBtn) {
+
+        formatHtmlBtn.addEventListener('click', function () {
+
+            const html = editor.value.trim();
+
+            if (!html) return;
+
+            editor.value = formatHTML(html);
+
+            updatePreview();
+
+        });
+
     }
 
-    function generateFormattedHtml(htmlContent) {
-        if (!htmlContent || !htmlContent.trim()) return '';
-        try {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
 
-            const imgs = doc.querySelectorAll('img');
-            imgs.forEach(img => {
-                if (!img.style.maxWidth) img.style.maxWidth = '100%';
-                if (!img.style.height) img.style.height = 'auto';
-            });
+    function formatHTML(html) {
 
-            let rawHtml = doc.body.innerHTML;
-            let formatted = '';
-            let indent = '';
-            rawHtml = rawHtml.replace(/(>)(<)(\/*)/g, '$1\r\n$2$3');
+        let formatted = '';
+        let indent = 0;
 
-            rawHtml.split('\r\n').forEach(function(node) {
-                if (node.match(/.+<\/\w[^>]*>$/)) {
-                    formatted += indent + node + '\r\n';
-                } else if (node.match(/^<\/\w/)) {
-                    if (indent !== '') indent = indent.substring(2);
-                    formatted += indent + node + '\r\n';
-                } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
-                    formatted += indent + node + '\r\n';
-                    indent += '  ';
-                } else {
-                    formatted += indent + node + '\r\n';
+        const tokens = html
+            .replace(/>\s*</g, '><')
+            .split(/(<[^>]+>)/g)
+            .filter(Boolean);
+
+        tokens.forEach(function (token) {
+
+            if (token.match(/^<\/\w/)) {
+
+                indent = Math.max(0, indent - 1);
+
+                formatted +=
+                    '  '.repeat(indent) +
+                    token +
+                    '\n';
+
+            } else if (token.match(/^<\w[^>]*[^\/]>$/)) {
+
+                formatted +=
+                    '  '.repeat(indent) +
+                    token +
+                    '\n';
+
+                if (
+                    !token.match(
+                        /^<(img|input|br|hr|meta|link|source|area|base|embed|param|track|wbr)\b/i
+                    )
+                ) {
+                    indent++;
                 }
-            });
-            return formatted.trim();
-        } catch (e) {
-            return htmlContent;
-        }
+
+            } else if (token.match(/^<style/i)) {
+
+                formatted +=
+                    '  '.repeat(indent) +
+                    token +
+                    '\n';
+
+            } else if (token.trim()) {
+
+                formatted +=
+                    '  '.repeat(indent) +
+                    token.trim() +
+                    '\n';
+            }
+
+        });
+
+        return formatted.trim();
     }
 
-    let editorInstance = null;
 
-    ClassicEditor
-        .create(document.querySelector('#contentEditor'), {
-            extraPlugins: [SmartUploadAdapterPlugin],
-            toolbar: {
-                items: [
-                    'heading', '|',
-                    'fontSize', 'fontColor', 'fontBackgroundColor', '|',
-                    'bold', 'italic', 'underline', 'strikethrough', '|',
-                    'alignment', 'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                    'link', 'blockQuote', 'insertTable', 'imageUpload', 'mediaEmbed', '|',
-                    'undo', 'redo'
-                ],
-                shouldNotGroupWhenFull: true
-            },
-            image: {
-                toolbar: [
-                    'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
-                    'toggleImageCaption', 'imageTextAlternative', '|', 'resizeImage'
-                ]
-            },
-            table: {
-                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-            },
-            link: { addTargetToExternalLinks: true }
-        })
-        .then((editor) => {
-            editorInstance = editor;
-        })
-        .catch((err) => console.error('CKEditor init failed:', err));
+    // ==========================================
+    // INITIAL PREVIEW
+    // ==========================================
 
-    // Tab Switches
-    const tabVisualBtn = document.getElementById('tabVisualBtn');
-    const tabHtmlBtn = document.getElementById('tabHtmlBtn');
-    const visualPane = document.getElementById('visualEditorPane');
-    const htmlPane = document.getElementById('htmlEditorPane');
-    const rawHtmlTextarea = document.getElementById('rawHtmlTextarea');
+    updatePreview();
 
-    tabVisualBtn.addEventListener('click', function () {
-        if (editorInstance) {
-            editorInstance.setData(rawHtmlTextarea.value);
-        }
-        visualPane.classList.remove('hidden');
-        htmlPane.classList.add('hidden');
 
-        tabVisualBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer";
-        tabHtmlBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer";
-    });
+    // ==========================================
+    // FORM SUBMIT
+    // ==========================================
 
-    tabHtmlBtn.addEventListener('click', function () {
-        if (editorInstance) {
-            const data = editorInstance.getData();
-            rawHtmlTextarea.value = generateFormattedHtml(data);
-        }
-        htmlPane.classList.remove('hidden');
-        visualPane.classList.add('hidden');
-
-        tabHtmlBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-primary text-primary transition flex items-center gap-2 cursor-pointer";
-        tabVisualBtn.className = "py-2 px-4 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition flex items-center gap-2 cursor-pointer";
-    });
-
-    // Sync on form submit
     document.getElementById('postForm').addEventListener('submit', function () {
-        if (!htmlPane.classList.contains('hidden') && editorInstance) {
-            editorInstance.setData(rawHtmlTextarea.value);
-        }
+
+        // textarea already contains complete HTML + CSS.
+        // Nothing else required.
+
     });
+
+})();
+</script>
+<script>
+(function () {
+
+   
 
     // ==========================================
     // ADD LINK ROW

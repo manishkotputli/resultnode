@@ -1,86 +1,249 @@
 'use strict';
+
 const db = require('../../models');
 const { Op } = require('sequelize');
 
-/* ---------------------------------------------------------------------- *
- * Income / Expense — ALWAYS scoped to a single user_id (the logged-in
- * admin's own transactions). Never accept a user_id from the request.
- * ---------------------------------------------------------------------- */
+/* ==========================================================================
+ * Helpers
+ * ========================================================================== */
 
-async function getIncomeExpenseTotals(userId, from, to) {
-  const [income, expense] = await Promise.all([
-    db.IncomeExpense.sum('amount', {
-      where: { user_id: userId, type: 1, transaction_date: { [Op.between]: [from, to] } },
-    }),
-    db.IncomeExpense.sum('amount', {
-      where: { user_id: userId, type: 2, transaction_date: { [Op.between]: [from, to] } },
-    }),
-  ]);
-  return { income: income || 0, expense: expense || 0 };
+function toNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
 }
 
-async function getIncomeExpenseByCategory(userId, type, from, to) {
+function toInt(value) {
+  const number = parseInt(value, 10);
+  return Number.isFinite(number) ? number : 0;
+}
+
+/* ==========================================================================
+ * Income / Expense
+ * ========================================================================== */
+
+/**
+ * Always scoped to the logged-in admin's user_id.
+ *
+ * IMPORTANT:
+ * Do not accept user_id from req.query.
+ */
+async function getIncomeExpenseTotals(userId, from, to) {
+  const income = await db.IncomeExpense.sum('amount', {
+    where: {
+      user_id: userId,
+      type: 1,
+      transaction_date: {
+        [Op.between]: [from, to],
+      },
+    },
+  });
+
+  const expense = await db.IncomeExpense.sum('amount', {
+    where: {
+      user_id: userId,
+      type: 2,
+      transaction_date: {
+        [Op.between]: [from, to],
+      },
+    },
+  });
+
+  return {
+    income: toNumber(income),
+    expense: toNumber(expense),
+  };
+}
+
+async function getIncomeExpenseByCategory(
+  userId,
+  type,
+  from,
+  to
+) {
   const rows = await db.IncomeExpense.findAll({
-    where: { user_id: userId, type, transaction_date: { [Op.between]: [from, to] } },
+    where: {
+      user_id: userId,
+      type,
+      transaction_date: {
+        [Op.between]: [from, to],
+      },
+    },
+
     attributes: [
       'category_id',
-      [db.Sequelize.fn('SUM', db.Sequelize.col('amount')), 'total'],
-      [db.Sequelize.fn('COUNT', db.Sequelize.col('IncomeExpense.id')), 'txn_count'],
+
+      [
+        db.Sequelize.fn(
+          'SUM',
+          db.Sequelize.col('amount')
+        ),
+        'total',
+      ],
+
+      [
+        db.Sequelize.fn(
+          'COUNT',
+          db.Sequelize.col('IncomeExpense.id')
+        ),
+        'txn_count',
+      ],
     ],
-    include: [{ model: db.IncomeExpenseCategory, attributes: ['name'] }],
-    group: ['category_id', 'IncomeExpenseCategory.id'],
-    order: [[db.Sequelize.literal('total'), 'DESC']],
+
+    include: [
+      {
+        model: db.IncomeExpenseCategory,
+        attributes: ['name'],
+      },
+    ],
+
+    group: [
+      'IncomeExpense.category_id',
+      'IncomeExpenseCategory.id',
+    ],
+
+    order: [
+      [
+        db.Sequelize.literal('total'),
+        'DESC',
+      ],
+    ],
   });
-  return rows.map((r) => ({
-    category_id: r.category_id,
-    name: r.IncomeExpenseCategory ? r.IncomeExpenseCategory.name : 'Uncategorized',
-    total: parseFloat(r.get('total')) || 0,
-    txn_count: parseInt(r.get('txn_count'), 10) || 0,
+
+  return rows.map((row) => ({
+    category_id: row.category_id,
+
+    name: row.IncomeExpenseCategory
+      ? row.IncomeExpenseCategory.name
+      : 'Uncategorized',
+
+    total: toNumber(row.get('total')),
+
+    txn_count: toInt(row.get('txn_count')),
   }));
 }
 
-// "Top transactions" = most recent within the selected period (own transactions only).
-async function getTopTransactions(userId, from, to, limit = 5) {
+async function getTopTransactions(
+  userId,
+  from,
+  to,
+  limit = 5
+) {
   const rows = await db.IncomeExpense.findAll({
-    where: { user_id: userId, transaction_date: { [Op.between]: [from, to] } },
-    include: [{ model: db.IncomeExpenseCategory, attributes: ['name'] }],
-    order: [['transaction_date', 'DESC'], ['id', 'DESC']],
+    where: {
+      user_id: userId,
+      transaction_date: {
+        [Op.between]: [from, to],
+      },
+    },
+
+    include: [
+      {
+        model: db.IncomeExpenseCategory,
+        attributes: ['name'],
+      },
+    ],
+
+    order: [
+      ['transaction_date', 'DESC'],
+      ['id', 'DESC'],
+    ],
+
     limit,
   });
-  return rows.map((r) => ({
-    type: r.type === 1 ? 'Income' : 'Expense',
-    category: r.IncomeExpenseCategory ? r.IncomeExpenseCategory.name : 'Uncategorized',
-    description: r.title,
-    amount: parseFloat(r.amount),
-    date: r.transaction_date,
+
+  return rows.map((row) => ({
+    type: row.type === 1
+      ? 'Income'
+      : 'Expense',
+
+    category: row.IncomeExpenseCategory
+      ? row.IncomeExpenseCategory.name
+      : 'Uncategorized',
+
+    description: row.title,
+
+    amount: toNumber(row.amount),
+
+    date: row.transaction_date,
   }));
 }
 
-async function getIncomeExpenseDailySeries(userId, from, to) {
+/**
+ * Returns daily income/expense totals.
+ *
+ * Uses DATE(transaction_date), so multiple transactions
+ * on the same day are combined into one point.
+ */
+async function getIncomeExpenseDailySeries(
+  userId,
+  from,
+  to
+) {
+  const dateExpression =
+    db.Sequelize.fn(
+      'DATE',
+      db.Sequelize.col('transaction_date')
+    );
+
   const rows = await db.IncomeExpense.findAll({
-    where: { user_id: userId, transaction_date: { [Op.between]: [from, to] } },
+    where: {
+      user_id: userId,
+      transaction_date: {
+        [Op.between]: [from, to],
+      },
+    },
+
     attributes: [
-      'transaction_date',
+      [
+        dateExpression,
+        'date',
+      ],
+
       'type',
-      [db.Sequelize.fn('SUM', db.Sequelize.col('amount')), 'total'],
+
+      [
+        db.Sequelize.fn(
+          'SUM',
+          db.Sequelize.col('amount')
+        ),
+        'total',
+      ],
     ],
-    group: ['transaction_date', 'type'],
+
+    group: [
+      db.Sequelize.literal(
+        'DATE(`transaction_date`)'
+      ),
+      'type',
+    ],
+
+    order: [
+      [
+        db.Sequelize.literal(
+          'DATE(`transaction_date`)'
+        ),
+        'ASC',
+      ],
+      ['type', 'ASC'],
+    ],
+
     raw: true,
   });
-  return rows.map((r) => ({
-    date: r.transaction_date,
-    type: r.type === 1 ? 'income' : 'expense',
-    total: parseFloat(r.total) || 0,
+
+  return rows.map((row) => ({
+    date: row.date,
+
+    type: Number(row.type) === 1
+      ? 'income'
+      : 'expense',
+
+    total: toNumber(row.total),
   }));
 }
 
-/* ---------------------------------------------------------------------- *
- * Posts — Post.views_count/clicks_count are lifetime counters. For a
- * date-scoped period we use the granular PostView log (event_type
- * 'view'|'click'), which is exactly what that table exists for. There is
- * no "impressions" or "shares" tracking anywhere in the schema, so those
- * are intentionally NOT included here (no fake data).
- * ---------------------------------------------------------------------- */
+/* ==========================================================================
+ * Posts
+ * ========================================================================== */
 
 async function getPostsTotalCount() {
   return db.Post.count();
@@ -88,141 +251,459 @@ async function getPostsTotalCount() {
 
 async function getPostViewClickTotals(from, to) {
   const rows = await db.PostView.findAll({
-    where: { trackable_type: 'post', created_at: { [Op.between]: [from, to] } },
-    attributes: ['event_type', [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'cnt']],
+    where: {
+      trackable_type: 'post',
+
+      created_at: {
+        [Op.between]: [from, to],
+      },
+    },
+
+    attributes: [
+      'event_type',
+
+      [
+        db.Sequelize.fn(
+          'COUNT',
+          db.Sequelize.col('id')
+        ),
+        'cnt',
+      ],
+    ],
+
     group: ['event_type'],
+
     raw: true,
   });
-  const out = { views: 0, clicks: 0 };
-  rows.forEach((r) => {
-    if (r.event_type === 'view') out.views = parseInt(r.cnt, 10);
-    if (r.event_type === 'click') out.clicks = parseInt(r.cnt, 10);
+
+  const result = {
+    views: 0,
+    clicks: 0,
+  };
+
+  rows.forEach((row) => {
+    if (row.event_type === 'view') {
+      result.views = toInt(row.cnt);
+    }
+
+    if (row.event_type === 'click') {
+      result.clicks = toInt(row.cnt);
+    }
   });
-  return out;
+
+  return result;
 }
 
-async function getTopPostsByEvent(eventType, from, to, limit = 5) {
+async function getTopPostsByEvent(
+  eventType,
+  from,
+  to,
+  limit = 5
+) {
   const rows = await db.PostView.findAll({
-    where: { trackable_type: 'post', event_type: eventType, created_at: { [Op.between]: [from, to] } },
-    attributes: ['trackable_id', [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'cnt']],
+    where: {
+      trackable_type: 'post',
+      event_type: eventType,
+
+      created_at: {
+        [Op.between]: [from, to],
+      },
+    },
+
+    attributes: [
+      'trackable_id',
+
+      [
+        db.Sequelize.fn(
+          'COUNT',
+          db.Sequelize.col('id')
+        ),
+        'cnt',
+      ],
+    ],
+
     group: ['trackable_id'],
-    order: [[db.Sequelize.literal('cnt'), 'DESC']],
+
+    order: [
+      [
+        db.Sequelize.literal('cnt'),
+        'DESC',
+      ],
+    ],
+
     limit,
+
     raw: true,
   });
-  if (!rows.length) return [];
-  const postIds = rows.map((r) => r.trackable_id);
-  const posts = await db.Post.findAll({ where: { id: { [Op.in]: postIds } }, attributes: ['id', 'title', 'slug'] });
-  const postMap = new Map(posts.map((p) => [p.id, p]));
+
+  if (!rows.length) {
+    return [];
+  }
+
+  const postIds = rows.map(
+    (row) => row.trackable_id
+  );
+
+  const posts = await db.Post.findAll({
+    where: {
+      id: {
+        [Op.in]: postIds,
+      },
+    },
+
+    attributes: [
+      'id',
+      'title',
+      'slug',
+    ],
+  });
+
+  const postMap = new Map(
+    posts.map((post) => [
+      post.id,
+      post,
+    ])
+  );
+
   return rows
-    .map((r) => ({ post: postMap.get(r.trackable_id), count: parseInt(r.cnt, 10) }))
-    .filter((r) => r.post);
+    .map((row) => ({
+      post: postMap.get(row.trackable_id),
+
+      count: toInt(row.cnt),
+    }))
+
+    .filter((item) => item.post);
 }
 
 async function getTopPostsByLikes(limit = 5) {
   const rows = await db.Like.findAll({
-    where: { likeable_type: 'post' },
-    attributes: ['likeable_id', [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'cnt']],
+    where: {
+      likeable_type: 'post',
+    },
+
+    attributes: [
+      'likeable_id',
+
+      [
+        db.Sequelize.fn(
+          'COUNT',
+          db.Sequelize.col('id')
+        ),
+        'cnt',
+      ],
+    ],
+
     group: ['likeable_id'],
-    order: [[db.Sequelize.literal('cnt'), 'DESC']],
+
+    order: [
+      [
+        db.Sequelize.literal('cnt'),
+        'DESC',
+      ],
+    ],
+
     limit,
+
     raw: true,
   });
-  if (!rows.length) return [];
-  const postIds = rows.map((r) => r.likeable_id);
-  const posts = await db.Post.findAll({ where: { id: { [Op.in]: postIds } }, attributes: ['id', 'title', 'slug'] });
-  const postMap = new Map(posts.map((p) => [p.id, p]));
+
+  if (!rows.length) {
+    return [];
+  }
+
+  const postIds = rows.map(
+    (row) => row.likeable_id
+  );
+
+  const posts = await db.Post.findAll({
+    where: {
+      id: {
+        [Op.in]: postIds,
+      },
+    },
+
+    attributes: [
+      'id',
+      'title',
+      'slug',
+    ],
+  });
+
+  const postMap = new Map(
+    posts.map((post) => [
+      post.id,
+      post,
+    ])
+  );
+
   return rows
-    .map((r) => ({ post: postMap.get(r.likeable_id), count: parseInt(r.cnt, 10) }))
-    .filter((r) => r.post);
+    .map((row) => ({
+      post: postMap.get(row.likeable_id),
+
+      count: toInt(row.cnt),
+    }))
+
+    .filter((item) => item.post);
 }
 
-async function getCategoryWisePostAnalytics(from, to) {
-  const [categories, viewRows, clickRows] = await Promise.all([
-    db.Category.findAll({
-      attributes: {
-        include: [[db.Sequelize.fn('COUNT', db.Sequelize.col('Posts.id')), 'postCount']],
-      },
-      include: [{ model: db.Post, attributes: [] }],
-      group: ['Category.id'],
-      order: [['display_order', 'ASC']],
-    }),
-    db.PostView.findAll({
-      where: { trackable_type: 'post', event_type: 'view', created_at: { [Op.between]: [from, to] } },
-      attributes: ['trackable_id'],
-      raw: true,
-    }),
-    db.PostView.findAll({
-      where: { trackable_type: 'post', event_type: 'click', created_at: { [Op.between]: [from, to] } },
-      attributes: ['trackable_id'],
-      raw: true,
-    }),
-  ]);
+async function getCategoryWisePostAnalytics(
+  from,
+  to
+) {
+  /*
+   * Deliberately sequential.
+   *
+   * The old version started 3 database queries simultaneously
+   * and then started another query. This dashboard already has
+   * many queries, so keeping this method sequential reduces
+   * MySQL connection pressure.
+   */
 
-  const postIds = [...new Set([...viewRows.map((r) => r.trackable_id), ...clickRows.map((r) => r.trackable_id)])];
-  const posts = postIds.length
-    ? await db.Post.findAll({ where: { id: { [Op.in]: postIds } }, attributes: ['id', 'category_id'] })
-    : [];
-  const postCategoryMap = new Map(posts.map((p) => [p.id, p.category_id]));
+  const categories = await db.Category.findAll({
+    attributes: {
+      include: [
+        [
+          db.Sequelize.fn(
+            'COUNT',
+            db.Sequelize.col('Posts.id')
+          ),
+          'postCount',
+        ],
+      ],
+    },
+
+    include: [
+      {
+        model: db.Post,
+        attributes: [],
+      },
+    ],
+
+    group: ['Category.id'],
+
+    order: [
+      ['display_order', 'ASC'],
+    ],
+  });
+
+  const viewRows = await db.PostView.findAll({
+    where: {
+      trackable_type: 'post',
+      event_type: 'view',
+
+      created_at: {
+        [Op.between]: [from, to],
+      },
+    },
+
+    attributes: [
+      'trackable_id',
+    ],
+
+    raw: true,
+  });
+
+  const clickRows = await db.PostView.findAll({
+    where: {
+      trackable_type: 'post',
+      event_type: 'click',
+
+      created_at: {
+        [Op.between]: [from, to],
+      },
+    },
+
+    attributes: [
+      'trackable_id',
+    ],
+
+    raw: true,
+  });
+
+  const postIds = [
+    ...new Set([
+      ...viewRows.map(
+        (row) => row.trackable_id
+      ),
+
+      ...clickRows.map(
+        (row) => row.trackable_id
+      ),
+    ]),
+  ];
+
+  let posts = [];
+
+  if (postIds.length > 0) {
+    posts = await db.Post.findAll({
+      where: {
+        id: {
+          [Op.in]: postIds,
+        },
+      },
+
+      attributes: [
+        'id',
+        'category_id',
+      ],
+    });
+  }
+
+  const postCategoryMap = new Map(
+    posts.map((post) => [
+      post.id,
+      post.category_id,
+    ])
+  );
 
   const viewsByCategory = new Map();
   const clicksByCategory = new Map();
-  viewRows.forEach((r) => {
-    const catId = postCategoryMap.get(r.trackable_id);
-    if (catId) viewsByCategory.set(catId, (viewsByCategory.get(catId) || 0) + 1);
-  });
-  clickRows.forEach((r) => {
-    const catId = postCategoryMap.get(r.trackable_id);
-    if (catId) clicksByCategory.set(catId, (clicksByCategory.get(catId) || 0) + 1);
+
+  viewRows.forEach((row) => {
+    const categoryId =
+      postCategoryMap.get(
+        row.trackable_id
+      );
+
+    if (!categoryId) {
+      return;
+    }
+
+    viewsByCategory.set(
+      categoryId,
+      (viewsByCategory.get(categoryId) || 0) + 1
+    );
   });
 
-  return categories.map((cat) => {
-    const views = viewsByCategory.get(cat.id) || 0;
-    const clicks = clicksByCategory.get(cat.id) || 0;
+  clickRows.forEach((row) => {
+    const categoryId =
+      postCategoryMap.get(
+        row.trackable_id
+      );
+
+    if (!categoryId) {
+      return;
+    }
+
+    clicksByCategory.set(
+      categoryId,
+      (clicksByCategory.get(categoryId) || 0) + 1
+    );
+  });
+
+  return categories.map((category) => {
+    const views =
+      viewsByCategory.get(category.id) || 0;
+
+    const clicks =
+      clicksByCategory.get(category.id) || 0;
+
     return {
-      id: cat.id,
-      name: cat.name,
-      postCount: parseInt(cat.get('postCount'), 10) || 0,
+      id: category.id,
+
+      name: category.name,
+
+      postCount: toInt(
+        category.get('postCount')
+      ),
+
       views,
+
       clicks,
-      ctr: views > 0 ? Math.round((clicks / views) * 10000) / 100 : 0,
+
+      ctr: views > 0
+        ? Math.round(
+            (clicks / views) * 10000
+          ) / 100
+        : 0,
     };
   });
 }
 
-/* ---------------------------------------------------------------------- *
- * Blogs — views/likes_count/comments_count are lifetime counters (no
- * per-day log exists for blogs the way PostView exists for posts), so
- * these are shown as all-time totals regardless of the date filter.
- * There is no "impressions" or "shares" field on Blog, so those are
- * intentionally omitted (no fake data).
- * ---------------------------------------------------------------------- */
+/* ==========================================================================
+ * Blogs
+ * ========================================================================== */
 
 async function getBlogsTotals() {
   const row = await db.Blog.findOne({
     attributes: [
-      [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'total'],
-      [db.Sequelize.fn('SUM', db.Sequelize.col('views')), 'views'],
-      [db.Sequelize.fn('SUM', db.Sequelize.col('likes_count')), 'likes'],
-      [db.Sequelize.fn('SUM', db.Sequelize.col('comments_count')), 'comments'],
+      [
+        db.Sequelize.fn(
+          'COUNT',
+          db.Sequelize.col('id')
+        ),
+        'total',
+      ],
+
+      [
+        db.Sequelize.fn(
+          'SUM',
+          db.Sequelize.col('views')
+        ),
+        'views',
+      ],
+
+      [
+        db.Sequelize.fn(
+          'SUM',
+          db.Sequelize.col('likes_count')
+        ),
+        'likes',
+      ],
+
+      [
+        db.Sequelize.fn(
+          'SUM',
+          db.Sequelize.col('comments_count')
+        ),
+        'comments',
+      ],
     ],
-    where: { status: 'published' },
+
+    where: {
+      status: 'published',
+    },
+
     raw: true,
   });
+
+  if (!row) {
+    return {
+      total: 0,
+      views: 0,
+      likes: 0,
+      comments: 0,
+    };
+  }
+
   return {
-    total: parseInt(row.total, 10) || 0,
-    views: parseInt(row.views, 10) || 0,
-    likes: parseInt(row.likes, 10) || 0,
-    comments: parseInt(row.comments, 10) || 0,
+    total: toInt(row.total),
+    views: toInt(row.views),
+    likes: toInt(row.likes),
+    comments: toInt(row.comments),
   };
 }
 
 async function getTopBlogsByViews(limit = 5) {
   return db.Blog.findAll({
-    where: { status: 'published' },
-    order: [['views', 'DESC']],
+    where: {
+      status: 'published',
+    },
+
+    order: [
+      ['views', 'DESC'],
+    ],
+
     limit,
-    attributes: ['id', 'title', 'slug', 'views', 'likes_count', 'comments_count'],
+
+    attributes: [
+      'id',
+      'title',
+      'slug',
+      'views',
+      'likes_count',
+      'comments_count',
+    ],
   });
 }
 
@@ -230,147 +711,404 @@ async function getBlogCategoryAnalytics() {
   const rows = await db.BlogCategory.findAll({
     attributes: {
       include: [
-        [db.Sequelize.fn('COUNT', db.Sequelize.col('Blogs.id')), 'blogCount'],
-        [db.Sequelize.fn('SUM', db.Sequelize.col('Blogs.views')), 'views'],
-        [db.Sequelize.fn('SUM', db.Sequelize.col('Blogs.likes_count')), 'likes'],
+        [
+          db.Sequelize.fn(
+            'COUNT',
+            db.Sequelize.col('Blogs.id')
+          ),
+          'blogCount',
+        ],
+
+        [
+          db.Sequelize.fn(
+            'SUM',
+            db.Sequelize.col('Blogs.views')
+          ),
+          'views',
+        ],
+
+        [
+          db.Sequelize.fn(
+            'SUM',
+            db.Sequelize.col('Blogs.likes_count')
+          ),
+          'likes',
+        ],
       ],
     },
-    include: [{ model: db.Blog, attributes: [], where: { status: 'published' }, required: false }],
-    group: ['BlogCategory.id'],
+
+    include: [
+      {
+        model: db.Blog,
+        attributes: [],
+
+        where: {
+          status: 'published',
+        },
+
+        required: false,
+      },
+    ],
+
+    group: [
+      'BlogCategory.id',
+    ],
   });
-  return rows.map((r) => ({
-    id: r.id,
-    name: r.name,
-    blogCount: parseInt(r.get('blogCount'), 10) || 0,
-    views: parseInt(r.get('views'), 10) || 0,
-    likes: parseInt(r.get('likes'), 10) || 0,
+
+  return rows.map((row) => ({
+    id: row.id,
+
+    name: row.name,
+
+    blogCount: toInt(
+      row.get('blogCount')
+    ),
+
+    views: toInt(
+      row.get('views')
+    ),
+
+    likes: toInt(
+      row.get('likes')
+    ),
   }));
 }
 
-/* ---------------------------------------------------------------------- *
- * Courses / Test Series — no "views" or "attempts" field/table exists for
- * either, so those are intentionally NOT included (no fake data).
- * Enrollments + revenue come from the Purchase table (payment_status
- * 'completed'), the same convention used by the student dashboard.
- * ---------------------------------------------------------------------- */
+/* ==========================================================================
+ * Courses / Test Series
+ * ========================================================================== */
 
 async function getCoursesTotals() {
-  const [total, active] = await Promise.all([
-    db.Course.count(),
-    db.Course.count({ where: { is_active: true } }),
-  ]);
-  return { total, active };
+  const total = await db.Course.count();
+
+  const active = await db.Course.count({
+    where: {
+      is_active: true,
+    },
+  });
+
+  return {
+    total,
+    active,
+  };
 }
 
 async function getTestSeriesTotals() {
-  const [total, active] = await Promise.all([
-    db.TestSeries.count(),
-    db.TestSeries.count({ where: { is_active: true } }),
-  ]);
-  return { total, active };
+  const total = await db.TestSeries.count();
+
+  const active = await db.TestSeries.count({
+    where: {
+      is_active: true,
+    },
+  });
+
+  return {
+    total,
+    active,
+  };
 }
 
-async function getPurchaseTotalsByType(purchasableType, from, to) {
+async function getPurchaseTotalsByType(
+  purchasableType,
+  from,
+  to
+) {
   const rows = await db.Purchase.findAll({
     where: {
       purchasable_type: purchasableType,
+
       payment_status: 'completed',
-      purchased_at: { [Op.between]: [from, to] },
+
+      purchased_at: {
+        [Op.between]: [from, to],
+      },
     },
+
     attributes: [
       'purchasable_id',
-      [db.Sequelize.fn('SUM', db.Sequelize.col('amount')), 'revenue'],
-      [db.Sequelize.fn('COUNT', db.Sequelize.col('id')), 'enrollments'],
+
+      [
+        db.Sequelize.fn(
+          'SUM',
+          db.Sequelize.col('amount')
+        ),
+        'revenue',
+      ],
+
+      [
+        db.Sequelize.fn(
+          'COUNT',
+          db.Sequelize.col('id')
+        ),
+        'enrollments',
+      ],
     ],
-    group: ['purchasable_id'],
+
+    group: [
+      'purchasable_id',
+    ],
+
     raw: true,
   });
-  return rows.map((r) => ({
-    purchasable_id: r.purchasable_id,
-    revenue: parseFloat(r.revenue) || 0,
-    enrollments: parseInt(r.enrollments, 10) || 0,
+
+  return rows.map((row) => ({
+    purchasable_id:
+      row.purchasable_id,
+
+    revenue: toNumber(
+      row.revenue
+    ),
+
+    enrollments: toInt(
+      row.enrollments
+    ),
   }));
 }
 
-async function getTopCoursesByRevenue(from, to, limit = 5) {
-  const rows = await getPurchaseTotalsByType('course', from, to);
-  rows.sort((a, b) => b.revenue - a.revenue);
+async function getTopCoursesByRevenue(
+  from,
+  to,
+  limit = 5
+) {
+  const rows =
+    await getPurchaseTotalsByType(
+      'course',
+      from,
+      to
+    );
+
+  rows.sort(
+    (a, b) => b.revenue - a.revenue
+  );
+
   const top = rows.slice(0, limit);
-  if (!top.length) return [];
-  const courses = await db.Course.findAll({
-    where: { id: { [Op.in]: top.map((r) => r.purchasable_id) } },
-    attributes: ['id', 'title', 'slug'],
-  });
-  const courseMap = new Map(courses.map((c) => [c.id, c]));
-  return top.map((r) => ({ course: courseMap.get(r.purchasable_id), revenue: r.revenue, enrollments: r.enrollments })).filter((r) => r.course);
+
+  if (!top.length) {
+    return [];
+  }
+
+  const courses =
+    await db.Course.findAll({
+      where: {
+        id: {
+          [Op.in]: top.map(
+            (row) =>
+              row.purchasable_id
+          ),
+        },
+      },
+
+      attributes: [
+        'id',
+        'title',
+        'slug',
+      ],
+    });
+
+  const courseMap = new Map(
+    courses.map((course) => [
+      course.id,
+      course,
+    ])
+  );
+
+  return top
+    .map((row) => ({
+      course: courseMap.get(
+        row.purchasable_id
+      ),
+
+      revenue: row.revenue,
+
+      enrollments: row.enrollments,
+    }))
+
+    .filter(
+      (item) => item.course
+    );
 }
 
-async function getTopTestSeriesByRevenue(from, to, limit = 5) {
-  const rows = await getPurchaseTotalsByType('test_series', from, to);
-  rows.sort((a, b) => b.revenue - a.revenue);
+async function getTopTestSeriesByRevenue(
+  from,
+  to,
+  limit = 5
+) {
+  const rows =
+    await getPurchaseTotalsByType(
+      'test_series',
+      from,
+      to
+    );
+
+  rows.sort(
+    (a, b) => b.revenue - a.revenue
+  );
+
   const top = rows.slice(0, limit);
-  if (!top.length) return [];
-  const items = await db.TestSeries.findAll({
-    where: { id: { [Op.in]: top.map((r) => r.purchasable_id) } },
-    attributes: ['id', 'title', 'slug'],
-  });
-  const itemMap = new Map(items.map((c) => [c.id, c]));
-  return top.map((r) => ({ testSeries: itemMap.get(r.purchasable_id), revenue: r.revenue, enrollments: r.enrollments })).filter((r) => r.testSeries);
+
+  if (!top.length) {
+    return [];
+  }
+
+  const testSeries =
+    await db.TestSeries.findAll({
+      where: {
+        id: {
+          [Op.in]: top.map(
+            (row) =>
+              row.purchasable_id
+          ),
+        },
+      },
+
+      attributes: [
+        'id',
+        'title',
+        'slug',
+      ],
+    });
+
+  const testSeriesMap = new Map(
+    testSeries.map((item) => [
+      item.id,
+      item,
+    ])
+  );
+
+  return top
+    .map((row) => ({
+      testSeries:
+        testSeriesMap.get(
+          row.purchasable_id
+        ),
+
+      revenue: row.revenue,
+
+      enrollments: row.enrollments,
+    }))
+
+    .filter(
+      (item) => item.testSeries
+    );
 }
 
-async function getRevenueBreakdown(from, to) {
-  const where = (type) => ({
-    purchasable_type: type,
+async function getRevenueBreakdown(
+  from,
+  to
+) {
+  const baseWhere = {
     payment_status: 'completed',
-    purchased_at: { [Op.between]: [from, to] },
-  });
-  const [courseRevenue, testSeriesRevenue, totalPurchases] = await Promise.all([
-    db.Purchase.sum('amount', { where: where('course') }),
-    db.Purchase.sum('amount', { where: where('test_series') }),
-    db.Purchase.sum('amount', {
-      where: { payment_status: 'completed', purchased_at: { [Op.between]: [from, to] } },
-    }),
-  ]);
-  const course = courseRevenue || 0;
-  const testSeries = testSeriesRevenue || 0;
-  const total = totalPurchases || 0;
-  // "Other" = any purchase type outside course/test_series (schema only
-  // defines these two today, so this will normally be 0 — kept for
-  // structural completeness rather than assumed to always be zero).
-  const other = Math.max(0, total - course - testSeries);
-  return { course, testSeries, other, total };
+
+    purchased_at: {
+      [Op.between]: [from, to],
+    },
+  };
+
+  const courseRevenue =
+    await db.Purchase.sum('amount', {
+      where: {
+        ...baseWhere,
+
+        purchasable_type: 'course',
+      },
+    });
+
+  const testSeriesRevenue =
+    await db.Purchase.sum('amount', {
+      where: {
+        ...baseWhere,
+
+        purchasable_type: 'test_series',
+      },
+    });
+
+  const totalPurchases =
+    await db.Purchase.sum('amount', {
+      where: baseWhere,
+    });
+
+  const course =
+    toNumber(courseRevenue);
+
+  const testSeries =
+    toNumber(testSeriesRevenue);
+
+  const total =
+    toNumber(totalPurchases);
+
+  const other =
+    Math.max(
+      0,
+      total - course - testSeries
+    );
+
+  return {
+    course,
+    testSeries,
+    other,
+    total,
+  };
 }
 
-/* ---------------------------------------------------------------------- *
+/* ==========================================================================
  * Users
- * ---------------------------------------------------------------------- */
+ * ========================================================================== */
 
-async function getUsersTotals(from, to) {
-  const [total, newUsers, active] = await Promise.all([
-    db.User.count(),
-    db.User.count({ where: { created_at: { [Op.between]: [from, to] } } }),
-    db.User.count({ where: { is_active: true } }),
-  ]);
-  return { total, newUsers, active };
+async function getUsersTotals(
+  from,
+  to
+) {
+  const total =
+    await db.User.count();
+
+  const newUsers =
+    await db.User.count({
+      where: {
+        created_at: {
+          [Op.between]: [from, to],
+        },
+      },
+    });
+
+  const active =
+    await db.User.count({
+      where: {
+        is_active: true,
+      },
+    });
+
+  return {
+    total,
+    newUsers,
+    active,
+  };
 }
+
+/* ==========================================================================
+ * Exports
+ * ========================================================================== */
 
 module.exports = {
   getIncomeExpenseTotals,
   getIncomeExpenseByCategory,
   getTopTransactions,
   getIncomeExpenseDailySeries,
+
   getPostsTotalCount,
   getPostViewClickTotals,
   getTopPostsByEvent,
   getTopPostsByLikes,
   getCategoryWisePostAnalytics,
+
   getBlogsTotals,
   getTopBlogsByViews,
   getBlogCategoryAnalytics,
+
   getCoursesTotals,
   getTestSeriesTotals,
   getTopCoursesByRevenue,
   getTopTestSeriesByRevenue,
   getRevenueBreakdown,
+
   getUsersTotals,
 };
