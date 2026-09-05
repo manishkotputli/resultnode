@@ -3,10 +3,11 @@ const incomeExpenseService = require('../../services/admin/incomeExpense.service
 
 async function index(req, res, next) {
   try {
+    const loggedInUserId = req.session.admin.id;
     const {
       entries, total, page, perPage, stats, banks, banksTotal, bankPage, banksPerPage,
       users, allBanks, allCategories,
-    } = await incomeExpenseService.getList(req.query);
+    } = await incomeExpenseService.getList(req.query,loggedInUserId);
 
     res.render('admin/income-expense/index', {
       title: 'Income & Expense',
@@ -36,7 +37,7 @@ async function index(req, res, next) {
 
 async function storeEntry(req, res, next) {
   try {
-    await incomeExpenseService.addEntry(req.body);
+    await incomeExpenseService.addEntry(req.body, req.session.admin.id);
     req.flash('success', 'Entry added successfully.');
     res.redirect('/admin/income-expense');
   } catch (err) {
@@ -50,7 +51,7 @@ async function storeEntry(req, res, next) {
 
 async function updateEntry(req, res, next) {
   try {
-    await incomeExpenseService.editEntry(req.params.id, req.body);
+    await incomeExpenseService.editEntry(req.params.id, req.body, req.session.admin.id);
     req.flash('success', 'Entry updated successfully.');
     res.redirect('/admin/income-expense');
   } catch (err) {
@@ -64,7 +65,7 @@ async function updateEntry(req, res, next) {
 
 async function destroyEntry(req, res, next) {
   try {
-    await incomeExpenseService.removeEntry(req.params.id);
+    await incomeExpenseService.removeEntry(req.params.id, req.session.admin.id);
     req.flash('success', 'Entry deleted successfully.');
     res.redirect('/admin/income-expense');
   } catch (err) {
@@ -78,7 +79,7 @@ async function destroyEntry(req, res, next) {
 
 async function storeBank(req, res, next) {
   try {
-    await incomeExpenseService.addBank(req.body);
+    await incomeExpenseService.addBank(req.body, req.session.admin.id);
     req.flash('success', 'Account added successfully.');
     res.redirect('/admin/income-expense');
   } catch (err) {
@@ -92,7 +93,7 @@ async function storeBank(req, res, next) {
 
 async function updateBank(req, res, next) {
   try {
-    await incomeExpenseService.editBank(req.params.id, req.body);
+    await incomeExpenseService.editBank(req.params.id, req.body,req.session.admin.id);
     req.flash('success', 'Account updated successfully.');
     res.redirect('/admin/income-expense');
   } catch (err) {
@@ -106,7 +107,7 @@ async function updateBank(req, res, next) {
 
 async function destroyBank(req, res, next) {
   try {
-    await incomeExpenseService.removeBank(req.params.id);
+    await incomeExpenseService.removeBank(req.params.id,req.session.admin.id);
     req.flash('success', 'Account removed successfully.');
     res.redirect('/admin/income-expense');
   } catch (err) {

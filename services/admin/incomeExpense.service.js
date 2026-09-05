@@ -44,14 +44,14 @@ async function getList(query) {
   };
 }
 
-async function addEntry(body) {
+async function addEntry(body, loggedInUserId) {
   if (!body.user_id || !body.category_id || !body.type || !body.title || !body.amount || !body.transaction_date) {
     const err = new Error('User, category, type, title, amount and date are all required.');
     err.status = 400;
     throw err;
   }
   return repo.createEntry({
-    user_id: Number(body.user_id),
+user_id: Number(loggedInUserId),
     category_id: Number(body.category_id),
     bank_id: body.bank_id ? Number(body.bank_id) : null,
     type: Number(body.type),
@@ -62,7 +62,7 @@ async function addEntry(body) {
   });
 }
 
-async function editEntry(id, body) {
+async function editEntry(id, body, loggedInUserId) {
   const entry = await repo.findEntryById(id);
   if (!entry) {
     const err = new Error('Entry not found');
@@ -75,7 +75,7 @@ async function editEntry(id, body) {
     throw err;
   }
   return repo.updateEntry(entry, {
-    user_id: Number(body.user_id),
+    user_id: Number(loggedInUserId),
     category_id: Number(body.category_id),
     bank_id: body.bank_id ? Number(body.bank_id) : null,
     type: Number(body.type),
@@ -86,24 +86,29 @@ async function editEntry(id, body) {
   });
 }
 
-async function removeEntry(id) {
+async function removeEntry(id, loggedInUserId) {
   const entry = await repo.findEntryById(id);
-  if (!entry) {
+
+  if (
+    !entry ||
+    Number(entry.user_id) !== Number(loggedInUserId)
+  ) {
     const err = new Error('Entry not found');
     err.status = 404;
     throw err;
   }
+
   return repo.deleteEntry(id);
 }
 
-async function addBank(body) {
+async function addBank(body,loggedInUserId) {
   if (!body.user_id || !body.name) {
     const err = new Error('User and account name are required.');
     err.status = 400;
     throw err;
   }
   return repo.createBank({
-    user_id: Number(body.user_id),
+    user_id: Number(loggedInUserId),
     name: body.name.trim(),
     account_number: body.account_number ? body.account_number.trim() : null,
     opening_balance: body.opening_balance ? parseFloat(body.opening_balance) : 0,
@@ -111,7 +116,7 @@ async function addBank(body) {
   });
 }
 
-async function editBank(id, body) {
+async function editBank(id, body,loggedInUserId) {
   const bank = await repo.findBankById(id);
   if (!bank) {
     const err = new Error('Account not found');
@@ -124,7 +129,7 @@ async function editBank(id, body) {
     throw err;
   }
   return repo.updateBank(bank, {
-    user_id: Number(body.user_id),
+    user_id: Number(loggedInUserId),
     name: body.name.trim(),
     account_number: body.account_number ? body.account_number.trim() : null,
     opening_balance: body.opening_balance ? parseFloat(body.opening_balance) : 0,
@@ -132,13 +137,18 @@ async function editBank(id, body) {
   });
 }
 
-async function removeBank(id) {
+async function removeBank(id, loggedInUserId) {
   const bank = await repo.findBankById(id);
-  if (!bank) {
+
+  if (
+    !bank ||
+    Number(bank.user_id) !== Number(loggedInUserId)
+  ) {
     const err = new Error('Account not found');
     err.status = 404;
     throw err;
   }
+
   return repo.deleteBank(id);
 }
 
